@@ -169,6 +169,7 @@ public class TerrainGen : MonoBehaviour
                 meshRenderer.material = BaseMaterial;
 
                 chunk.mesh.RecalculateNormals();
+                var collider = chunkGameObject.AddComponent<MeshCollider>();
             }
         }
     }
