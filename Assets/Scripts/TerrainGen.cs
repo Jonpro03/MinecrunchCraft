@@ -31,7 +31,7 @@ public class TerrainGen : MonoBehaviour
     public int PerlinNoise(float x, float z)
     {
         //Generate a value from the given position, position is divided to make the noise more frequent.
-        float noise = Mathf.PerlinNoise((x / NoiseSize), (z / NoiseSize));
+        float noise = Mathf.PerlinNoise(((x + Mathf.Sqrt(Seed)) / NoiseSize), ((z + Mathf.Sqrt(Seed)) / NoiseSize));
 
         //Return the noise value
         return (int)(noise * HeightOfTerrain);
@@ -42,12 +42,13 @@ public class TerrainGen : MonoBehaviour
     {
         //BaseMaterial = Resources.Load<Material>("Materials/DirtBlock");
 
-        TopLevelBlocks = new List<IBlock>();
+        
         // Create the chunks
         for (int cx = (-1 * RenderSize); cx < RenderSize; cx++)
         {
             for (int cz = (-1 * RenderSize); cz < RenderSize; cz++)
             {
+                TopLevelBlocks = new List<IBlock>();
                 GameObject chunkGameObject = new GameObject(string.Format("chunk{0},{1}", cx, cz));
                 chunkGameObject.transform.position = new Vector3(cx * 16, 0, cz * 16);
 
@@ -64,23 +65,16 @@ public class TerrainGen : MonoBehaviour
                 {
                     for (int bz = 0; bz < 16; bz++)
                     {
-                        int by = PerlinNoise((bx + (cx * 16)), (bz + (cz * 16)));
-                        Vector3 chunkPosition = new Vector3(bx, by, bz);
-                        Blocks[bx, by, bz] = new DirtBlock(chunkPosition, true);
+                        int blockWorldPosX = bx + (cx * 16);
+                        int blockWorldPosZ = bz + (cz * 16);
+                        int by = PerlinNoise(blockWorldPosX, blockWorldPosZ);
+                        by = Mathf.Max(0, by);
+                        by = Mathf.Min(255, by);
+                        Vector3 positionInChunk = new Vector3(bx, by, bz);
+                        Blocks[bx, by, bz] = new DirtBlock(positionInChunk, true);
                         TopLevelBlocks.Add(Blocks[bx, by, bz]);
                     }
                 }
-
-                // Debug Block
-                Blocks[0, 18, 0] = new DirtBlock(new Vector3(0, 18, 0), true)
-                {
-                    FrontVisible = true,
-                    TopVisible = true,
-                    BackVisible = true,
-                    BottomVisible = true,
-                    LeftVisible = true,
-                    RightVisible = true
-                };
 
 
                 // Fill in blocks below the terrain gen blocks.
@@ -109,27 +103,27 @@ public class TerrainGen : MonoBehaviour
                     // Check front, back, left and right to see if there's another visible block there.
                     // Move down and repeat
 
-                    for (int columnY = by; by > 0; by--)
+                    for (int columnY = by; columnY > 0; columnY--)
                     {
                         // Left
                         if (null == Blocks[Mathf.Max(bx - 1, 0), columnY, bz])
                         {
-                            Blocks[bx, by, bz].LeftVisible = true;
+                            Blocks[bx, columnY, bz].LeftVisible = true;
                         }
                         // Right
                         if (null == Blocks[Mathf.Min(bx + 1, 15), columnY, bz])
                         {
-                            Blocks[bx, by, bz].RightVisible = true;
+                            Blocks[bx, columnY, bz].RightVisible = true;
                         }
                         // Front
                         if (null == Blocks[bx, columnY, Mathf.Max(bz - 1, 0)])
                         {
-                            Blocks[bx, by, bz].FrontVisible = true;
+                            Blocks[bx, columnY, bz].FrontVisible = true;
                         }
                         // Back
                         if (null == Blocks[bx, columnY, Mathf.Min(bz + 1, 15)])
                         {
-                            Blocks[bx, by, bz].BackVisible = true;
+                            Blocks[bx, columnY, bz].BackVisible = true;
                         }
                     }
                 }
