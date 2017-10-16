@@ -9,11 +9,29 @@ namespace Assets.Scripts.Interfaces
 
         Vector3 PositionInWorld { get; }
 
-        bool IsTopLevel { get; set; }
+        List<Vector3> Verticies { get; }
 
-        List<Vector3> Verticies { get; set; }
+        List<Vector2> UVs { get; }
 
-        List<Vector2> UVs { get; set; }
+        string Texture { get; }
+
+        string SoundWalkedOnAsset { get; }
+
+        string SoundBeingMinedAsset { get; }
+
+        bool IsTransparent { get; }
+
+        bool IsGravityAffected { get; }
+
+        uint MiningDifficulty { get; }
+
+        float Damage { get; }
+
+        void OnTakeDamage(float damageAmount);
+
+        void OnDestroyed();
+
+        void OnPlaced();
 
         bool LeftVisible { get; set; }
         bool RightVisible { get; set; }

@@ -9,13 +9,31 @@ namespace Assets.Scripts.Blocks
 {
     public class DirtBlock : Block
     {
-        public string Texture { get; set; }
+        public override string Texture { get { return "Materials/DirtBlock"; } }
 
-        public DirtBlock(Vector3 chunkPos, bool visible, Vector2 chunkLoc) : base(chunkPos, visible, chunkLoc)
+        public override bool IsTransparent { get { return false; } }
+
+        public override bool IsGravityAffected { get { return false; } }
+
+        public override uint MiningDifficulty { get { return 1; } }
+
+        public override string SoundWalkedOnAsset { get { return "Sounds/DirtWalk"; } }
+
+        public override string SoundBeingMinedAsset { get { return "Sounds/DirtMined"; } }
+
+        public DirtBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }
 
+        public override void OnDestroyed()
+        {
+            
+        }
 
+        public override void OnPlaced()
+        {
+            
+        }
     }
 }

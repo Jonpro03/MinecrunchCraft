@@ -97,14 +97,22 @@ public class TerrainGen : MonoBehaviour
         chunk.InitializeChunk(chunkPos, chunkGameObject);
         chunkGameObject.transform.position = new Vector3(chunkPos.x * 16, 0, chunkPos.y * 16);
         chunk.GenerateChunk(Seed);
-        var random = new System.Random();
-        foreach (var block in chunk.TopLevelBlocks)
-        {
-            if(random.Next(Seed.GetHashCode()) % 1337 == 0)
-            {
-                Instantiate(OakTree, block.PositionInWorld + new Vector3(0.5f, 1.5f, 0.5f), Quaternion.identity);
-            }
-        }
+        var chunkMesh = new Mesh();
+        chunkMesh.name = "TerrainMesh";
+
+        chunkMesh.SetVertices(chunk.Verticies);
+        chunkMesh.SetUVs(0, chunk.UVs);
+        chunkMesh.SetTriangles(chunk.Triangles, 0);
+
+        var meshFilter = chunkGameObject.AddComponent<MeshFilter>();
+        var meshRenderer = chunkGameObject.AddComponent<MeshRenderer>();
+
+        meshFilter.mesh = chunkMesh;
+        meshRenderer.material = Resources.Load<Material>("Materials/GrassBlock");
+
+        chunkMesh.RecalculateNormals();
+        var collider = chunkGameObject.AddComponent<MeshCollider>();
+
         return chunk;
     }
 
