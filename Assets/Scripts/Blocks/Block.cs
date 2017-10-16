@@ -9,7 +9,10 @@ namespace Assets.Scripts.Blocks
 {
     public class Block : IBlock
     {
-        public Vector3 PositionInChunk { get; set; }
+        public Vector3 PositionInChunk { get; private set; }
+
+        public Vector3 PositionInWorld { get; private set; }
+
         public bool IsTopLevel { get; set; }
 
         public List<Vector3> Verticies { get; set; }
@@ -210,9 +213,10 @@ namespace Assets.Scripts.Blocks
             }
         }
 
-        public Block(Vector3 chunkPos, bool visible)
+        public Block(Vector3 posInChunk, bool visible, Vector2 chunkLoc)
         {
-            PositionInChunk = chunkPos;
+            PositionInChunk = posInChunk;
+            PositionInWorld = new Vector3((chunkLoc.x * 16) + posInChunk.x, posInChunk.y, (chunkLoc.y * 16) + posInChunk.z);
             IsTopLevel = visible;
             leftVisible = rightVisible = topVisible = bottomVisible = frontVisible = backVisible = false;
             Verticies = new List<Vector3>();

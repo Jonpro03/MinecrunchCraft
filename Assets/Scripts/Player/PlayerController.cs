@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
         {
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             moveDirection = transform.TransformDirection(moveDirection);
+
             moveDirection *= walkSpeed;
             if (Input.GetButton("Jump"))
                 moveDirection.y = jumpSpeed;

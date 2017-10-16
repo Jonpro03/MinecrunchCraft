@@ -5,7 +5,9 @@ namespace Assets.Scripts.Interfaces
 {
     public interface IBlock
     {
-        Vector3 PositionInChunk { get; set; }
+        Vector3 PositionInChunk { get; }
+
+        Vector3 PositionInWorld { get; }
 
         bool IsTopLevel { get; set; }
 

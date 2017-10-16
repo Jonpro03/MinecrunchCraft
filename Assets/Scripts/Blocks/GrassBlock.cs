@@ -7,11 +7,11 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class DirtBlock : Block
+    public class GrassBlock : Block
     {
         public string Texture { get; set; }
 
-        public DirtBlock(Vector3 chunkPos, bool visible, Vector2 chunkLoc) : base(chunkPos, visible, chunkLoc)
+        public GrassBlock(Vector3 chunkPos, bool visible, Vector2 chunkLoc) : base(chunkPos, visible, chunkLoc)
         {
 
         }
