@@ -19,5 +19,7 @@ public class StopGame : MonoBehaviour {
         //Stops game if it is being run in the unity editor
         if (UnityEditor.EditorApplication.isPlaying)
             UnityEditor.EditorApplication.isPlaying = false;
+
+        //Need to add functionality for game when actually running that will properly exit/save
     }
 }
