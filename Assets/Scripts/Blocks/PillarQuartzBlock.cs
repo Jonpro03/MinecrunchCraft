@@ -7,27 +7,25 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class StainedGlassBlock : Block
+    public class PillarQuartzBlock : Block
     {
-        public override string Texture { get { return "Materials/StainedGlassBlock"; } }
+        public override string Texture { get { return "Materials/PillarQuartzBlock"; } }
 
-        public override bool IsTransparent { get { return true; } }
+        public override bool IsTransparent { get { return false; } }
 
         public override bool IsGravityAffected { get { return false; } }
 
-        public override uint MiningDifficulty { get { return MiningDifficulties.NO_TOOL; } }
+        public override uint MiningDifficulty { get { return MiningDifficulties.WOOD_TOOL + 2; } }
 
         public override string SoundWalkedOnAsset { get { return "Sounds/StoneWalk"; } }
 
         public override string SoundBeingMinedAsset { get { return "Sounds/StoneMined"; } }
 
-        public override string SoundBlockBrokenAsset { get { return "Sounds/GlassBreak"; } }
+        public override string SoundBlockBrokenAsset { get { return "Sounds/StoneBreak"; } }
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public string Color { get; set; }
-
-        public StainedGlassBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public PillarQuartzBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

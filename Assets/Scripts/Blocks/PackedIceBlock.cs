@@ -7,11 +7,11 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class StainedGlassBlock : Block
+    public class PackedIceBlock : Block
     {
-        public override string Texture { get { return "Materials/StainedGlassBlock"; } }
+        public override string Texture { get { return "Materials/PackedIceBlock"; } }
 
-        public override bool IsTransparent { get { return true; } }
+        public override bool IsTransparent { get { return false; } }
 
         public override bool IsGravityAffected { get { return false; } }
 
@@ -25,9 +25,7 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public string Color { get; set; }
-
-        public StainedGlassBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public PackedIceBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }
