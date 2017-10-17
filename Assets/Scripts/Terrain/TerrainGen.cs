@@ -27,6 +27,10 @@ public class TerrainGen : MonoBehaviour
 
     private List<Chunk> Chunks { get; set; }
 
+    private List<Chunk> ChunkGenerateJobs { get; set; }
+
+    private List<Chunk> ChunkRenderJobs { get; set; }
+
 
     //Function that inputs the position and spits out a float value based on the perlin noise
     public int PerlinNoise(float x, float z)
@@ -45,18 +49,37 @@ public class TerrainGen : MonoBehaviour
         // If the seed is empty, generate a random seed.
         Seed = DateTime.Now.ToString("h:ss");
 
-        //BaseMaterial = Resources.Load<Material>("Materials/DirtBlock");
         Chunks = new List<Chunk>();
+        ChunkGenerateJobs = new List<Chunk>();
+        ChunkRenderJobs = new List<Chunk>();
 
         // Create the chunks
         for (int cx = (-1 * RenderSize); cx < RenderSize; cx++)
         {
             for (int cz = (-1 * RenderSize); cz < RenderSize; cz++)
             {
-                Chunks.Add(GenerateChunk(new Vector2(cx, cz)));
+                GenerateChunk(new Vector2(cx, cz));
             } 
         }
         InvokeRepeating("UpdateChunks", 4, 2);
+    }
+
+    private void Update()
+    {
+        foreach (Chunk chunkJob in ChunkRenderJobs)
+        {
+            DrawChunk(chunkJob);
+        }
+        ChunkRenderJobs = new List<Chunk>();
+
+        foreach (Chunk chunkJob in ChunkGenerateJobs)
+        {
+            if (chunkJob.IsDone)
+            {
+                ChunkRenderJobs.Add(chunkJob);
+            }
+        }
+        ChunkGenerateJobs.RemoveAll(c => c.IsDone);
     }
 
     public void UpdateChunks()
@@ -78,25 +101,27 @@ public class TerrainGen : MonoBehaviour
 
         foreach (var chunkCoord in neededChunks)
         {
-            var chunk = GenerateChunk(chunkCoord);
-            if (null != chunk)
-            {
-                Chunks.Add(chunk);
-            }            
+            GenerateChunk(chunkCoord);     
         }
     }
 
-    private Chunk GenerateChunk(Vector2 chunkPos)
+    private void GenerateChunk(Vector2 chunkPos)
     {
         if (ChunkExists(chunkPos) && GetChunk(chunkPos).Generated)
         {
-            return null;
+            return;
         }
-        GameObject chunkGameObject = new GameObject(string.Format("chunk{0},{1}", chunkPos.x, chunkPos.y));
-        Chunk chunk = chunkGameObject.AddComponent(typeof(Chunk)) as Chunk;
-        chunk.InitializeChunk(chunkPos, chunkGameObject);
-        chunkGameObject.transform.position = new Vector3(chunkPos.x * 16, 0, chunkPos.y * 16);
-        chunk.GenerateChunk(Seed);
+        
+        Chunk chunk = new Chunk(chunkPos, Seed);
+        
+        chunk.Start();
+        ChunkGenerateJobs.Add(chunk);
+    }
+
+    private void DrawChunk(Chunk chunk)
+    {
+        GameObject chunkGameObject = new GameObject(string.Format("chunk{0}", chunk.ChunkPosition.ToString()));
+        chunkGameObject.transform.position = new Vector3(chunk.ChunkPosition.x * 16, 0, chunk.ChunkPosition.y * 16);
 
         Material[] mats = new Material[chunk.Materials.Count];
 
@@ -115,20 +140,19 @@ public class TerrainGen : MonoBehaviour
         chunkMesh.subMeshCount = chunk.Materials.Count;
 
         chunkMesh.SetUVs(0, chunk.UVs.ToList());
-        
+
         foreach (int key in chunk.Triangles.Keys)
         {
             chunkMesh.SetTriangles(chunk.Triangles[key].ToList(), key);
         }
 
         var meshFilter = chunkGameObject.AddComponent<MeshFilter>();
-        
+
 
         meshFilter.mesh = chunkMesh;
         chunkMesh.RecalculateNormals();
         var collider = chunkGameObject.AddComponent<MeshCollider>();
-
-        return chunk;
+        Chunks.Add(chunk);
     }
 
     private void UpdateBlockFaces(List<IBlock> blocks)

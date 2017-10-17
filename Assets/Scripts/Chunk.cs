@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Assets.Scripts
 {
-    public class Chunk : MonoBehaviour
+    public class Chunk : ThreadedJob
     {
         public bool Generated { get; private set; }
 
@@ -16,8 +16,6 @@ namespace Assets.Scripts
 
         public Vector2 ChunkPosition { get; private set; }
 
-        public GameObject ChunkGameObject { get; set; }
-
         public IBlock[,,] Blocks { get; private set; }
 
         public Dictionary<int, string> Materials;
@@ -25,23 +23,30 @@ namespace Assets.Scripts
         public Dictionary<int, List<int>> Triangles;
 
         public List<Vector3> Verticies;
+
         public List<Vector2> UVs;
 
-        public void InitializeChunk(Vector2 pos, GameObject chunkGameObject)
+        private int seedHash;
+
+        public Chunk(Vector2 pos, string seed)
         {
             Generated = false;
             HasUpdate = false;
             ChunkPosition = pos;
-
+            seedHash = seed.GetHashCode();
             Blocks = new IBlock[16, 256, 16];
-            ChunkGameObject = chunkGameObject;
             Materials = new Dictionary<int, string>();
             Triangles = new Dictionary<int, List<int>>();
             Verticies = new List<Vector3>();
             UVs = new List<Vector2>();
         }
 
-        public void GenerateChunk(string seed)
+        protected override void ThreadFunction()
+        {
+            GenerateChunk();
+        }
+
+        public void GenerateChunk()
         {
             int cx = (int)ChunkPosition.x;
             int cz = (int)ChunkPosition.y;
@@ -53,7 +58,7 @@ namespace Assets.Scripts
                 {
                     int blockWorldPosX = bx + (cx * 16);
                     int blockWorldPosZ = bz + (cz * 16);
-                    int by = PerlinNoise(blockWorldPosX, blockWorldPosZ, seed);
+                    int by = PerlinNoise(blockWorldPosX, blockWorldPosZ);
                     by = Mathf.Max(0, by);
                     by = Mathf.Min(255, by);
                     Vector3 positionInChunk = new Vector3(bx, by, bz);
@@ -96,7 +101,7 @@ namespace Assets.Scripts
                         {
                             continue;
                         }
-                        bool isCaveBlock = PerlinCave(block.PositionInWorld, seed);
+                        bool isCaveBlock = PerlinCave(block.PositionInWorld);
                         if (isCaveBlock)
                         {
                             Blocks[bx, by, bz] = null;
@@ -203,28 +208,26 @@ namespace Assets.Scripts
         }
 
         //Function that inputs the position and spits out a float value based on the perlin noise
-        public int PerlinNoise(float x, float z, string seed)
+        public int PerlinNoise(float x, float z)
         {
-            int hash = seed.GetHashCode();
             int Noisiness = 70;
             int TerrainHeight = 50;
             //Generate a value from the given position, position is divided to make the noise more frequent.
-            float pass1 = Mathf.PerlinNoise(((x + hash) / Noisiness), ((z + hash) / Noisiness)) * 10;
-            float pass2 = Mathf.PerlinNoise(((hash - x) / Noisiness), ((hash - z) / Noisiness)) * 10;
+            float pass1 = Mathf.PerlinNoise(((x + seedHash) / Noisiness), ((z + seedHash) / Noisiness)) * 10;
+            float pass2 = Mathf.PerlinNoise(((seedHash - x) / Noisiness), ((seedHash - z) / Noisiness)) * 10;
 
             //Return the noise value
             return (int)(pass2 - pass1 + TerrainHeight);
         }
 
-        public bool PerlinCave(Vector3 loc, string seed)
+        public bool PerlinCave(Vector3 loc)
         {
             const float CAVEFILLPERCENT = 0.35f;
             const float CAVEHEIGHTFACTOR = 0.55f;
             const float STRETCHFACTOR = 0.0675f;
 
-            int hash = seed.GetHashCode();
-            int digitsInHash = hash.ToString().Length;
-            float seedDecimal = hash / Mathf.Pow(10, digitsInHash - 1);
+            int digitsInHash = seedHash.ToString().Length;
+            float seedDecimal = seedHash / Mathf.Pow(10, digitsInHash - 1);
             loc.y /= CAVEHEIGHTFACTOR;
 
             float x = loc.x * STRETCHFACTOR / seedDecimal;
