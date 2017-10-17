@@ -18,23 +18,27 @@ namespace Assets.Scripts
 
         public GameObject ChunkGameObject { get; set; }
 
-        public IBlock[,,] Blocks;
+        public IBlock[,,] Blocks { get; private set; }
 
-        public List<int> Triangles;
+        public Dictionary<int, string> Materials;
+
+        public Dictionary<int, List<int>> Triangles;
 
         public List<Vector3> Verticies;
-
         public List<Vector2> UVs;
-
 
         public void InitializeChunk(Vector2 pos, GameObject chunkGameObject)
         {
             Generated = false;
             HasUpdate = false;
             ChunkPosition = pos;
-            
+
             Blocks = new IBlock[16, 256, 16];
             ChunkGameObject = chunkGameObject;
+            Materials = new Dictionary<int, string>();
+            Triangles = new Dictionary<int, List<int>>();
+            Verticies = new List<Vector3>();
+            UVs = new List<Vector2>();
         }
 
         public void GenerateChunk(string seed)
@@ -58,20 +62,25 @@ namespace Assets.Scripts
                     // fill in below the terrain
                     for (int columnY = by; columnY >= 0; columnY--)
                     {
+                        IBlock block = null;
                         if (columnY == by)
                         {
-                            Blocks[bx, columnY, bz] = new GrassBlock(new Vector3(bx, columnY, bz), ChunkPosition);
+                            block = new GrassBlock(new Vector3(bx, columnY, bz), ChunkPosition);
                         }
-                        else if (columnY < 3)
+                        else if (columnY < 6)
                         {
-                            Blocks[bx, columnY, bz] = new BedrockBlock(new Vector3(bx, columnY, bz), ChunkPosition);
+                            block = new BedrockBlock(new Vector3(bx, columnY, bz), ChunkPosition);
+                        }
+                        else if (columnY < 40)
+                        {
+                            block = new StoneBlock(new Vector3(bx, columnY, bz), ChunkPosition);
                         }
                         else
                         {
-                            Blocks[bx, columnY, bz] = new DirtBlock(new Vector3(bx, columnY, bz), ChunkPosition);
+                            block = new DirtBlock(new Vector3(bx, columnY, bz), ChunkPosition);
                         }
+                        Blocks[bx, columnY, bz] = block;
                     }
-
                 }
             }
 
@@ -111,50 +120,50 @@ namespace Assets.Scripts
                             continue;
                         }
 
+                        IBlock block = Blocks[bx, by, bz];
+
                         // Top
                         if (null == Blocks[bx, Mathf.Min(by + 1, 255), bz])
                         {
-                            Blocks[bx, by, bz].TopVisible = true;
+                            block.TopVisible = true;
                         }
 
                         // Bottom
                         if (null == Blocks[bx, Mathf.Max(by - 1, 0), bz])
                         {
-                            Blocks[bx, by, bz].BottomVisible = true;
+                            block.BottomVisible = true;
                         }
 
                         // Left
                         //if (null == Blocks[Mathf.Max(bx - 1, 0), by, bz] || bx == 0)
                         if (null == Blocks[Mathf.Max(bx - 1, 0), by, bz] || bx == 0)
                         {
-                            Blocks[bx, by, bz].LeftVisible = true;
+                            block.LeftVisible = true;
                         }
                         // Right
                         //if (null == Blocks[Mathf.Min(bx + 1, 15), by, bz] || bx == 15)
                         if (null == Blocks[Mathf.Min(bx + 1, 15), by, bz] || bx == 15)
                         {
-                            Blocks[bx, by, bz].RightVisible = true;
+                            block.RightVisible = true;
                         }
                         // Front
                         // if (null == Blocks[bx, by, Mathf.Max(bz - 1, 0)] || bz == 0)
                         if (null == Blocks[bx, by, Mathf.Max(bz - 1, 0)] || bz == 0)
                         {
-                            Blocks[bx, by, bz].FrontVisible = true;
+                            block.FrontVisible = true;
                         }
                         // Back
                         //if (null == Blocks[bx, by, Mathf.Min(bz + 1, 15)] || bz == 15)
                         if (null == Blocks[bx, by, Mathf.Min(bz + 1, 15)] || bz == 15)
                         {
-                            Blocks[bx, by, bz].BackVisible = true;
+                            block.BackVisible = true;
                         }
                     }
                 }
             }
 
-            // Create the vertices
-            Verticies = new List<Vector3>();
-            UVs = new List<Vector2>();
-
+            // Create the blocks
+            int trianglesCount = 0;
             for (int bx = 0; bx < 16; bx++)
             {
                 for (int bz = 0; bz < 16; bz++)
@@ -164,21 +173,31 @@ namespace Assets.Scripts
                         var block = Blocks[bx, by, bz];
                         if (null != block)
                         {
+                            int textureKey = 0;
+
+                            // Add this block's texture to the chunk
+                            if (Materials.Values.Contains(block.Texture))
+                            {
+                                textureKey = Materials.FirstOrDefault(a => a.Value == block.Texture).Key;
+                            }
+                            else
+                            {
+                                textureKey = Materials.Count;
+                                Materials.Add(textureKey, block.Texture);
+                                Triangles.Add(textureKey, new List<int>());
+                            }
+
+                            for (var a = 0; a < block.Verticies.Count; a++)
+                            {
+                                Triangles[textureKey].Add(trianglesCount + a);
+                            }
+                            trianglesCount += block.Verticies.Count;
                             Verticies.AddRange(block.Verticies);
                             UVs.AddRange(block.UVs);
                         }
                     }
                 }
             }
-
-            // Create triangles for the vertices
-            Triangles = new List<int>();
-            for (int a = 0; a < Verticies.Count; a++)
-            {
-                Triangles.Add(a);
-            }
-
-            
             Generated = true;
             HasUpdate = true;
         }
