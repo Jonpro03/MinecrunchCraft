@@ -19,6 +19,8 @@ namespace Assets.Scripts.Interfaces
 
         string SoundBeingMinedAsset { get; }
 
+        string SoundBlockPlacedAsset { get; }
+
         bool IsTransparent { get; }
 
         bool IsGravityAffected { get; }

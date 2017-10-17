@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class DirtBlock : Block
+    public class GravelBlock : Block
     {
-        public override string Texture { get { return "Materials/DirtBlock"; } }
+        public override string Texture { get { return "Materials/GravelBlock"; } }
 
         public override bool IsTransparent { get { return false; } }
 
@@ -23,7 +23,7 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/DirtPlaced"; } }
 
-        public DirtBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public GravelBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }
