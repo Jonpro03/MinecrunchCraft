@@ -21,6 +21,8 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBeingMinedAsset { get { return "Sounds/DirtMined"; } }
 
+        public override string SoundBlockBrokenAsset { get { return "Sounds/DirtBreak"; } }
+
         public override string SoundBlockPlacedAsset { get { return "Sounds/DirtPlaced"; } }
 
         public PodzolBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)

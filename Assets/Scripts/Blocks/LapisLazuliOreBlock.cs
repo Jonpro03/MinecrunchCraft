@@ -21,6 +21,8 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBeingMinedAsset { get { return "Sounds/StoneMined"; } }
 
+        public override string SoundBlockBrokenAsset { get { return "Sounds/StoneBreak"; } }
+
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
         public LapisLazuliOreBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)

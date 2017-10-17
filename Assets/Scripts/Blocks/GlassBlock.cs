@@ -21,6 +21,8 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBeingMinedAsset { get { return "Sounds/StoneMined"; } }
 
+        public override string SoundBlockBrokenAsset { get { return "Sounds/GlassBreak"; } }
+
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
         public string Color { get; set; }

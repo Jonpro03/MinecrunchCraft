@@ -21,6 +21,8 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBeingMinedAsset { get { return "Sounds/SandMined"; } }
 
+        public override string SoundBlockBrokenAsset { get { return "Sounds/SandBreak"; } }
+
         public override string SoundBlockPlacedAsset { get { return "Sounds/SandPlaced"; } }
 
         public SandBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)

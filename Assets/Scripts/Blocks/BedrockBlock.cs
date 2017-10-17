@@ -15,11 +15,13 @@ namespace Assets.Scripts.Blocks
 
         public override bool IsGravityAffected { get { return false; } }
 
-        public override uint MiningDifficulty { get { return 0 } }
+        public override uint MiningDifficulty { get { return 0; } }
 
         public override string SoundWalkedOnAsset { get { return "Sounds/StoneWalk"; } }
 
         public override string SoundBeingMinedAsset { get { return "Sounds/StoneMined"; } }
+
+        public override string SoundBlockBrokenAsset { get { return "Sounds/StoneBreak"; } }
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 

@@ -19,7 +19,11 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundWalkedOnAsset { get { return "Sounds/StoneWalk"; } }
 
+        public override string SoundBlockBrokenAsset { get { return "Sounds/StoneBreak"; } }
+
         public override string SoundBeingMinedAsset { get { return "Sounds/StoneMined"; } }
+
+        public override string SoundBlockPlacedAsset { get { return "Sounds/SpongePlaced"; } }
 
         public StoneBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

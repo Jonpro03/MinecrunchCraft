@@ -21,9 +21,9 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBeingMinedAsset { get { return "Sounds/SpongeMined"; } }
 
-        public override string SoundBlockPlacedAsset { get { return "Sounds/SpongePlaced"; } }
+        public override string SoundBlockBrokenAsset { get { return "Sounds/SpongeBreak"; } }
 
-        public string Color { get; set; }
+        public override string SoundBlockPlacedAsset { get { return "Sounds/SpongePlaced"; } }
 
         public WetSpongeBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

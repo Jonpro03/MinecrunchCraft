@@ -29,6 +29,8 @@ namespace Assets.Scripts.Blocks
 
         public abstract string SoundBeingMinedAsset { get; }
 
+        public abstract string SoundBlockBrokenAsset { get; }
+
         public abstract string SoundBlockPlacedAsset { get; }
 
         public virtual float Damage { get; private set; }
