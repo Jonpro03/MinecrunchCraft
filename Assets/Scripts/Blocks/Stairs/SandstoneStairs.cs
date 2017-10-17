@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class CobblestoneSlab : Slab
+    public class SandstoneStairs : Stairs
     {
-        public override string Texture { get { return "Materials/CobblestoneSlab"; } }
+        public override string Texture { get { return "Materials/SandstoneStairs"; } }
 
         public override bool IsTransparent { get { return false; } }
 
@@ -25,7 +25,9 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public CobblestoneSlab(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public string Color { get; set; }
+
+        public SandstoneStairs(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

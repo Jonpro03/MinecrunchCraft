@@ -9,13 +9,13 @@ namespace Assets.Scripts.Blocks
 {
     public class OakWoodSlab : Slab
     {
-        public override string Texture { get { return "Materials/OakWoodSlabBlock"; } }
+        public override string Texture { get { return "Materials/OakWoodSlab"; } }
 
         public override bool IsTransparent { get { return false; } }
 
         public override bool IsGravityAffected { get { return false; } }
 
-        public override uint MiningDifficulty { get { return MiningDifficulties.NO_TOOL + 5; } }
+        public override uint MiningDifficulty { get { return MiningDifficulties.NO_TOOL + 4; } }
 
         public override string SoundWalkedOnAsset { get { return "Sounds/WoodWalk"; } }
 

@@ -9,7 +9,7 @@ namespace Assets.Scripts.Blocks
 {
     public class SandstoneSlab : Slab
     {
-        public override string Texture { get { return "Materials/SandstoneSlabBlock"; } }
+        public override string Texture { get { return "Materials/SandstoneSlab"; } }
 
         public override bool IsTransparent { get { return false; } }
 

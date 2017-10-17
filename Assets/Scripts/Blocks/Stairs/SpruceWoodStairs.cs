@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class BirchWoodSlab : Slab
+    public class SpruceWoodStairs : Stairs
     {
-        public override string Texture { get { return "Materials/BirchWoodSlab"; } }
+        public override string Texture { get { return "Materials/SpruceWoodStairs"; } }
 
         public override bool IsTransparent { get { return false; } }
 
@@ -25,7 +25,7 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/WoodPlaced"; } }
 
-        public BirchWoodSlab(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public SpruceWoodStairs(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }
