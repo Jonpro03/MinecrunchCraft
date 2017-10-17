@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class WoodPlankBlock : Block
+    public class AcaciaWoodPlankBlock : Block
     {
-        public override string Texture { get { return "Materials/WoodPlankBlock"; } }
+        public override string Texture { get { return "Materials/AcaciaWoodPlankBlock"; } }
 
         public override bool IsTransparent { get { return false; } }
 
@@ -27,7 +27,7 @@ namespace Assets.Scripts.Blocks
 
         public string Color { get; set; }
 
-        public WoodPlankBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public AcaciaWoodPlankBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }
