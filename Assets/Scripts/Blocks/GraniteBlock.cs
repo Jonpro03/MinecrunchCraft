@@ -7,15 +7,15 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class BedrockBlock : Block
+    public class GraniteBlock : Block
     {
-        public override string Texture { get { return "Materials/BedrockBlock"; } }
+        public override string Texture { get { return "Materials/GraniteBlock"; } }
 
         public override bool IsTransparent { get { return false; } }
 
         public override bool IsGravityAffected { get { return false; } }
 
-        public override uint MiningDifficulty { get { return 0; } }
+        public override uint MiningDifficulty { get { return MiningDifficulties.WOOD_TOOL; } }
 
         public override string SoundWalkedOnAsset { get { return "Sounds/StoneWalk"; } }
 
@@ -23,7 +23,7 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public BedrockBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public GraniteBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

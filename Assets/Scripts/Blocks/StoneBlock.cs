@@ -15,11 +15,11 @@ namespace Assets.Scripts.Blocks
 
         public override bool IsGravityAffected { get { return false; } }
 
-        public override uint MiningDifficulty { get { return 2; } }
+        public override uint MiningDifficulty { get { return MiningDifficulties.WOOD_TOOL; } }
 
-        public override string SoundWalkedOnAsset { get { return "Sounds/GrassWalk"; } }
+        public override string SoundWalkedOnAsset { get { return "Sounds/StoneWalk"; } }
 
-        public override string SoundBeingMinedAsset { get { return "Sounds/DirtMined"; } }
+        public override string SoundBeingMinedAsset { get { return "Sounds/StoneMined"; } }
 
         public StoneBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

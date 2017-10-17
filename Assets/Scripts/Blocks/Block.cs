@@ -26,6 +26,8 @@ namespace Assets.Scripts.Blocks
 
         public abstract string SoundBeingMinedAsset { get; }
 
+        public abstract string SoundBlockPlacedAsset { get; }
+
         public virtual float Damage { get; private set; }
 
         private bool leftVisible, rightVisible, topVisible, bottomVisible, frontVisible, backVisible;
