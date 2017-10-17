@@ -97,19 +97,34 @@ public class TerrainGen : MonoBehaviour
         chunk.InitializeChunk(chunkPos, chunkGameObject);
         chunkGameObject.transform.position = new Vector3(chunkPos.x * 16, 0, chunkPos.y * 16);
         chunk.GenerateChunk(Seed);
-        var chunkMesh = new Mesh();
-        chunkMesh.name = "TerrainMesh";
 
-        chunkMesh.SetVertices(chunk.Verticies);
-        chunkMesh.SetUVs(0, chunk.UVs);
-        chunkMesh.SetTriangles(chunk.Triangles, 0);
+        Material[] mats = new Material[chunk.Materials.Count];
+
+        foreach (int key in chunk.Materials.Keys)
+        {
+            mats[key] = Resources.Load<Material>(chunk.Materials[key]);
+        }
+
+        var meshRenderer = chunkGameObject.AddComponent<MeshRenderer>();
+        meshRenderer.materials = mats;
+
+        var chunkMesh = new Mesh();
+        chunkMesh.Clear();
+        chunkMesh.name = "TerrainMesh";
+        chunkMesh.SetVertices(chunk.Verticies.ToList());
+        chunkMesh.subMeshCount = chunk.Materials.Count;
+
+        chunkMesh.SetUVs(0, chunk.UVs.ToList());
+        
+        foreach (int key in chunk.Triangles.Keys)
+        {
+            chunkMesh.SetTriangles(chunk.Triangles[key].ToList(), key);
+        }
 
         var meshFilter = chunkGameObject.AddComponent<MeshFilter>();
-        var meshRenderer = chunkGameObject.AddComponent<MeshRenderer>();
+        
 
         meshFilter.mesh = chunkMesh;
-        meshRenderer.material = Resources.Load<Material>("Materials/GrassBlock");
-
         chunkMesh.RecalculateNormals();
         var collider = chunkGameObject.AddComponent<MeshCollider>();
 

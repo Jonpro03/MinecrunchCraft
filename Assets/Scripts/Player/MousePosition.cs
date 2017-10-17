@@ -51,13 +51,11 @@ public class MousePosition : MonoBehaviour
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        Time.timeScale = 1.0f;
     }
 
     private void ReleaseMouse()
     {
         transform.rotation = Quaternion.identity;
-        Time.timeScale = 0.0f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
