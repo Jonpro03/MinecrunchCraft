@@ -20,11 +20,6 @@ public class MousePosition : MonoBehaviour
     float xRotationV;
     float lookSmoothnes = 0.1f;
 
-    private void Start()
-    {
-        CaptureMouse();
-    }
-
     void Update()
     {
         if (Cursor.lockState == CursorLockMode.Locked)
@@ -36,27 +31,6 @@ public class MousePosition : MonoBehaviour
             currentYRotation = Mathf.SmoothDamp(currentYRotation, yRotation, ref yRotationV, lookSmoothnes);
             transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         }
-        else if (Input.GetButton("Fire1"))
-        {
-            CaptureMouse();
-        }
-
-        if (Input.GetButton("Cancel"))
-        {
-            ReleaseMouse();
-        }
     }
 
-    private void CaptureMouse()
-    {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    private void ReleaseMouse()
-    {
-        transform.rotation = Quaternion.identity;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-    }
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PauseGame : MonoBehaviour {
 
@@ -11,6 +9,7 @@ public class PauseGame : MonoBehaviour {
 	void Start () {
         //Starts off game with pause menu down
         canvas.gameObject.SetActive(false);
+        CaptureMouse();
 	}
 	
 	// Update is called once per frame
@@ -21,8 +20,7 @@ public class PauseGame : MonoBehaviour {
             if (canvas.gameObject.activeInHierarchy == false)
                 Pause();
             else
-                Resume();
-            
+                Resume();            
         }
 	}
 
@@ -31,9 +29,7 @@ public class PauseGame : MonoBehaviour {
         canvas.gameObject.SetActive(true);
         //Stops time which stops physics
         Time.timeScale = 0;
-        //Stop ability for player to move person and camera
-        Player.GetComponent<PlayerController>().enabled = false;
-        Player.GetComponent<MousePosition>().enabled = false;
+        ReleaseMouse();
     }
 
     public void Resume()
@@ -41,8 +37,18 @@ public class PauseGame : MonoBehaviour {
         canvas.gameObject.SetActive(false);
         //Sets time back to default value
         Time.timeScale = 1;
-        //Re-enable ability for player to move person and camera
-        Player.GetComponent<PlayerController>().enabled = true;
-        Player.GetComponent<MousePosition>().enabled = true;
+        CaptureMouse();
+    }
+
+    private void CaptureMouse()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void ReleaseMouse()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 }

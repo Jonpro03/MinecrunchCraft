@@ -14,34 +14,13 @@ public class TerrainGen : MonoBehaviour
     //Public variable for the size of the terrain, width and heigth
     public int RenderSize = 5;
 
-    //Height multiplies the final noise output
-    public float HeightOfTerrain = 10.0f;
-
-    public Material BaseMaterial;
-
     public string Seed = "";
-
-    //This divides the noise frequency
-    //Higher is Flatter
-    public float NoiseSize = 10.0f;
 
     private List<Chunk> Chunks { get; set; }
 
     private List<Chunk> ChunkGenerateJobs { get; set; }
 
     private List<Chunk> ChunkRenderJobs { get; set; }
-
-
-    //Function that inputs the position and spits out a float value based on the perlin noise
-    public int PerlinNoise(float x, float z)
-    {
-        //Generate a value from the given position, position is divided to make the noise more frequent.
-        float pass1 = Mathf.PerlinNoise(((x + Seed.GetHashCode()) / NoiseSize), ((z + Seed.GetHashCode()) / NoiseSize)) * HeightOfTerrain;
-        float pass2 = Mathf.Pow(Mathf.PerlinNoise(((x + Seed.GetHashCode()) / 1337), ((z + Seed.GetHashCode()) / 1337)) * HeightOfTerrain, 2.1337f);
-
-        //Return the noise value
-        return (int)(pass2 - pass1);
-    }
 
     //Generates the terrain
     void Start()
@@ -54,14 +33,14 @@ public class TerrainGen : MonoBehaviour
         ChunkRenderJobs = new List<Chunk>();
 
         // Create the chunks
-        for (int cx = (-1 * RenderSize); cx < RenderSize; cx++)
+        for (int cx = (-1 * RenderSize) + (int) ChunkCoordPlayerIsIn().x; cx < RenderSize; cx++)
         {
-            for (int cz = (-1 * RenderSize); cz < RenderSize; cz++)
+            for (int cz = (-1 * RenderSize) + (int)ChunkCoordPlayerIsIn().y; cz < RenderSize; cz++)
             {
                 GenerateChunk(new Vector2(cx, cz));
             } 
         }
-        InvokeRepeating("UpdateChunks", 4, 2);
+        InvokeRepeating("UpdateChunks", 1, 2);
     }
 
     private void Update()

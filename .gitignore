@@ -33,3 +33,5 @@ sysinfo.txt
 *.apk
 *.unitypackage
 bin/
+packages/
+**/obj/Debug/*

@@ -3,6 +3,7 @@ using UnityEngine;
 using Assets.Scripts.Interfaces;
 using Assets.Scripts.Blocks;
 using System.Linq;
+using Assets.Scripts.Terrain;
 
 namespace Assets.Scripts
 {
@@ -26,6 +27,8 @@ namespace Assets.Scripts
 
         public List<Vector2> UVs;
 
+        private float Biome { get; set; }
+
         private int seedHash;
 
         public Chunk(Vector2 pos, string seed)
@@ -39,6 +42,8 @@ namespace Assets.Scripts
             Triangles = new Dictionary<int, List<int>>();
             Verticies = new List<Vector3>();
             UVs = new List<Vector2>();
+            Biome = PerlinNoise.Biome(ChunkPosition, seedHash);
+            Debug.Log(ChunkPosition.ToString() + " " + Biome.ToString());
         }
 
         protected override void ThreadFunction()
@@ -58,7 +63,7 @@ namespace Assets.Scripts
                 {
                     int blockWorldPosX = bx + (cx * 16);
                     int blockWorldPosZ = bz + (cz * 16);
-                    int by = PerlinNoise(blockWorldPosX, blockWorldPosZ);
+                    int by = PerlinNoise.Terrain(blockWorldPosX, blockWorldPosZ, seedHash, (int)Biome);
                     by = Mathf.Max(0, by);
                     by = Mathf.Min(255, by);
                     Vector3 positionInChunk = new Vector3(bx, by, bz);
@@ -70,7 +75,14 @@ namespace Assets.Scripts
                         IBlock block = null;
                         if (columnY == by)
                         {
-                            block = new GrassBlock(new Vector3(bx, columnY, bz), ChunkPosition);
+                            if ((int) Biome == 5)
+                                block = new SandBlock(new Vector3(bx, columnY, bz), ChunkPosition);
+                            else if ((int) Biome == 4)
+                                block = new OakWoodBlock(new Vector3(bx, columnY, bz), ChunkPosition);
+                            else if ((int) Biome == 3)
+                                block = new StoneBlock(new Vector3(bx, columnY, bz), ChunkPosition);
+                            else
+                                block = new GravelBlock(new Vector3(bx, columnY, bz), ChunkPosition);
                         }
                         else if (columnY < 6)
                         {
@@ -101,7 +113,7 @@ namespace Assets.Scripts
                         {
                             continue;
                         }
-                        bool isCaveBlock = PerlinCave(block.PositionInWorld);
+                        bool isCaveBlock = PerlinNoise.Cave(block.PositionInWorld, seedHash);
                         if (isCaveBlock)
                         {
                             Blocks[bx, by, bz] = null;
@@ -207,46 +219,6 @@ namespace Assets.Scripts
             HasUpdate = true;
         }
 
-        //Function that inputs the position and spits out a float value based on the perlin noise
-        public int PerlinNoise(float x, float z)
-        {
-            int Noisiness = 70;
-            int TerrainHeight = 50;
-            //Generate a value from the given position, position is divided to make the noise more frequent.
-            float pass1 = Mathf.PerlinNoise(((x + seedHash) / Noisiness), ((z + seedHash) / Noisiness)) * 10;
-            float pass2 = Mathf.PerlinNoise(((seedHash - x) / Noisiness), ((seedHash - z) / Noisiness)) * 10;
-
-            //Return the noise value
-            return (int)(pass2 - pass1 + TerrainHeight);
-        }
-
-        public bool PerlinCave(Vector3 loc)
-        {
-            const float CAVEFILLPERCENT = 0.35f;
-            const float CAVEHEIGHTFACTOR = 0.55f;
-            const float STRETCHFACTOR = 0.0675f;
-
-            int digitsInHash = seedHash.ToString().Length;
-            float seedDecimal = seedHash / Mathf.Pow(10, digitsInHash - 1);
-            loc.y /= CAVEHEIGHTFACTOR;
-
-            float x = loc.x * STRETCHFACTOR / seedDecimal;
-            float y = loc.y * STRETCHFACTOR / seedDecimal;
-            float z = loc.z * STRETCHFACTOR / seedDecimal;
-
-            List<float> Perlins = new List<float>()
-            {
-                Mathf.PerlinNoise(x, z),
-                Mathf.PerlinNoise(y, z),
-                Mathf.PerlinNoise(z, y),
-                Mathf.PerlinNoise(x, y),
-                Mathf.PerlinNoise(y, x),
-                Mathf.PerlinNoise(z, x),
-                Mathf.PerlinNoise(x, x),
-                Mathf.PerlinNoise(y, y)
-            };
-
-            return Perlins.Average() < CAVEFILLPERCENT;
-        }
+        
     }
 }
