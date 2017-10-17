@@ -5,13 +5,35 @@ namespace Assets.Scripts.Interfaces
 {
     public interface IBlock
     {
-        Vector3 PositionInChunk { get; set; }
+        Vector3 PositionInChunk { get; }
 
-        bool IsTopLevel { get; set; }
+        Vector3 PositionInWorld { get; }
 
-        List<Vector3> Verticies { get; set; }
+        List<Vector3> Verticies { get; }
 
-        List<Vector2> UVs { get; set; }
+        List<Vector2> UVs { get; }
+
+        string Texture { get; }
+
+        string SoundWalkedOnAsset { get; }
+
+        string SoundBeingMinedAsset { get; }
+
+        string SoundBlockPlacedAsset { get; }
+
+        bool IsTransparent { get; }
+
+        bool IsGravityAffected { get; }
+
+        uint MiningDifficulty { get; }
+
+        float Damage { get; }
+
+        void OnTakeDamage(float damageAmount);
+
+        void OnDestroyed();
+
+        void OnPlaced();
 
         bool LeftVisible { get; set; }
         bool RightVisible { get; set; }

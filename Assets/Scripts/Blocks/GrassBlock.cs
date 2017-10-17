@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class DirtBlock : Block
+    public class GrassBlock : Block
     {
-        public override string Texture { get { return "Materials/DirtBlock"; } }
+        public override string Texture { get { return "Materials/GrassBlock"; } }
 
         public override bool IsTransparent { get { return false; } }
 
@@ -17,13 +17,13 @@ namespace Assets.Scripts.Blocks
 
         public override uint MiningDifficulty { get { return MiningDifficulties.NO_TOOL; } }
 
-        public override string SoundWalkedOnAsset { get { return "Sounds/DirtWalk"; } }
+        public override string SoundWalkedOnAsset { get { return "Sounds/GrassWalk"; } }
 
-        public override string SoundBeingMinedAsset { get { return "Sounds/DirtMined"; } }
+        public override string SoundBeingMinedAsset { get { return "Sounds/GrassMined"; } }
 
-        public override string SoundBlockPlacedAsset { get { return "Sounds/DirtPlaced"; } }
+        public override string SoundBlockPlacedAsset { get { return "Sounds/GrassPlaced"; } }
 
-        public DirtBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public GrassBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

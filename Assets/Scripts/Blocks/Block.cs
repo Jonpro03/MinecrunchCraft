@@ -1,24 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Assets.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class Block : IBlock
+    public abstract class Block : IBlock
     {
-        public Vector3 PositionInChunk { get; set; }
-        public bool IsTopLevel { get; set; }
+        public virtual Vector3 PositionInChunk { get; private set; }
 
-        public List<Vector3> Verticies { get; set; }
+        public virtual Vector3 PositionInWorld { get; private set; }
 
-        public List<Vector2> UVs { get; set; }
+        public virtual List<Vector3> Verticies { get; private set; }
+
+        public virtual List<Vector2> UVs { get; private set; }
+
+        public abstract string Texture { get; }
+
+        public abstract bool IsTransparent { get; }
+
+        public abstract bool IsGravityAffected { get; }
+
+        public abstract uint MiningDifficulty { get; }
+
+        public abstract string SoundWalkedOnAsset { get; }
+
+        public abstract string SoundBeingMinedAsset { get; }
+
+        public abstract string SoundBlockPlacedAsset { get; }
+
+        public virtual float Damage { get; private set; }
 
         private bool leftVisible, rightVisible, topVisible, bottomVisible, frontVisible, backVisible;
 
-        public bool LeftVisible
+        public virtual bool LeftVisible
         {
             get { return leftVisible; }
             set
@@ -49,7 +63,7 @@ namespace Assets.Scripts.Blocks
             }
         }
 
-        public bool RightVisible
+        public virtual bool RightVisible
         {
             get { return rightVisible; }
             set
@@ -81,7 +95,7 @@ namespace Assets.Scripts.Blocks
             }
         }
 
-        public bool TopVisible
+        public virtual bool TopVisible
         {
             get { return topVisible; }
             set
@@ -114,7 +128,7 @@ namespace Assets.Scripts.Blocks
             }
         }
 
-        public bool BottomVisible
+        public virtual bool BottomVisible
         {
             get { return bottomVisible; }
             set
@@ -146,7 +160,7 @@ namespace Assets.Scripts.Blocks
             }
         }
 
-        public bool FrontVisible
+        public virtual bool FrontVisible
         {
             get { return frontVisible; }
             set
@@ -178,7 +192,7 @@ namespace Assets.Scripts.Blocks
             }
         }
 
-        public bool BackVisible
+        public virtual bool BackVisible
         {
             get { return backVisible; }
             set
@@ -210,14 +224,28 @@ namespace Assets.Scripts.Blocks
             }
         }
 
-        public Block(Vector3 chunkPos, bool visible)
+        
+
+        public Block(Vector3 posInChunk, Vector2 chunkLoc)
         {
-            PositionInChunk = chunkPos;
-            IsTopLevel = visible;
+            PositionInChunk = posInChunk;
+            PositionInWorld = new Vector3((chunkLoc.x * 16) + posInChunk.x, posInChunk.y, (chunkLoc.y * 16) + posInChunk.z);
             leftVisible = rightVisible = topVisible = bottomVisible = frontVisible = backVisible = false;
             Verticies = new List<Vector3>();
             UVs = new List<Vector2>();
         }
 
+        public abstract void OnDestroyed();
+
+        public abstract void OnPlaced();
+
+        public virtual void OnTakeDamage(float damageAmount)
+        {
+            Damage -= damageAmount;
+            if (Damage <= 0.0f)
+            {
+                OnDestroyed();
+            }
+        }
     }
 }

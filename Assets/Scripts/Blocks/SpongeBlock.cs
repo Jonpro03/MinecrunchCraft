@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class DirtBlock : Block
+    public class SpongeBlock : Block
     {
-        public override string Texture { get { return "Materials/DirtBlock"; } }
+        public override string Texture { get { return "Materials/SpongeBlock"; } }
 
         public override bool IsTransparent { get { return false; } }
 
@@ -17,13 +17,15 @@ namespace Assets.Scripts.Blocks
 
         public override uint MiningDifficulty { get { return MiningDifficulties.NO_TOOL; } }
 
-        public override string SoundWalkedOnAsset { get { return "Sounds/DirtWalk"; } }
+        public override string SoundWalkedOnAsset { get { return "Sounds/SpongeWalk"; } }
 
-        public override string SoundBeingMinedAsset { get { return "Sounds/DirtMined"; } }
+        public override string SoundBeingMinedAsset { get { return "Sounds/SpongeMined"; } }
 
-        public override string SoundBlockPlacedAsset { get { return "Sounds/DirtPlaced"; } }
+        public override string SoundBlockPlacedAsset { get { return "Sounds/SpongePlaced"; } }
 
-        public DirtBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public string Color { get; set; }
+
+        public SpongeBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }
