@@ -13,7 +13,7 @@ namespace Assets.Scripts.Blocks
 
         public override bool IsTransparent { get { return false; } }
 
-        public override bool IsGravityAffected { get { return false; } }
+        public override bool IsGravityAffected { get { return true; } }
 
         public override uint MiningDifficulty { get { return MiningDifficulties.NO_TOOL; } }
 
