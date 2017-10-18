@@ -41,6 +41,14 @@ public class TerrainGen : MonoBehaviour
             } 
         }
         InvokeRepeating("UpdateChunks", 1, 2);
+
+        // Debug block        
+        GameObject debugBlockGo = new GameObject("debugBlock");
+        IBlock debugBlock = new GrassBlock(new Vector3(0, 64, 0), Vector2.zero);
+        debugBlock.SetAllSidesVisible();
+        IEntity debugBlockEntity = debugBlockGo.AddComponent<BlockEntity>();
+        debugBlockEntity.Block = debugBlock;
+
     }
 
     private void Update()

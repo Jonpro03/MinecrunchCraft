@@ -43,5 +43,7 @@ namespace Assets.Scripts.Interfaces
         bool BottomVisible { get; set; }
         bool FrontVisible { get; set; }
         bool BackVisible { get; set; }
+
+        void SetAllSidesVisible();
     }
 }

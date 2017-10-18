@@ -249,5 +249,10 @@ namespace Assets.Scripts.Blocks
                 OnDestroyed();
             }
         }
+
+        public virtual void SetAllSidesVisible()
+        {
+            FrontVisible = LeftVisible = RightVisible = TopVisible = BottomVisible = BackVisible = true;
+        }
     }
 }
