@@ -9,7 +9,7 @@ namespace Assets.Scripts.Blocks
 {
     public class SandstoneSlab : Slab
     {
-        public override string Texture { get { return "Materials/SandstoneSlabBlock"; } }
+        public override string Texture { get { return "Materials/SandstoneSlab"; } }
 
         public override bool IsTransparent { get { return false; } }
 
@@ -24,6 +24,8 @@ namespace Assets.Scripts.Blocks
         public override string SoundBlockBrokenAsset { get { return "Sounds/StoneBreak"; } }
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
+
+        public string Color { get; set; }
 
         public SandstoneSlab(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
