@@ -30,6 +30,11 @@ namespace Assets.Scripts.Blocks
 
         }
 
+        public GrassBlock(Vector3 worldPos) : base(worldPos)
+        {
+
+        }
+
         public override void OnDestroyed()
         {
 

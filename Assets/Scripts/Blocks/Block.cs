@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Assets.Scripts.Interfaces;
+using Assets.Scripts.Utility;
 using UnityEngine;
 
 namespace Assets.Scripts.Blocks
@@ -228,11 +229,23 @@ namespace Assets.Scripts.Blocks
 
         
 
-        public Block(Vector3 posInChunk, Vector2 chunkLoc)
+        public Block(Vector3 posInChunk, Vector2 chunk)
         {
             PositionInChunk = posInChunk;
-            PositionInWorld = new Vector3((chunkLoc.x * 16) + posInChunk.x, posInChunk.y, (chunkLoc.y * 16) + posInChunk.z);
+            PositionInWorld = new Vector3((chunk.x * 16) + posInChunk.x, posInChunk.y, (chunk.y * 16) + posInChunk.z);
             leftVisible = rightVisible = topVisible = bottomVisible = frontVisible = backVisible = false;
+            Verticies = new List<Vector3>();
+            UVs = new List<Vector2>();
+        }
+
+        public Block(Vector3 worldPos)
+        {
+            Vector2 chunk;
+            Vector3 chunkPos;
+            Coordinates.WorldPosToChunkPos(worldPos, out chunkPos, out chunk);
+            PositionInChunk = chunkPos;
+            PositionInWorld = worldPos;
+            SetAllSidesVisible();
             Verticies = new List<Vector3>();
             UVs = new List<Vector2>();
         }
