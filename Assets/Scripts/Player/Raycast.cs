@@ -12,14 +12,15 @@ public class Raycast : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKey("Fire"))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit objectHit;
             if (Physics.Raycast(inputRay, out objectHit))
             {
+                Debug.Log("ObjectHit: " + objectHit.collider.gameObject.name);
                 Block block = objectHit.collider.GetComponent<Block>();
-                block.OnTakeDamage(1.0f);
+                //block.OnTakeDamage(1.0f);
             }
         }
         

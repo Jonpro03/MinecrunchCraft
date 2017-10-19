@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public abstract class Stairs
+    public abstract class Stairs: Component
     {
         public abstract string Texture { get; }
 

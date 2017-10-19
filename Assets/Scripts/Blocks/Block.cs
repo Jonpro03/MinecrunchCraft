@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public abstract class Block : IBlock
+    public abstract class Block : Component, IBlock
     {
         public virtual Vector3 PositionInChunk { get; private set; }
 
