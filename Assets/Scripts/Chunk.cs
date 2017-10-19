@@ -83,7 +83,7 @@ namespace Assets.Scripts
                             if ((int) Biome == 5)
                                 block = new SandBlock(new Vector3(bx, columnY, bz), ChunkPosition);
                             else if ((int) Biome == 4)
-                                block = new GrassBlock(new Vector3(bx, columnY, bz), ChunkPosition);
+                                block = new SandBlock(new Vector3(bx, columnY, bz), ChunkPosition);
                             else if ((int) Biome == 3)
                                 block = new StoneBlock(new Vector3(bx, columnY, bz), ChunkPosition);
                             else

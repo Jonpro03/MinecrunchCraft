@@ -45,7 +45,7 @@ public class TerrainGen : MonoBehaviour
         // Debug block        
         GameObject debugBlockGo = new GameObject("debugBlock");
         IEntity debugBlockEntity = debugBlockGo.AddComponent<BlockEntity>();
-        debugBlockEntity.Block = new GrassBlock(new Vector3(0, 64, 0));
+        debugBlockEntity.Block = new GlassBlock(new Vector3(0, 64, 0));
 
     }
 

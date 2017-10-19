@@ -55,12 +55,12 @@ namespace Assets.Scripts.Blocks
 
                     UVs.AddRange(new List<Vector2>
                     {
-                        new Vector2(0.333f + 0.333f, 0.5f + 0.5f),
-                        new Vector2(0 + 0.333f, 0.5f + 0.5f),
-                        new Vector2(0 + 0.333f, 0 + 0.5f),
-                        new Vector2(0 + 0.333f, 0 + 0.5f),
-                        new Vector2(0.333f + 0.333f, 0 + 0.5f),
-                        new Vector2(0.333f + 0.333f, 0.5f + 0.5f),
+                        new Vector2(0, 0.5f),
+                        new Vector2(0.25f, 0.5f),
+                        new Vector2(0.25f, 0),
+                        new Vector2(0.25f, 0),
+                        new Vector2(0, 0),
+                        new Vector2(0, 0.5f),
                     });
                 }
             }
@@ -76,23 +76,22 @@ namespace Assets.Scripts.Blocks
                 {
                     Verticies.AddRange(new List<Vector3>
                     {
-                        new Vector3(1, 0, 0) + PositionInChunk,
                         new Vector3(1, 1, 0) + PositionInChunk,
                         new Vector3(1, 1, 1) + PositionInChunk,
-                        new Vector3(1, 1, 1) + PositionInChunk,
+                        new Vector3(1, 0, 1) + PositionInChunk,
                         new Vector3(1, 0, 1) + PositionInChunk,
                         new Vector3(1, 0, 0) + PositionInChunk,
+                        new Vector3(1, 1, 0) + PositionInChunk,
                     });
 
                     UVs.AddRange(new List<Vector2>
                     {
-                        new Vector2(0 + 0.666f, 0 + 0.5f),
-                        new Vector2(0 + 0.666f, 0.5f + 0.5f),
-                        new Vector2(0.333f + 0.666f, 0.5f + 0.5f),
-                        new Vector2(0.333f + 0.666f, 0.5f + 0.5f),
-                        
-                        new Vector2(0.333f + 0.666f, 0 + 0.5f),
-                        new Vector2(0 + 0.666f, 0 + 0.5f),
+                        new Vector2(0.5f, 0.5f),                                         
+                        new Vector2(0.75f, 0.5f),
+                        new Vector2(0.75f, 0),
+                        new Vector2(0.75f, 0),
+                        new Vector2(0.5f, 0),                        
+                        new Vector2(0.5f, 0.5f),
                     });
                 }
             }
@@ -107,25 +106,23 @@ namespace Assets.Scripts.Blocks
                 if (value == true)
                 {
                     Verticies.AddRange(new List<Vector3>
-                    {
+                    {                        
+                        new Vector3(0, 1, 1) + PositionInChunk,
                         new Vector3(1, 1, 1) + PositionInChunk,
                         new Vector3(1, 1, 0) + PositionInChunk,
+                        new Vector3(1, 1, 0) + PositionInChunk,
                         new Vector3(0, 1, 0) + PositionInChunk,
-                        new Vector3(0, 1, 0) + PositionInChunk,
-                        new Vector3(0, 1, 1) + PositionInChunk,
-                        new Vector3(1, 1, 1) + PositionInChunk
+                        new Vector3(0, 1, 1) + PositionInChunk
                     });
 
                     UVs.AddRange(new List<Vector2>
                     {
-                        new Vector2(0, 0),
-                        
-                        new Vector2(0, 0.5f),
-                        new Vector2(0.333f, 0.5f),
-                        new Vector2(0.333f, 0.5f),
-                        
-                        new Vector2(0.333f, 0),
-                        new Vector2(0, 0),
+                        new Vector2(0.25f + 0.25f, 0.5f + 0.5f),
+                        new Vector2(0 + 0.25f, 0.5f + 0.5f),
+                        new Vector2(0 + 0.25f, 0 + 0.5f),
+                        new Vector2(0 + 0.25f, 0 + 0.5f),
+                        new Vector2(0.25f + 0.25f, 0 + 0.5f),
+                        new Vector2(0.25f + 0.25f, 0.5f + 0.5f),
                     });
                 }
             }
@@ -151,13 +148,13 @@ namespace Assets.Scripts.Blocks
 
                     UVs.AddRange(new List<Vector2>
                     {
-                        new Vector2(0.333f, 0.5f + 0.5f),
+                        new Vector2(0.25f, 0.5f + 0.5f),
                         
                         new Vector2(0, 0.5f + 0.5f),
                         new Vector2(0, 0 + 0.5f),
                         new Vector2(0, 0 + 0.5f),
-                        new Vector2(0.333f, 0 + 0.5f),
-                        new Vector2(0.333f, 0.5f + 0.5f)
+                        new Vector2(0.25f, 0 + 0.5f),
+                        new Vector2(0.25f, 0.5f + 0.5f)
                     });
                 }
             }
@@ -183,13 +180,13 @@ namespace Assets.Scripts.Blocks
 
                     UVs.AddRange(new List<Vector2>
                     {
-                        new Vector2(0.333f + 0.333f, 0.5f),
-                        new Vector2(0.333f + 0.333f, 0),                        
-                        new Vector2(0 + 0.333f, 0),
-                        new Vector2(0 + 0.333f, 0),
+                        new Vector2(0.25f + 0.25f, 0.5f),
+                        new Vector2(0.25f + 0.25f, 0),                        
+                        new Vector2(0 + 0.25f, 0),
+                        new Vector2(0 + 0.25f, 0),
                         
-                        new Vector2(0 + 0.333f, 0.5f),
-                        new Vector2(0.333f + 0.333f, 0.5f),
+                        new Vector2(0 + 0.25f, 0.5f),
+                        new Vector2(0.25f + 0.25f, 0.5f),
                     });
                 }
             }
@@ -213,15 +210,16 @@ namespace Assets.Scripts.Blocks
                         new Vector3(0, 0, 1) + PositionInChunk
                     });
 
+                    
+
                     UVs.AddRange(new List<Vector2>
                     {
-                        new Vector2(0.333f + 0.666f, 0.5f),
-                        
-                        new Vector2(0 + 0.666f, 0.5f),
-                        new Vector2(0 + 0.666f, 0),
-                        new Vector2(0 + 0.666f, 0),
-                        new Vector2(0.333f + 0.666f, 0),
-                        new Vector2(0.333f + 0.666f, 0.5f)
+                        new Vector2(0.5f, 1),
+                        new Vector2(0.75f, 1),
+                        new Vector2(0.75f, 0.5f),
+                        new Vector2(0.75f, 0.5f),
+                        new Vector2(0.5f, 0.5f),
+                        new Vector2(0.5f, 1),
                     });
                 }
             }

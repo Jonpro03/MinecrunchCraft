@@ -32,6 +32,10 @@ namespace Assets.Scripts.Blocks
 
         }
 
+        public GlassBlock(Vector3 worldPos) : base(worldPos)
+        {
+        }
+
         public override void OnDestroyed()
         {
 

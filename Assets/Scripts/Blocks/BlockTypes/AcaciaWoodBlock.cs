@@ -30,6 +30,10 @@ namespace Assets.Scripts.Blocks
 
         }
 
+        public AcaciaWoodBlock(Vector3 worldPos) : base(worldPos)
+        {
+        }
+
         public override void OnDestroyed()
         {
 

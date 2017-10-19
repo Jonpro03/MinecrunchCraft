@@ -30,6 +30,11 @@ namespace Assets.Scripts.Blocks
 
         }
 
+        public BookshelfBlock(Vector3 worldLoc) : base(worldLoc)
+        {
+
+        }
+
         public override void OnDestroyed()
         {
 
