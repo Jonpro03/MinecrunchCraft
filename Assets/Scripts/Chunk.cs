@@ -46,6 +46,11 @@ namespace Assets.Scripts
             Debug.Log(ChunkPosition.ToString() + " " + Biome.ToString());
         }
 
+        public void GetBlock()
+        {
+            Debug.Log("Succesfully entered");
+        }
+
         protected override void ThreadFunction()
         {
             GenerateChunk();
