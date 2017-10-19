@@ -36,21 +36,15 @@ public class Raycast : MonoBehaviour {
             RaycastHit objectHit;
             if (Physics.Raycast(inputRay, out objectHit))
             {
-                Debug.Log("Object hit coords before typcast: " + objectHit.point);
                 Vector3 placePos;
                 getPlacePos(objectHit.point, Camera.main.transform.forward, out placePos);
-                //Vector3 placePos = Camera.main.transform.position + Camera.main.transform.forward * 1;
-
-                Debug.Log("Camera forward: " + Camera.main.transform.forward);
-                Debug.Log("Block hit at: " + placePos);
 
                 GameObject debugBlockGo = new GameObject("debugBlock(" + placePos.x + ", " + placePos.y + ", " + placePos.z + ")");
                 IBlock debugBlock = new GrassBlock(placePos);
                 debugBlock.SetAllSidesVisible();
                 IEntity debugBlockentity = debugBlockGo.AddComponent<BlockEntity>();
                 debugBlockentity.Block = debugBlock;
-
-                Debug.Log("Block placed at: " + debugBlock.PositionInWorld);
+                
             }
 
 
