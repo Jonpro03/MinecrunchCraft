@@ -245,9 +245,10 @@ namespace Assets.Scripts.Blocks
             Coordinates.WorldPosToChunkPos(worldPos, out chunkPos, out chunk);
             PositionInChunk = chunkPos;
             PositionInWorld = worldPos;
-            SetAllSidesVisible();
+            
             Verticies = new List<Vector3>();
             UVs = new List<Vector2>();
+            SetAllSidesVisible();
         }
 
         public abstract void OnDestroyed();
