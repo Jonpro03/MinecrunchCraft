@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class SpruceWoodPlankBlock : Block
+    public class SpruceWoodPlanksBlock : Block, IPlank
     {
         public override string Texture { get { return "Materials/SpruceWoodPlankBlock"; } }
 
@@ -25,9 +25,11 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/WoodPlaced"; } }
 
+        public static BlockIdentification BlockId { get { return new BlockIdentification(5, 1); } }
+
         public string Color { get; set; }
 
-        public SpruceWoodPlankBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public SpruceWoodPlanksBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

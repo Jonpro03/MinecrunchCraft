@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class DarkOakWoodBlock : Block
+    public class DarkOakWoodBlock : Block, ILog
     {
         public override string Texture { get { return "Materials/DarkOakWoodBlock"; } }
 
@@ -24,6 +24,10 @@ namespace Assets.Scripts.Blocks
         public override string SoundBlockBrokenAsset { get { return "Sounds/WoodBreak"; } }
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/WoodPlaced"; } }
+
+        public static BlockIdentification BlockId { get { return new BlockIdentification(161, 1); } }
+
+        public override BlockCraftingRecipe BlockRecipe { get { return new BlockCraftingRecipe(); } }
 
         public DarkOakWoodBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

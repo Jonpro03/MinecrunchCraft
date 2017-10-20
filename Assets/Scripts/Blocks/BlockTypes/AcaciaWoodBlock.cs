@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Assets.Scripts.Interfaces;
+using Assets.Scripts.CraftingRecipes;
 using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class AcaciaWoodBlock : Block
+    public class AcaciaWoodBlock : Block, ILog
     {
         public override string Texture { get { return "Materials/AcaciaWoodBlock"; } }
 
@@ -25,9 +26,9 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/WoodPlaced"; } }
 
-        public override BlockIdentification BlockId { get { return new BlockIdentification(162, 0); } }
+        public static BlockIdentification BlockId { get { return new BlockIdentification(162, 0); } }
 
-        public override BlockCraftingRecipe BlockRecipe { get { return new BlockCraftingRecipe(); } }
+        public override CraftingRecipe BlockRecipe { get { return null; } }
 
         public AcaciaWoodBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

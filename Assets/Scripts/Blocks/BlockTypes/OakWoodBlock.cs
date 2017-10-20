@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class OakWoodBlock : Block
+    public class OakWoodBlock : Block, ILog
     {
         public override string Texture { get { return "Materials/OakWoodBlock"; } }
 

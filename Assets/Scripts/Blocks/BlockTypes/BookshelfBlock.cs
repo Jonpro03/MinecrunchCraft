@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Assets.Scripts.Interfaces;
 using UnityEngine;
+using Assets.Scripts.CraftingRecipes;
 
 namespace Assets.Scripts.Blocks
 {
@@ -24,6 +25,11 @@ namespace Assets.Scripts.Blocks
         public override string SoundBlockBrokenAsset { get { return "Sounds/WoodBreak"; } }
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/WoodPlaced"; } }
+
+        public static BlockIdentification BlockId { get { return new BlockIdentification(47, 0); } }
+
+        public override CraftingRecipe BlockRecipe { get { return new BookShelfRecipe(); } }
+
 
         public BookshelfBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

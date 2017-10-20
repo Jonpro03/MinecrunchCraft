@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class StoneBrickBlock : Block
+    public class CrackedStoneBricksBlock : Block
     {
-        public override string Texture { get { return "Materials/StoneBrickBlock"; } }
+        public override string Texture { get { return "Materials/CrackedStoneBrickBlock"; } }
 
         public override bool IsTransparent { get { return false; } }
 
@@ -25,7 +25,11 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public StoneBrickBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public static BlockIdentification BlockId { get { return new BlockIdentification(98, 2); } }
+
+        public override BlockCraftingRecipe BlockRecipe { get { return new BlockCraftingRecipe(); } }
+
+        public CrackedStoneBricksBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

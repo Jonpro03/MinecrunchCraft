@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class PrismarineBrickBlock : Block
+    public class StoneBricksBlock : Block
     {
-        public override string Texture { get { return "Materials/PrismarineBrickBlock"; } }
+        public override string Texture { get { return "Materials/StoneBrickBlock"; } }
 
         public override bool IsTransparent { get { return false; } }
 
@@ -18,14 +18,14 @@ namespace Assets.Scripts.Blocks
         public override uint MiningDifficulty { get { return MiningDifficulties.WOOD_TOOL; } }
 
         public override string SoundWalkedOnAsset { get { return "Sounds/StoneWalk"; } }
-
+        
         public override string SoundBeingMinedAsset { get { return "Sounds/StoneMined"; } }
 
         public override string SoundBlockBrokenAsset { get { return "Sounds/StoneBreak"; } }
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public PrismarineBrickBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public StoneBricksBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

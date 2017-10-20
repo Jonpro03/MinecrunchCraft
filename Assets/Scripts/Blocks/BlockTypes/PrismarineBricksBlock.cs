@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class ChiseledStoneBrickBlock : Block
+    public class PrismarineBricksBlock : Block
     {
-        public override string Texture { get { return "Materials/ChiseledStoneBrickBlock"; } }
+        public override string Texture { get { return "Materials/PrismarineBrickBlock"; } }
 
         public override bool IsTransparent { get { return false; } }
 
@@ -25,7 +25,7 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public ChiseledStoneBrickBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public PrismarineBricksBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

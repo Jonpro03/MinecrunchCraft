@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class BirchWoodBlock : Block
+    public class BirchWoodBlock : Block, ILog
     {
         public override string Texture { get { return "Materials/BirchWoodBlock"; } }
 
@@ -25,7 +25,9 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/WoodPlaced"; } }
 
-        public string Color { get; set; }
+        public static BlockIdentification BlockId { get { return new BlockIdentification(17, 2); } }
+
+        public override BlockCraftingRecipe BlockRecipe { get { return new BlockCraftingRecipe(); } }
 
         public BirchWoodBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

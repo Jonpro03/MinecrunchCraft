@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Assets.Scripts.Blocks;
+using Assets.Scripts.CraftingRecipes;
 
 namespace Assets.Scripts.Interfaces
 {
@@ -24,9 +25,7 @@ namespace Assets.Scripts.Interfaces
 
         string SoundBlockPlacedAsset { get; }
 
-        BlockIdentification BlockId { get; }
-
-        BlockCraftingRecipe BlockRecipe { get; }
+        CraftingRecipe BlockRecipe { get; }
 
         bool IsTransparent { get; }
 

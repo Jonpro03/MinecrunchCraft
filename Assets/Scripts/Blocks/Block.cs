@@ -2,6 +2,7 @@
 using Assets.Scripts.Interfaces;
 using Assets.Scripts.Utility;
 using UnityEngine;
+using Assets.Scripts.CraftingRecipes;
 
 namespace Assets.Scripts.Blocks
 {
@@ -31,9 +32,7 @@ namespace Assets.Scripts.Blocks
 
         public abstract string SoundBlockPlacedAsset { get; }
 
-        public abstract BlockIdentification BlockId { get; }
-
-        public abstract BlockCraftingRecipe BlockRecipe { get; }
+        public abstract CraftingRecipe BlockRecipe { get; }
 
         public virtual float Damage { get; private set; }
 
