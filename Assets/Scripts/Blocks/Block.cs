@@ -31,6 +31,10 @@ namespace Assets.Scripts.Blocks
 
         public abstract string SoundBlockPlacedAsset { get; }
 
+        public abstract BlockIdentification BlockId { get; }
+
+        public abstract BlockCraftingRecipe BlockRecipe { get; }
+
         public virtual float Damage { get; private set; }
 
         private bool leftVisible, rightVisible, topVisible, bottomVisible, frontVisible, backVisible;

@@ -43,12 +43,8 @@ public class Raycast : MonoBehaviour {
                 IBlock debugBlock = new GrassBlock(placePos);
                 debugBlock.SetAllSidesVisible();
                 IEntity debugBlockentity = debugBlockGo.AddComponent<BlockEntity>();
-                debugBlockentity.Block = debugBlock;
-                
+                debugBlockentity.Block = debugBlock;            
             }
-
-
-
         }
 
     }
