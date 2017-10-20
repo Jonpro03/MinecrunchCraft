@@ -6,6 +6,8 @@ using UnityEngine;
 using Assets.Scripts.Interfaces;
 using Assets.Scripts.Utility;
 using System;
+using Assets.Scripts.Chunks;
+
 public class Raycast : MonoBehaviour {
 
 	// Use this for initialization
@@ -25,9 +27,7 @@ public class Raycast : MonoBehaviour {
                 
                 Chunk chunk = objectHit.collider.GetComponent<Chunk>();
                 Debug.Log("Chunk: " + chunk);
-                chunk.GetBlock();
-                //Block block = objectHit.collider.GetComponent<Block>();
-                //block.OnTakeDamage(1.0f);
+                IBlock block = chunk.GetBlock(objectHit.point);
             }
         }
 

@@ -12,5 +12,10 @@ namespace Assets.Scripts.Utility
                 worldPos.y,
                 worldPos.z - (chunk.y * 16));
         }
+
+        public static Vector2 ChunkPlayerIsIn(Vector3 position)
+        {
+            return new Vector2((int)(position.x / 16.0f), (int)(position.z / 16.0f));
+        }
     }
 }
