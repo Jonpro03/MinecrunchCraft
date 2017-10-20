@@ -4,14 +4,9 @@ using Assets.Scripts.Blocks;
 using Assets.Scripts;
 using UnityEngine;
 using Assets.Scripts.Interfaces;
-<<<<<<< HEAD
-using Assets.Scripts.Utility;
-using System;
 using Assets.Scripts.Chunks;
 
-=======
-using System.Collections;
->>>>>>> develop
+
 public class Raycast : MonoBehaviour {
 
 	// Use this for initialization
