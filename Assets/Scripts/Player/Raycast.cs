@@ -5,7 +5,7 @@ using Assets.Scripts;
 using UnityEngine;
 using Assets.Scripts.Interfaces;
 using Assets.Scripts.Chunks;
-
+using Assets.Scripts.World;
 
 public class Raycast : MonoBehaviour {
 
@@ -27,6 +27,7 @@ public class Raycast : MonoBehaviour {
                 Chunk chunk = objectHit.collider.GetComponent<Chunk>();
                 Debug.Log("Chunk: " + chunk);
                 IBlock block = chunk.GetBlock(objectHit.point);
+                Debug.Log("Block:" + block.PositionInWorld.ToString());
             }
         }
 

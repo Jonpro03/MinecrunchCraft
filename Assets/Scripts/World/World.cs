@@ -15,7 +15,7 @@ namespace Assets.Scripts.World
 
         public static int SeedHash { get; private set; }
 
-        public WorldTerrain WorldTerrain { get; private set; }
+        public static WorldTerrain WorldTerrain { get; private set; }
 
         public static List<Player.Player> Players;
 

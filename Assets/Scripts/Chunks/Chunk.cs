@@ -4,10 +4,8 @@ using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Chunks
 {
-    public class Chunk : Component
+    public class Chunk : MonoBehaviour
     {
-        public GameObject chunkGameObject { get; set; }
-
         public bool Generated { get; set; }
 
         public bool HasUpdate { get; set; }
@@ -30,7 +28,7 @@ namespace Assets.Scripts.Chunks
 
         public float Biome { get; set; }
 
-        public Chunk(Vector2 coordinate)
+        public void InitializeChunk(Vector2 coordinate)
         {
             Generated = false;
             HasUpdate = false;

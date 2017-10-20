@@ -6,11 +6,29 @@ namespace Assets.Scripts.Utility
     {
         public static void WorldPosToChunkPos(Vector3 worldPos, out Vector3 chunkPos, out Vector2 chunk)
         {
-            chunk = new Vector2((int)worldPos.x / 16, (int)worldPos.z / 16);
+            chunk = Vector2.zero;
+            if (worldPos.x < 0)
+            {
+                chunk.x = (int)(worldPos.x / 16) - 1;
+            }
+            else
+            {
+                chunk.x = (int)worldPos.x / 16;
+            }
+
+            if (worldPos.y < 0)
+            {
+                chunk.y = (int)(worldPos.z / 16) - 1;
+            }
+            else
+            {
+                chunk.y = (int)worldPos.z / 16;
+            }
+
             chunkPos = new Vector3(
-                worldPos.x - (chunk.x * 16),
+                Mathf.Abs(worldPos.x - (chunk.x * 16)),
                 worldPos.y,
-                worldPos.z - (chunk.y * 16));
+                Mathf.Abs(worldPos.z - (chunk.y * 16)));
         }
 
         public static Vector2 ChunkPlayerIsIn(Vector3 position)

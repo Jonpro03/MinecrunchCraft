@@ -63,10 +63,10 @@ namespace Assets.Scripts.World
                 return;
             }
 
-            Chunk chunk = new Chunk(chunkPos)
-            {
-                Biome = PerlinNoise.Biome(chunkPos, World.SeedHash)
-            };
+            GameObject chunkGameObject = new GameObject(string.Format("chunk{0}", chunkPos.ToString()));
+            Chunk chunk = chunkGameObject.AddComponent<Chunk>();
+            chunk.InitializeChunk(chunkPos);
+            chunk.Biome = PerlinNoise.Biome(chunkPos, World.SeedHash);
 
             chunkJobs.AddGenerateJob(chunk);
         }
@@ -99,14 +99,13 @@ namespace Assets.Scripts.World
 
         private void DrawChunk(Chunk chunk)
         {
-            GameObject chunkGameObject;
+            GameObject chunkGameObject = chunk.gameObject;
             Material[] mats;
             MeshRenderer meshRenderer;
             Mesh chunkMesh = new Mesh();
 
             if (!ChunkExists(chunk.ChunkPosition))
             {
-                chunkGameObject = new GameObject(string.Format("chunk{0}", chunk.ChunkPosition.ToString()));
                 chunkGameObject.transform.position = new Vector3(chunk.ChunkPosition.x * 16, 0, chunk.ChunkPosition.y * 16);
 
                 mats = new Material[chunk.Materials.Count];
@@ -125,7 +124,6 @@ namespace Assets.Scripts.World
                 return;
 
             }
-            chunk.chunkGameObject = chunkGameObject;
             meshRenderer.materials = mats;
 
             chunkMesh = new Mesh();
@@ -143,10 +141,13 @@ namespace Assets.Scripts.World
 
             var meshFilter = chunkGameObject.AddComponent<MeshFilter>();
 
-
             meshFilter.mesh = chunkMesh;
             chunkMesh.RecalculateNormals();
             var collider = chunkGameObject.AddComponent<MeshCollider>();
+
+            Chunk chunkComponent = chunkGameObject.AddComponent(typeof(Chunk)) as Chunk;
+            chunkComponent = chunk;
+
             Chunks.Add(chunk);
             chunk.IsDrawn = true;
         }
