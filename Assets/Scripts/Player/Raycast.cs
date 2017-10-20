@@ -4,10 +4,14 @@ using Assets.Scripts.Blocks;
 using Assets.Scripts;
 using UnityEngine;
 using Assets.Scripts.Interfaces;
+<<<<<<< HEAD
 using Assets.Scripts.Utility;
 using System;
 using Assets.Scripts.Chunks;
 
+=======
+using System.Collections;
+>>>>>>> develop
 public class Raycast : MonoBehaviour {
 
 	// Use this for initialization
@@ -33,26 +37,57 @@ public class Raycast : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            Vector3 placePos = Camera.main.transform.position + Camera.main.transform.forward * 2;
-            placePos.x = (float)Math.Floor(placePos.x);
-            placePos.y = (float)Math.Floor(placePos.y);
-            placePos.z = (float)Math.Floor(placePos.z);
-            Debug.Log(placePos);
+            Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit objectHit;
+            if (Physics.Raycast(inputRay, out objectHit))
+            {
+                Vector3 placePos;
+                getPlacePos(objectHit.point, Camera.main.transform.forward, out placePos);
+
+                GameObject debugBlockGo = new GameObject("debugBlock(" + placePos.x + ", " + placePos.y + ", " + placePos.z + ")");
+                IBlock debugBlock = new GrassBlock(placePos);
+                debugBlock.SetAllSidesVisible();
+                IEntity debugBlockentity = debugBlockGo.AddComponent<BlockEntity>();
+                debugBlockentity.Block = debugBlock;
+                
+            }
 
 
-            GameObject debugBlockGo = new GameObject("debugBlock");
-            Vector2 chunkLoc;
-            Vector3 chunkPos;
-            Coordinates.WorldPosToChunkPos(placePos, out chunkPos, out chunkLoc);
-            IBlock debugBlock = new GrassBlock(chunkPos, chunkLoc);
-            debugBlock.SetAllSidesVisible();
-            IEntity debugBlockentity = debugBlockGo.AddComponent<BlockEntity>();
-            debugBlockentity.Block = debugBlock;
 
-            Debug.Log("Created new block at: " + debugBlock.PositionInWorld);
-            Debug.Log("Created new block at: " + debugBlock.PositionInChunk);
-            Debug.Log("Mouse Position: " + Input.mousePosition);
         }
 
+    }
+
+    private void getPlacePos(Vector3 objectHitPos, Vector3 cameraForward, out Vector3 placePos)
+    {
+        /* 
+         if raycast hits the the face of a block when the cameraForward is facing in negative position,
+         then the objectHitPos only needs to be floor to have appropriate vector for new block     
+         */
+        if (isWhole(objectHitPos.x))
+        {
+            if (cameraForward.x > 0)
+                objectHitPos.x -= 1;
+        }
+        else if (isWhole(objectHitPos.y))
+        {
+            if (cameraForward.y > 0)               
+                objectHitPos.y -= 1;
+        }
+        else
+        {
+            if (cameraForward.z > 0)
+                objectHitPos.z -= 1;
+        }
+
+        placePos = new Vector3(
+            Mathf.Floor(objectHitPos.x),
+            Mathf.Floor(objectHitPos.y),
+            Mathf.Floor(objectHitPos.z));
+    }
+
+    private bool isWhole(float vectorCoord)
+    {
+        return vectorCoord == (int)vectorCoord;
     }
 }
