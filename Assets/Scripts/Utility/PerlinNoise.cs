@@ -8,20 +8,6 @@ namespace Assets.Scripts.Utility
 {
     public class PerlinNoise
     {
-        private static float[] BiomeNoise = new float[]
-        {
-            0.0135f,
-            0.0136f,
-            0.0138f,
-            0.0144f,
-            0.0145f,
-            0.0146f,
-            0.0147f,
-            0.0148f,
-            0.0153f,
-            0.016f
-        };
-
         public static float Biome(Vector2 loc, int seedHash)
         {
             const float BIOME_SIZE_FACTOR = 200f;
@@ -36,7 +22,6 @@ namespace Assets.Scripts.Utility
         {
             int digitsInHash = seedHash.ToString().Length;
             float seedDecimal = seedHash / Mathf.Pow(10, digitsInHash);
-            float noise = 0.0029f*biome;
             int TerrainHeight = 50;
             //Generate a value from the given position, position is divided to make the noise more frequent.
             float pass1 = Mathf.PerlinNoise((x + seedDecimal) * 0.0145f, (z + seedDecimal) * 0.0145f) * 10;

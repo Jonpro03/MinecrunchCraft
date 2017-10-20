@@ -33,7 +33,6 @@ namespace Assets.Scripts.Chunks
                     int by = Utility.PerlinNoise.Terrain(blockWorldPosX, blockWorldPosZ, World.World.SeedHash, (int)Chunk.Biome);
                     by = Mathf.Max(0, by);
                     by = Mathf.Min(255, by);
-                    Vector3 positionInChunk = new Vector3(bx, by, bz);
                     Chunk.Blocks[bx, by, bz] = new GrassBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
 
                     // fill in below the terrain

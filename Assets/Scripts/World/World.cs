@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using Assets.Scripts.Chunks;
 using UnityEngine;
-using Assets.Scripts.Player;
 
 namespace Assets.Scripts.World
 {
@@ -17,14 +15,24 @@ namespace Assets.Scripts.World
 
         public static WorldTerrain WorldTerrain { get; private set; }
 
-        public static List<Player.Player> Players;
+        public static List<Player.WorldPlayer> Players;
+
+        public static string WorldName = "world";
+
+        public static string WorldSaveFolder;
 
         private void Awake()
         {
             Seed = Seed ?? DateTime.Now.ToString("h:ss");
             SeedHash = Seed.GetHashCode();
             WorldTerrain = transform.GetComponent<WorldTerrain>();
-            Players = FindObjectsOfType<Player.Player>().ToList();
+            Players = FindObjectsOfType<Player.WorldPlayer>().ToList();
+            WorldSaveFolder = Application.persistentDataPath + "/" + WorldName;
+
+            if (!Directory.Exists(WorldSaveFolder))
+            {
+                Directory.CreateDirectory(WorldSaveFolder);
+            }
         }
 
         

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System;
 using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Chunks
@@ -16,7 +17,7 @@ namespace Assets.Scripts.Chunks
 
         public Vector2 ChunkPosition { get; private set; }
 
-        public IBlock[,,] Blocks { get; private set; }
+        public IBlock[,,] Blocks { get; set; }
 
         public Dictionary<int, string> Materials;
 
@@ -40,14 +41,6 @@ namespace Assets.Scripts.Chunks
             Triangles = new Dictionary<int, List<int>>();
             Verticies = new List<Vector3>();
             UVs = new List<Vector2>();
-        }
-
-        public IBlock GetBlock(Vector3 worldPos)
-        {
-            Vector3 chunkLoc;
-            Vector2 chunk;
-            Utility.Coordinates.WorldPosToChunkPos(worldPos, out chunkLoc, out chunk);
-            return Blocks[(int) chunkLoc.x, (int) chunkLoc.y, (int) chunkLoc.z];
         }
     }
 }

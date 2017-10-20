@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.Scripts.Interfaces;
 using Assets.Scripts.Utility;
 using UnityEngine;
 
+
 namespace Assets.Scripts.Blocks
 {
-    public abstract class Block : Component, IBlock
+    [Serializable]
+    public abstract class Block : IBlock
     {
         public virtual Vector3 PositionInChunk { get; private set; }
 

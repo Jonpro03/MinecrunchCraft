@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class BirchWoodPlankBlock : Block
+    public class BirchWoodPlankBlock : Block, IPlank
     {
         public override string Texture { get { return "Materials/BirchWoodPlankBlock"; } }
 
@@ -30,6 +30,10 @@ namespace Assets.Scripts.Blocks
         public BirchWoodPlankBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
+        }
+
+        public BirchWoodPlankBlock(Vector3 worldPos) : base(worldPos)
+        {
         }
 
         public override void OnDestroyed()

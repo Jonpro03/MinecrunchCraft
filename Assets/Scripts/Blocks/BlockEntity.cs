@@ -44,9 +44,6 @@ public class BlockEntity : MonoBehaviour, IEntity
         MeshFilter meshFilter = go.AddComponent<MeshFilter>();
         meshFilter.mesh = mesh;
         mesh.RecalculateNormals();
-
-        MeshCollider meshCollider = go.AddComponent<MeshCollider>();
-
-
+        go.AddComponent<MeshCollider>();
     }
 }

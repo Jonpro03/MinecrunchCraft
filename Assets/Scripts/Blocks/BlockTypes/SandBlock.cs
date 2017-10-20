@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
+    [Serializable]
     public class SandBlock : Block
     {
         public override string Texture { get { return "Materials/SandBlock"; } }
