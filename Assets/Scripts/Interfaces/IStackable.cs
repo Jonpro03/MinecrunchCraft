@@ -5,7 +5,8 @@ using System.Text;
 
 namespace Assets.Scripts.Interfaces
 {
-    public interface ILog
+    public interface class IStackable
     {
+        int StackSize;
     }
 }

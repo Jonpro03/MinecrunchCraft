@@ -18,5 +18,7 @@ namespace Assets.Scripts.CraftingRecipes
             DarkOakWoodPlanksBlock.BlockId
         };
 
+        public static List<BlockIdentification> NO_BLOCK = new List<BlockIdentification>();
+
     }
 }

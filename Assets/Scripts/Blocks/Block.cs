@@ -6,7 +6,7 @@ using Assets.Scripts.CraftingRecipes;
 
 namespace Assets.Scripts.Blocks
 {
-    public abstract class Block : Component, IBlock
+    public abstract class Block : Component, IBlock, IStackable
     {
         public virtual Vector3 PositionInChunk { get; private set; }
 
@@ -34,7 +34,9 @@ namespace Assets.Scripts.Blocks
 
         public abstract ShapedCraftingRecipe BlockRecipe { get; }
 
-        public virtual float Damage { get; private set; }
+        public abstract int StackSize { get; private set; }
+
+        public virtual float Damage { get;}
 
         private bool leftVisible, rightVisible, topVisible, bottomVisible, frontVisible, backVisible;
 
