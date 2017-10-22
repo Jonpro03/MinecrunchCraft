@@ -28,8 +28,7 @@ namespace Assets.Scripts.Blocks
 
         public static BlockIdentification BlockId { get { return new BlockIdentification(47, 0); } }
 
-        public override CraftingRecipe BlockRecipe { get { return new BookShelfRecipe(); } }
-
+        public override ShapedCraftingRecipe BlockRecipe { get { return new BookShelfRecipe(); } }
 
         public BookshelfBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

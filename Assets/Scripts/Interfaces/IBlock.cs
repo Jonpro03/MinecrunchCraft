@@ -25,7 +25,7 @@ namespace Assets.Scripts.Interfaces
 
         string SoundBlockPlacedAsset { get; }
 
-        CraftingRecipe BlockRecipe { get; }
+        ShapedCraftingRecipe BlockRecipe { get; }
 
         bool IsTransparent { get; }
 

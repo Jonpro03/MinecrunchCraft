@@ -32,7 +32,7 @@ namespace Assets.Scripts.Blocks
 
         public abstract string SoundBlockPlacedAsset { get; }
 
-        public abstract CraftingRecipe BlockRecipe { get; }
+        public abstract ShapedCraftingRecipe BlockRecipe { get; }
 
         public virtual float Damage { get; private set; }
 

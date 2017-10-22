@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Assets.Scripts.Blocks;
+using Assets.Scripts.CraftingRecipes;
 
 namespace Assets.Scripts.Interfaces
 {
@@ -32,6 +33,6 @@ namespace Assets.Scripts.Interfaces
         List<BlockIdentification> GridLock8 { get; }
         List<BlockIdentification> GridLock9 { get; }
 
-        bool IsValid(List<IRecipeItem> items);
+        bool IsValid(List<RecipeItem> items);
     }
 }

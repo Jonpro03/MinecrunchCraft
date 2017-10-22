@@ -7,10 +7,10 @@ namespace Assets.Scripts.Blocks
 {
     public class BlockIdentification
     {
-        public uint Id;
-        public uint Meta;
+        public int Id;
+        public int Meta;
 
-        public BlockIdentification(uint BlockId, uint MetaData)
+        public BlockIdentification(int BlockId, int MetaData)
         {
             Id = BlockId;
             Meta = MetaData;

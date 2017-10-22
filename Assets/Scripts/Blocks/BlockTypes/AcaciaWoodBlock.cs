@@ -28,7 +28,7 @@ namespace Assets.Scripts.Blocks
 
         public static BlockIdentification BlockId { get { return new BlockIdentification(162, 0); } }
 
-        public override CraftingRecipe BlockRecipe { get { return null; } }
+        public override ShapedCraftingRecipe BlockRecipe { get { return null; } }
 
         public AcaciaWoodBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

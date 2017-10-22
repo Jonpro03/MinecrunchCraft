@@ -7,7 +7,7 @@ using Assets.Scripts.Blocks;
 
 namespace Assets.Scripts.CraftingRecipes
 {
-    public class BookShelfRecipe: CraftingRecipe
+    public class BookShelfRecipe: ShapedCraftingRecipe
     {
         public override List<BlockIdentification> GridLock1 { get { return BlockGroups.WOOD_PLANKS; } }
         public override List<BlockIdentification> GridLock2 { get { return BlockGroups.WOOD_PLANKS; } }

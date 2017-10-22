@@ -6,7 +6,7 @@ using Assets.Scripts.Blocks;
 
 namespace Assets.Scripts.Interfaces
 {
-    public interface IRecipeItem:
+    public interface IRecipeItem
     {
         BlockIdentification BlockID { get; }
         int GridLoc { get; }
