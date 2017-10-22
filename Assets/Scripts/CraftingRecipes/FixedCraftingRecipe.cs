@@ -8,19 +8,9 @@ using Assets.Scripts.Interfaces;
 namespace Assets.Scripts.CraftingRecipes
 {
     //This a class used for recipes that require recipes to be the exact same
-    public abstract class FixedCraftingRecipe: ICraftingRecipe
+    public abstract class FixedCraftingRecipe: CraftingRecipe
     {
-        public abstract List<BlockIdentification> GridLock1 { get; }
-        public abstract List<BlockIdentification> GridLock2 { get; }
-        public abstract List<BlockIdentification> GridLock3 { get; }
-        public abstract List<BlockIdentification> GridLock4 { get; }
-        public abstract List<BlockIdentification> GridLock5 { get; }
-        public abstract List<BlockIdentification> GridLock6 { get; }
-        public abstract List<BlockIdentification> GridLock7 { get; }
-        public abstract List<BlockIdentification> GridLock8 { get; }
-        public abstract List<BlockIdentification> GridLock9 { get; }
-
-        public bool IsValid(List<RecipeItem> items)
+        public override bool IsValid(List<RecipeItem> items)
         {
             IEnumerable<RecipeItem> gridLockItem;
 

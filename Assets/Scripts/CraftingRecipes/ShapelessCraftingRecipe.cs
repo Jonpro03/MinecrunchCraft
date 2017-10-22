@@ -9,21 +9,11 @@ namespace Assets.Scripts.CraftingRecipes
 {
     //This class is used for recipes that dont have any specific shape but only need 
     //  the items to appear up on the crafting table regardless of positioning
-    public abstract class ShapelessCraftingRecipe: ICraftingRecipe
+    public abstract class ShapelessCraftingRecipe: CraftingRecipe
     {
-        public abstract List<BlockIdentification> GridLock1 { get; }
-        public abstract List<BlockIdentification> GridLock2 { get; }
-        public abstract List<BlockIdentification> GridLock3 { get; }
-        public abstract List<BlockIdentification> GridLock4 { get; }
-        public abstract List<BlockIdentification> GridLock5 { get; }
-        public abstract List<BlockIdentification> GridLock6 { get; }
-        public abstract List<BlockIdentification> GridLock7 { get; }
-        public abstract List<BlockIdentification> GridLock8 { get; }
-        public abstract List<BlockIdentification> GridLock9 { get; }
-
         public List<List<BlockIdentification>> recipeBlocks;
 
-        public bool IsValid(List<RecipeItem> items)
+        public override bool IsValid(List<RecipeItem> items)
         {
             /*If number of items passed is not same as number of items recipe is expecting,
                 then it is not same recipe

@@ -19,5 +19,7 @@ namespace Assets.Scripts.CraftingRecipes
         public override List<BlockIdentification> GridLock8 { get { return BlockGroups.WOOD_PLANKS; } }
         public override List<BlockIdentification> GridLock9 { get { return BlockGroups.WOOD_PLANKS; } }
 
+        public override int blocksCreated { get { return 1; } }
+
     }
 }
