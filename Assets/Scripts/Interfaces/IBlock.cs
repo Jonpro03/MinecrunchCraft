@@ -25,6 +25,8 @@ namespace Assets.Scripts.Interfaces
 
         bool IsTransparent { get; }
 
+        bool IsVisible();
+
         bool IsGravityAffected { get; }
 
         uint MiningDifficulty { get; }
@@ -45,5 +47,7 @@ namespace Assets.Scripts.Interfaces
         bool BackVisible { get; set; }
 
         void SetAllSidesVisible();
+
+        object Clone();
     }
 }

@@ -6,6 +6,7 @@ using Assets.Scripts.Blocks;
 using Assets.Scripts;
 using UnityEngine;
 using Assets.Scripts.Interfaces;
+using Assets.Scripts.World;
 
 namespace Assets.Scripts.Chunks
 {
@@ -30,39 +31,37 @@ namespace Assets.Scripts.Chunks
                 {
                     int blockWorldPosX = bx + (cx * 16);
                     int blockWorldPosZ = bz + (cz * 16);
-                    int by = Utility.PerlinNoise.Terrain(blockWorldPosX, blockWorldPosZ, World.World.SeedHash, (int)Chunk.Biome);
-                    by = Mathf.Max(0, by);
-                    by = Mathf.Min(255, by);
-                    Chunk.Blocks[bx, by, bz] = new GrassBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
+                    int terrainY = Utility.PerlinNoise.Terrain(blockWorldPosX, blockWorldPosZ, World.World.SeedHash, (int)Chunk.Biome);
+                    terrainY = Mathf.Max(0, terrainY);
+                    terrainY = Mathf.Min(255, terrainY);
 
-                    // fill in below the terrain
-                    for (int columnY = by; columnY >= 0; columnY--)
+                    for (int by = 0; by < 256; by++)
                     {
-                        IBlock block = null;
-                        if (columnY == by)
+                        Chunk.Blocks[bx, by, bz] = new AirBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
+                        IBlock block = Chunk.Blocks[bx, by, bz];
+                        if (terrainY == by)
                         {
                             if ((int)Chunk.Biome == 5)
-                                block = new SandBlock(new Vector3(bx, columnY, bz), Chunk.ChunkPosition);
+                                block = new SandBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                             else if ((int)Chunk.Biome == 4)
-                                block = new GrassBlock(new Vector3(bx, columnY, bz), Chunk.ChunkPosition);
+                                block = new GrassBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                             else if ((int)Chunk.Biome == 3)
-                                block = new StoneBlock(new Vector3(bx, columnY, bz), Chunk.ChunkPosition);
+                                block = new StoneBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                             else
-                                block = new CobblestoneBlock(new Vector3(bx, columnY, bz), Chunk.ChunkPosition);
+                                block = new CobblestoneBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                         }
-                        else if (columnY < 6)
+                        else if (by < 6)
                         {
-                            block = new BedrockBlock(new Vector3(bx, columnY, bz), Chunk.ChunkPosition);
+                            block = new BedrockBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                         }
-                        else if (columnY < 55)
+                        else if (by < 52)
                         {
-                            block = new StoneBlock(new Vector3(bx, columnY, bz), Chunk.ChunkPosition);
+                            block = new StoneBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                         }
-                        else
+                        else if (by < terrainY)
                         {
-                            block = new DirtBlock(new Vector3(bx, columnY, bz), Chunk.ChunkPosition);
+                            block = new DirtBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                         }
-                        Chunk.Blocks[bx, columnY, bz] = block;
                     }
                 }
             }
@@ -74,15 +73,14 @@ namespace Assets.Scripts.Chunks
                 {
                     for (int bz = 0; bz < 16; bz++)
                     {
-                        IBlock block = Chunk.Blocks[bx, by, bz];
-                        if (null == block)
+                        if (Chunk.Blocks[bx, by, bz] is AirBlock)
                         {
                             continue;
                         }
-                        bool isCaveBlock = Utility.PerlinNoise.Cave(block.PositionInWorld, World.World.SeedHash);
+                        bool isCaveBlock = Utility.PerlinNoise.Cave(Chunk.Blocks[bx, by, bz].PositionInWorld, World.World.SeedHash);
                         if (isCaveBlock)
                         {
-                            Chunk.Blocks[bx, by, bz] = null;
+                            Chunk.Blocks[bx, by, bz] = new AirBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                         }
                     }
                 }

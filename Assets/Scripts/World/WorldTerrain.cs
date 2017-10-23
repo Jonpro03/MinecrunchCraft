@@ -6,9 +6,7 @@ using Assets.Scripts.Blocks;
 using System.Linq;
 using Assets.Scripts.Utility;
 using System;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
-using System.Runtime.Serialization;
 
 namespace Assets.Scripts.World
 {
@@ -17,9 +15,9 @@ namespace Assets.Scripts.World
         //Public variable for the size of the terrain, width and heigth
         public int RenderSize = 5;
 
-        private ChunkJobManager chunkJobs;
+        private static ChunkJobManager chunkJobs;
 
-        private List<Chunk> Chunks { get; set; }
+        public static List<Chunk> Chunks { get; set; }
 
         //Generates the terrain
         private void Awake()
@@ -40,21 +38,16 @@ namespace Assets.Scripts.World
             {
                 for (int cz = (-1 * RenderSize) + (int)playerLoc.y; cz < RenderSize; cz++)
                 {
-                    Chunk chunk = LoadChunk(new Vector2(cx, cz));
-                    if (null == chunk)
+                    Vector2 chunkCoord = new Vector2(cx, cz);
+                    bool chunkOnDisk = LoadChunk(new Vector2(cx, cz));
+                    if (!chunkOnDisk)
                     {
-                        GenerateChunk(new Vector2(cx, cz));
-
-                    }
-                    else
-                    {
-                        DrawChunk(chunk);
-                        Chunks.Add(chunk);
+                        GenerateChunk(chunkCoord);
                     }
                 }
             }
 
-            InvokeRepeating("GenerateNewChunksAroundPlayers", 1, 2);
+            // InvokeRepeating("GenerateNewChunksAroundPlayers", 15, 5);
 
             // Debug block        
             GameObject debugBlockGo = new GameObject("debugBlock");
@@ -63,14 +56,28 @@ namespace Assets.Scripts.World
 
         }
 
-        private void Update()
+        private void OnGUI()
+        {
+            GUI.Label(new Rect(10, 10, 1000, 20), String.Format(
+                "Generate:{0} Update:{1} Load:{2} Total:{3}",
+                chunkJobs.ChunkGenerateJobs.Count,
+                chunkJobs.ChunkUpdateJobs.Count,
+                chunkJobs.ChunkLoadJobs.Count,
+                Chunks.Count
+                ));
+        }
+
+        private void FixedUpdate()
         {
             chunkJobs.Update();
             foreach (Chunk chunk in chunkJobs.CompletedJobs)
             {
-                DrawChunk(chunk);
                 Chunks.Add(chunk);
-                SaveChunk(chunk);
+                DrawChunk(chunk);
+                if (!chunk.IsSerialized)
+                {
+                    SaveChunk(chunk);
+                }
             }
             chunkJobs.CompletedJobs.RemoveAll(c => c.IsDrawn);
         }
@@ -98,89 +105,78 @@ namespace Assets.Scripts.World
                 {
                     if (!ChunkExists(chunkCoord))
                     {
-                        Chunk chunk = LoadChunk(chunkCoord);
-                        if (null == chunk)
+                        bool chunkOnDisk = LoadChunk(chunkCoord);
+                        if (!chunkOnDisk)
                         {
                             GenerateChunk(chunkCoord);
-                        }
-                        else
-                        {
-                            DrawChunk(chunk);
-                            Chunks.Add(chunk);
                         }
                     }
                 }
             }
         }
 
-        private void SaveChunk(Chunk chunk)
+        public static IBlock GetBlockRef(Vector3 worldPos)
         {
-            ChunkData chunkData = new ChunkData()
+            Vector3 blockRelativePos;
+            Vector2 chunkPos;
+            Coordinates.WorldPosToChunkPos(worldPos, out blockRelativePos, out chunkPos);
+            Chunk chunk = Chunks.FirstOrDefault(c => c.ChunkPosition == chunkPos);
+            if (null == chunk)
             {
-                ChunkPositionX = (int) chunk.ChunkPosition.x,
-                ChunkPositionZ = (int) chunk.ChunkPosition.y,
-                Biome = chunk.Biome,
-                Blocks = chunk.Blocks,
-                Materials = chunk.Materials,
-                Triangles = chunk.Triangles,
-                Verticies = chunk.Verticies,
-                UVs = chunk.UVs
-            };
+                return null;
+            }
+            return (IBlock) chunk.Blocks[(int)blockRelativePos.x, (int)blockRelativePos.y, (int)blockRelativePos.z].Clone();
+        }
 
-            string chunkFilePath = String.Format("{0}/chunks/{1},{2}.dat", World.WorldSaveFolder, chunk.ChunkPosition.x, chunk.ChunkPosition.y);
-            BinaryFormatter formatter = new BinaryFormatter();
-            SurrogateSelector ss = new SurrogateSelector();
-            ss.AddSurrogate(
-                typeof(Vector3),
-                new StreamingContext(StreamingContextStates.All),
-                new Vector3SerializationSurrogate());
-            ss.AddSurrogate(
-                typeof(Vector2),
-                new StreamingContext(StreamingContextStates.All), 
-                new Vector2SerializationSurrogate());
-            formatter.SurrogateSelector = ss;
-            using (FileStream chunkFile = File.Create(chunkFilePath))
+        public static bool UpdateBlock(IBlock blockRef)
+        {
+            Vector2 chunkPos;
+            Vector3 blockPosInChunk;
+            Coordinates.WorldPosToChunkPos(blockRef.PositionInWorld, out blockPosInChunk, out chunkPos);
+            Chunk chunk = Chunks.FirstOrDefault(c => c.ChunkPosition == chunkPos);
+            if (null == chunk)
             {
-                formatter.Serialize(chunkFile, chunkData);
+                return false;
+            }
+            chunk.Blocks[(int)blockPosInChunk.x, (int)blockPosInChunk.y, (int)blockPosInChunk.z] = blockRef;
+            return true;
+        }
+
+        public static void ScheduleChunkUpdate(Chunk chunk)
+        {
+            chunk.HasUpdate = true;
+            chunkJobs.AddUpdateJob(chunk);
+        }
+
+        public static void ScheduleChunkUpdate(Vector2 chunkLoc)
+        {
+            Chunk chunk = Chunks.FirstOrDefault(c => c.ChunkPosition == chunkLoc);
+            if (null != chunk)
+            {
+                ScheduleChunkUpdate(chunk);
             }
         }
 
-        private Chunk LoadChunk(Vector2 chunkCoord)
+        private void SaveChunk(Chunk chunk)
+        {
+            chunkJobs.AddChunkSaveJob(chunk);
+        }
+
+        private bool LoadChunk(Vector2 chunkCoord)
         {
             string chunkFilePath = String.Format("{0}/chunks/{1},{2}.dat", World.WorldSaveFolder, chunkCoord.x, chunkCoord.y);
             if (!File.Exists(chunkFilePath))
             {
-                return null;
-            }
-            ChunkData data;
-            BinaryFormatter formatter = new BinaryFormatter();
-            SurrogateSelector ss = new SurrogateSelector();
-            ss.AddSurrogate(
-                typeof(Vector3),
-                new StreamingContext(StreamingContextStates.All),
-                new Vector3SerializationSurrogate());
-            ss.AddSurrogate(
-                typeof(Vector2),
-                new StreamingContext(StreamingContextStates.All),
-                new Vector2SerializationSurrogate());
-            formatter.SurrogateSelector = ss;
-            using (FileStream chunkFile = File.OpenRead(chunkFilePath))
-            {
-                data = (ChunkData)formatter.Deserialize(chunkFile);
+                return false;
             }
 
-            GameObject chunkGameObject = new GameObject(string.Format("chunk{0},{1}", data.ChunkPositionX, data.ChunkPositionZ));
+            GameObject chunkGameObject = new GameObject(string.Format("chunk{0}", chunkCoord.ToString()));
             Chunk chunk = chunkGameObject.AddComponent<Chunk>();
-            chunk.InitializeChunk(new Vector2(data.ChunkPositionX, data.ChunkPositionZ));
-            chunk.Biome = data.Biome;
-            chunk.Generated = true;
-            chunk.Blocks = data.Blocks;
-            chunk.Materials = data.Materials;
-            chunk.Triangles = data.Triangles;
-            chunk.Verticies = data.Verticies;
-            chunk.UVs = data.UVs;
-
-            return chunk;
+            if (!chunkJobs.AddChunkLoadJob(chunkCoord, chunk))
+            {
+                Destroy(chunkGameObject);
+            }
+            return true;
         }
 
         private void GenerateChunk(Vector2 chunkPos)
@@ -194,7 +190,6 @@ namespace Assets.Scripts.World
             Chunk chunk = chunkGameObject.AddComponent<Chunk>();
             chunk.InitializeChunk(chunkPos);
             chunk.Biome = PerlinNoise.Biome(chunkPos, World.SeedHash);
-
             chunkJobs.AddGenerateJob(chunk);
         }
 
@@ -205,34 +200,34 @@ namespace Assets.Scripts.World
             MeshRenderer meshRenderer;
             Mesh chunkMesh = new Mesh();
 
-            if (!ChunkExists(chunk.ChunkPosition))
+            if (chunk.IsDrawn)
             {
-                chunkGameObject.transform.position = new Vector3(chunk.ChunkPosition.x * 16, 0, chunk.ChunkPosition.y * 16);
+                return;
+            }
 
-                mats = new Material[chunk.Materials.Count];
+            chunkGameObject.transform.position = new Vector3(chunk.ChunkPosition.x * 16, 0, chunk.ChunkPosition.y * 16);
+            mats = new Material[chunk.Materials.Count];
 
-                foreach (int key in chunk.Materials.Keys)
-                {
-                    mats[key] = Resources.Load<Material>(chunk.Materials[key]);
-                }
+            foreach (int key in chunk.Materials.Keys)
+            {
+                mats[key] = Resources.Load<Material>(chunk.Materials[key]);
+            }
 
+            if (chunkGameObject.GetComponents<MeshRenderer>().Count().Equals(0))
+            {
                 meshRenderer = chunkGameObject.AddComponent<MeshRenderer>();
             }
             else
             {
-                // Todo this
-                chunk.IsDrawn = true;
-                return;
-
+                meshRenderer = chunkGameObject.GetComponent<MeshRenderer>();
             }
-            meshRenderer.materials = mats;
 
+            meshRenderer.materials = mats;
             chunkMesh = new Mesh();
             chunkMesh.Clear();
             chunkMesh.name = "TerrainMesh";
             chunkMesh.SetVertices(chunk.Verticies.ToList());
             chunkMesh.subMeshCount = chunk.Materials.Count;
-
             chunkMesh.SetUVs(0, chunk.UVs.ToList());
 
             foreach (int key in chunk.Triangles.Keys)
@@ -245,9 +240,6 @@ namespace Assets.Scripts.World
             meshFilter.mesh = chunkMesh;
             chunkMesh.RecalculateNormals();
             chunkGameObject.AddComponent<MeshCollider>();
-
-            Chunk chunkComponent = chunkGameObject.AddComponent(typeof(Chunk)) as Chunk;
-            chunkComponent = chunk;
             chunk.IsDrawn = true;
         }
 
@@ -259,25 +251,6 @@ namespace Assets.Scripts.World
         private bool ChunkExists(Vector2 chunkLoc)
         {
             return Chunks.Any(x => x.ChunkPosition == chunkLoc);
-        }
-
-        [Serializable]
-        public class ChunkData
-        {
-            public int ChunkPositionX { get; set; }
-            public int ChunkPositionZ { get; set; }
-
-            public float Biome { get; set; }
-
-            public IBlock[,,] Blocks { get; set; }
-
-            public Dictionary<int, string> Materials { get; set; }
-
-            public Dictionary<int, List<int>> Triangles { get; set; }
-
-            public List<Vector3> Verticies { get; set; }
-
-            public List<Vector2> UVs { get; set; }
         }
     }
 }

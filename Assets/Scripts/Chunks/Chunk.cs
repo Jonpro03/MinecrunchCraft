@@ -13,6 +13,8 @@ namespace Assets.Scripts.Chunks
 
         public bool IsDrawn { get; set; }
 
+        public bool IsSerialized { get; set; }
+
         public Vector2 WorldPosition { get; private set; }
 
         public Vector2 ChunkPosition { get; private set; }
@@ -34,6 +36,7 @@ namespace Assets.Scripts.Chunks
             Generated = false;
             HasUpdate = false;
             IsDrawn = false;
+            IsSerialized = false;
             ChunkPosition = coordinate;
             WorldPosition = ChunkPosition * 16;
             Blocks = new IBlock[16, 256, 16];

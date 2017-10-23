@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Assets.Scripts.Blocks;
-using Assets.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Assets.Scripts.Chunks
 {
     public class ChunkJobManager
     {
-        private List<ChunkGenerateJob> ChunkGenerateJobs { get; set; }
+        public List<ChunkGenerateJob> ChunkGenerateJobs { get; set; }
 
-        private List<ChunkUpdateJob> ChunkUpdateJobs { get; set; }
+        public List<ChunkUpdateJob> ChunkUpdateJobs { get; set; }
 
         public List<Chunk> CompletedJobs { get; set; }
+
+        public List<ChunkLoadJob> ChunkLoadJobs { get; set; }
 
         public ChunkJobManager()
         {
             ChunkGenerateJobs = new List<ChunkGenerateJob>();
             ChunkUpdateJobs = new List<ChunkUpdateJob>();
             CompletedJobs = new List<Chunk>();
+            ChunkLoadJobs = new List<ChunkLoadJob>();
         }
 
         public void Update()
@@ -45,6 +44,17 @@ namespace Assets.Scripts.Chunks
                 }
             }
             ChunkUpdateJobs.RemoveAll(c => c.IsDone);
+
+            foreach (ChunkLoadJob chunkJob in ChunkLoadJobs)
+            {
+                if (chunkJob.IsDone)
+                {
+                    ChunkUpdateJob updateJob = new ChunkUpdateJob(chunkJob.Chunk);
+                    ChunkUpdateJobs.Add(updateJob);
+                    //CompletedJobs.Add(chunkJob.Chunk);
+                }
+            }
+            ChunkLoadJobs.RemoveAll(c => c.IsDone);
         }
 
         public bool AddGenerateJob(Chunk chunk)
@@ -69,6 +79,26 @@ namespace Assets.Scripts.Chunks
             ChunkUpdateJobs.Add(job);
             job.Start();
             return true;
+        }
+
+        public void AddChunkSaveJob(Chunk chunk)
+        {
+            ChunkSaveJob job = new ChunkSaveJob(chunk);
+            job.Start();
+        }
+
+        public bool AddChunkLoadJob(Vector2 chunkCoord, Chunk chunk)
+        {
+            bool jobExists = ChunkLoadJobs.Any(clj => clj.chunkCoord == chunkCoord);
+            if (jobExists)
+            {
+                return false;
+            }
+            ChunkLoadJob job = new ChunkLoadJob(chunkCoord, chunk);
+            ChunkLoadJobs.Add(job);
+            job.Start();
+            return true;
+
         }
     }
 }

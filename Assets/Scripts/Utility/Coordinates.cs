@@ -9,7 +9,7 @@ namespace Assets.Scripts.Utility
             chunk = Vector2.zero;
             if (worldPos.x < 0)
             {
-                chunk.x = (int)(worldPos.x / 16) - 1;
+                chunk.x = Mathf.FloorToInt(worldPos.x / 16);
             }
             else
             {
@@ -18,7 +18,7 @@ namespace Assets.Scripts.Utility
 
             if (worldPos.y < 0)
             {
-                chunk.y = (int)(worldPos.z / 16) - 1;
+                chunk.y = Mathf.FloorToInt(worldPos.z / 16);
             }
             else
             {

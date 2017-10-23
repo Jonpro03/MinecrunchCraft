@@ -269,5 +269,15 @@ namespace Assets.Scripts.Blocks
         {
             FrontVisible = LeftVisible = RightVisible = TopVisible = BottomVisible = BackVisible = true;
         }
+
+        public virtual bool IsVisible()
+        {
+            return FrontVisible || LeftVisible || RightVisible || TopVisible || BottomVisible || BackVisible;
+        }
+
+        public virtual object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }
