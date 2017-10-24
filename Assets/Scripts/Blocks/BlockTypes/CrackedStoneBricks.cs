@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class CrackedStoneBrickBlock : Block
+    public class CrackedStoneBricksBlock : Block
     {
         public override string Texture { get { return "Materials/CrackedStoneBrickBlock"; } }
 
@@ -25,7 +25,9 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public CrackedStoneBrickBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public override BlockIdentification BlockId { get { return BlockIds.CrackedStoneBricks; } }
+
+        public CrackedStoneBricksBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

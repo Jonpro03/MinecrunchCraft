@@ -25,6 +25,8 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
+        public override BlockIdentification BlockId { get { return BlockIds.Andesite; } }
+
         public AndesiteBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 

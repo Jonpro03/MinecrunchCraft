@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Assets.Scripts.Interfaces;
+using Assets.Scripts.Blocks;
 using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class AcaciaWoodPlankBlock : Block
+    public class AcaciaWoodPlankBlock : Block, IPlank
     {
         public override string Texture { get { return "Materials/AcaciaWoodPlankBlock"; } }
 
@@ -25,7 +26,7 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/WoodPlaced"; } }
 
-        public string Color { get; set; }
+        public override BlockIdentification BlockId { get { return BlockIds.AcaciaWoodPlanks; } }
 
         public AcaciaWoodPlankBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

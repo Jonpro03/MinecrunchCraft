@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Assets.Scripts.CraftingRecipes;
 using Assets.Scripts.Interfaces;
 using UnityEngine;
 
@@ -25,6 +26,8 @@ namespace Assets.Scripts.Blocks
         public override string SoundBlockBrokenAsset { get { return "Sounds/StoneBreak"; } }
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
+
+        public override BlockIdentification BlockId { get { return BlockIds.Bedrock; } }
 
         public BedrockBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

@@ -25,6 +25,8 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
+        public override BlockIdentification BlockId { get { return new BlockIdentification(129, 0); } }
+
         public EmeraldOreBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 

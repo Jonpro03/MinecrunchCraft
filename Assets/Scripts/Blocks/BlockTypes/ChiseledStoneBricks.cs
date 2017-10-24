@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Assets.Scripts.CraftingRecipes;
 using Assets.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class ChiseledStoneBrickBlock : Block
+    public class ChiseledStoneBricksBlock : Block
     {
         public override string Texture { get { return "Materials/ChiseledStoneBrickBlock"; } }
 
@@ -25,7 +26,7 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public ChiseledStoneBrickBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public ChiseledStoneBricksBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

@@ -25,6 +25,8 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/WoodPlaced"; } }
 
+        public override BlockIdentification BlockId { get { return BlockIds.DarkOakWood; } }
+
         public DarkOakWoodBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using Assets.Scripts.Blocks;
 using Assets.Scripts.World;
 using System;
+using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Chunks
 {
@@ -70,7 +71,9 @@ namespace Assets.Scripts.Chunks
                             }
 
                             var block = Chunk.Blocks[bx, by, bz];
+                            
                             // Chunk Boundaries
+                            /*
                             if (bx == 0)
                             {
                                 block.LeftVisible = WorldTerrain.GetBlockRef(new Vector3(bx,by,bz) + Vector3.left) is AirBlock;
@@ -90,6 +93,7 @@ namespace Assets.Scripts.Chunks
                             {
                                 block.BackVisible = WorldTerrain.GetBlockRef(new Vector3(bx, by, bz) + Vector3.forward) is AirBlock;
                             }
+                            */
                         }
                     }
                 }
@@ -109,33 +113,36 @@ namespace Assets.Scripts.Chunks
                     {
                         for (int by = 255; by >= 0; by--)
                         {
-                            if (!(Chunk.Blocks[bx, by, bz] is AirBlock))
+                            IBlock block = Chunk.Blocks[bx, by, bz];
+                            if (block is AirBlock)
                             {
-                                int textureKey = 0;
-
-                                if (Chunk.Blocks[bx, by, bz].IsVisible())
-                                {
-                                    // Add this block's texture to the chunk
-                                    if (Chunk.Materials.Values.Contains(Chunk.Blocks[bx, by, bz].Texture))
-                                    {
-                                        textureKey = Chunk.Materials.FirstOrDefault(a => a.Value == Chunk.Blocks[bx, by, bz].Texture).Key;
-                                    }
-                                    else
-                                    {
-                                        textureKey = Chunk.Materials.Count;
-                                        Chunk.Materials.Add(textureKey, Chunk.Blocks[bx, by, bz].Texture);
-                                        Chunk.Triangles.Add(textureKey, new List<int>());
-                                    }
-                                }
-
-                                for (var a = 0; a < Chunk.Blocks[bx, by, bz].Verticies.Count; a++)
-                                {
-                                    Chunk.Triangles[textureKey].Add(trianglesCount + a);
-                                }
-                                trianglesCount += Chunk.Blocks[bx, by, bz].Verticies.Count;
-                                Chunk.Verticies.AddRange(Chunk.Blocks[bx, by, bz].Verticies);
-                                Chunk.UVs.AddRange(Chunk.Blocks[bx, by, bz].UVs);
+                                continue;
                             }
+
+                            int textureKey = 0;
+
+                            if (block.IsVisible())
+                            {
+                                // Add this block's texture to the chunk
+                                if (Chunk.Materials.Values.Contains(block.Texture))
+                                {
+                                    textureKey = Chunk.Materials.FirstOrDefault(a => a.Value == block.Texture).Key;
+                                }
+                                else
+                                {
+                                    textureKey = Chunk.Materials.Count;
+                                    Chunk.Materials.Add(textureKey, block.Texture);
+                                    Chunk.Triangles.Add(textureKey, new List<int>());
+                                }
+                            }
+
+                            for (var a = 0; a < block.Verticies.Count; a++)
+                            {
+                                Chunk.Triangles[textureKey].Add(trianglesCount + a);
+                            }
+                            trianglesCount += block.Verticies.Count;
+                            Chunk.Verticies.AddRange(block.Verticies);
+                            Chunk.UVs.AddRange(block.UVs);
                         }
                     }
                 }
@@ -151,7 +158,8 @@ namespace Assets.Scripts.Chunks
             WorldTerrain.ScheduleChunkUpdate(Chunk.ChunkPosition + Vector2.up);
             WorldTerrain.ScheduleChunkUpdate(Chunk.ChunkPosition + Vector2.down);
             WorldTerrain.ScheduleChunkUpdate(Chunk.ChunkPosition + Vector2.left);
-            WorldTerrain.ScheduleChunkUpdate(Chunk.ChunkPosition + Vector2.right);*/
+            WorldTerrain.ScheduleChunkUpdate(Chunk.ChunkPosition + Vector2.right);
+            */
         }
     }
 }

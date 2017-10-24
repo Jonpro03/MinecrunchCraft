@@ -47,7 +47,8 @@ namespace Assets.Scripts.World
                 }
             }
 
-            // InvokeRepeating("GenerateNewChunksAroundPlayers", 15, 5);
+
+            InvokeRepeating("GenerateNewChunksAroundPlayers", 5, 5);
 
             // Debug block        
             GameObject debugBlockGo = new GameObject("debugBlock");
@@ -159,7 +160,7 @@ namespace Assets.Scripts.World
 
         private void SaveChunk(Chunk chunk)
         {
-            chunkJobs.AddChunkSaveJob(chunk);
+            //chunkJobs.AddChunkSaveJob(chunk);
         }
 
         private bool LoadChunk(Vector2 chunkCoord)
@@ -170,7 +171,7 @@ namespace Assets.Scripts.World
                 return false;
             }
 
-            GameObject chunkGameObject = new GameObject(string.Format("chunk{0}", chunkCoord.ToString()));
+            GameObject chunkGameObject = new GameObject(string.Format("chunk{0}loaded", chunkCoord.ToString()));
             Chunk chunk = chunkGameObject.AddComponent<Chunk>();
             if (!chunkJobs.AddChunkLoadJob(chunkCoord, chunk))
             {
@@ -181,12 +182,12 @@ namespace Assets.Scripts.World
 
         private void GenerateChunk(Vector2 chunkPos)
         {
-            if (ChunkExists(chunkPos) && GetChunk(chunkPos).Generated)
+            if (ChunkExists(chunkPos))
             {
                 return;
             }
 
-            GameObject chunkGameObject = new GameObject(string.Format("chunk{0}", chunkPos.ToString()));
+            GameObject chunkGameObject = new GameObject(string.Format("chunk{0}generated", chunkPos.ToString()));
             Chunk chunk = chunkGameObject.AddComponent<Chunk>();
             chunk.InitializeChunk(chunkPos);
             chunk.Biome = PerlinNoise.Biome(chunkPos, World.SeedHash);

@@ -10,6 +10,8 @@ namespace Assets.Scripts.Blocks
     [Serializable]
     public class AirBlock : Block
     {
+        public override BlockIdentification BlockId { get { return BlockIds.Air; } }
+
         public override string Texture { get { return null; } }
 
         public override bool IsTransparent { get { return false; } }

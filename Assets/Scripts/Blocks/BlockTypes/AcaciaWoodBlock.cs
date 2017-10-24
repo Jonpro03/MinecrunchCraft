@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Assets.Scripts.Interfaces;
+﻿using Assets.Scripts.Interfaces;
+using Assets.Scripts.CraftingRecipes;
 using UnityEngine;
 
 namespace Assets.Scripts.Blocks
 {
-    public class AcaciaWoodBlock : Block
+    public class AcaciaWoodBlock : Block, IAudible, IMineable
     {
         public override string Texture { get { return "Materials/AcaciaWoodBlock"; } }
 
@@ -24,6 +21,8 @@ namespace Assets.Scripts.Blocks
         public override string SoundBlockBrokenAsset { get { return "Sounds/WoodBreak"; } }
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/WoodPlaced"; } }
+
+        public override BlockIdentification BlockId { get { return BlockIds.AcaciaWood; } }
 
         public AcaciaWoodBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

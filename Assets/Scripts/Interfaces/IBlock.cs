@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Assets.Scripts.Blocks;
+using Assets.Scripts.CraftingRecipes;
 
 namespace Assets.Scripts.Interfaces
 {
     public interface IBlock
     {
+        BlockIdentification BlockId { get; }
+
         Vector3 PositionInChunk { get; }
 
         Vector3 PositionInWorld { get; }
@@ -15,27 +19,15 @@ namespace Assets.Scripts.Interfaces
 
         string Texture { get; }
 
-        string SoundWalkedOnAsset { get; }
-
-        string SoundBeingMinedAsset { get; }
-
-        string SoundBlockBrokenAsset { get; }
-
-        string SoundBlockPlacedAsset { get; }
-
         bool IsTransparent { get; }
 
         bool IsVisible();
 
         bool IsGravityAffected { get; }
 
-        uint MiningDifficulty { get; }
-
         float Damage { get; }
 
         void OnTakeDamage(float damageAmount);
-
-        void OnDestroyed();
 
         void OnPlaced();
 

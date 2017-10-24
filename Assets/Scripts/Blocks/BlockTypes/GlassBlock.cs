@@ -26,7 +26,8 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public string Color { get; set; }
+        public override BlockIdentification BlockId { get { return new BlockIdentification(20, 0); } }
+
 
         public GlassBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

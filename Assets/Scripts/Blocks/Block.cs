@@ -10,6 +10,8 @@ namespace Assets.Scripts.Blocks
     [Serializable]
     public abstract class Block : IBlock
     {
+        public virtual BlockIdentification BlockId { get; set; }
+
         public virtual Vector3 PositionInChunk { get; private set; }
 
         public virtual Vector3 PositionInWorld { get; private set; }
@@ -228,8 +230,6 @@ namespace Assets.Scripts.Blocks
             }
         }
 
-        
-
         public Block(Vector3 posInChunk, Vector2 chunk)
         {
             PositionInChunk = posInChunk;
@@ -246,7 +246,7 @@ namespace Assets.Scripts.Blocks
             Coordinates.WorldPosToChunkPos(worldPos, out chunkPos, out chunk);
             PositionInChunk = chunkPos;
             PositionInWorld = worldPos;
-            
+
             Verticies = new List<Vector3>();
             UVs = new List<Vector2>();
             SetAllSidesVisible();
@@ -272,12 +272,12 @@ namespace Assets.Scripts.Blocks
 
         public virtual bool IsVisible()
         {
-            return FrontVisible || LeftVisible || RightVisible || TopVisible || BottomVisible || BackVisible;
+            return FrontVisible || BackVisible || LeftVisible || RightVisible || TopVisible || BottomVisible;
         }
 
-        public virtual object Clone()
+        public object Clone()
         {
-            return MemberwiseClone();
+            throw new System.NotImplementedException();
         }
     }
 }
