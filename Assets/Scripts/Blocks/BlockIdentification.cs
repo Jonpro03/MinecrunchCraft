@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Assets.Scripts.Blocks
 {
+    [Serializable]
     public class BlockIdentification
     {
         public int Id;

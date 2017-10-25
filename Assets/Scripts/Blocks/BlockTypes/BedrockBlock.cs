@@ -34,6 +34,11 @@ namespace Assets.Scripts.Blocks
 
         }
 
+        public BedrockBlock(Vector3 worldPosition) : base(worldPosition)
+        {
+
+        }
+
         public override void OnDestroyed()
         {
 

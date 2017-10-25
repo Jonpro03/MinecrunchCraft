@@ -113,7 +113,7 @@ namespace Assets.Scripts.Chunks
                     {
                         for (int by = 255; by >= 0; by--)
                         {
-                            IBlock block = Chunk.Blocks[bx, by, bz];
+                            Block block = Chunk.Blocks[bx, by, bz];
                             if (block is AirBlock)
                             {
                                 continue;

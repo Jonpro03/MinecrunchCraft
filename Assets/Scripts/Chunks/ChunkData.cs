@@ -8,11 +8,12 @@ namespace Assets.Scripts.Chunks
     [Serializable]
     public class ChunkData
     {
+        public int PositionX { get; set; }
 
-        public Vector2 ChunkPosition { get; set; }
+        public int PositionY { get; set; }
 
         public float Biome { get; set; }
 
-        public IBlock[,,] Blocks { get; set; }
+        public BlockData[,,] Blocks { get; set; }
     }
 }

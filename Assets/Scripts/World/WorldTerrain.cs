@@ -32,7 +32,7 @@ namespace Assets.Scripts.World
             chunkJobs = new ChunkJobManager();
 
             Vector2 playerLoc = Coordinates.ChunkPlayerIsIn(transform.position);
-
+            /*
             // Create the chunks
             for (int cx = (-1 * RenderSize) + (int)playerLoc.x; cx < RenderSize; cx++)
             {
@@ -46,9 +46,12 @@ namespace Assets.Scripts.World
                     }
                 }
             }
+            */
 
+            //GenerateChunk(Vector2.zero);
+            LoadChunk(Vector2.zero);
 
-            InvokeRepeating("GenerateNewChunksAroundPlayers", 5, 5);
+            //InvokeRepeating("GenerateNewChunksAroundPlayers", 5, 5);
 
             // Debug block        
             GameObject debugBlockGo = new GameObject("debugBlock");
@@ -116,7 +119,7 @@ namespace Assets.Scripts.World
             }
         }
 
-        public static IBlock GetBlockRef(Vector3 worldPos)
+        public static Block GetBlockRef(Vector3 worldPos)
         {
             Vector3 blockRelativePos;
             Vector2 chunkPos;
@@ -126,10 +129,10 @@ namespace Assets.Scripts.World
             {
                 return null;
             }
-            return (IBlock) chunk.Blocks[(int)blockRelativePos.x, (int)blockRelativePos.y, (int)blockRelativePos.z].Clone();
+            return (Block) chunk.Blocks[(int)blockRelativePos.x, (int)blockRelativePos.y, (int)blockRelativePos.z].Clone();
         }
 
-        public static bool UpdateBlock(IBlock blockRef)
+        public static bool UpdateBlock(Block blockRef)
         {
             Vector2 chunkPos;
             Vector3 blockPosInChunk;
@@ -160,7 +163,7 @@ namespace Assets.Scripts.World
 
         private void SaveChunk(Chunk chunk)
         {
-            //chunkJobs.AddChunkSaveJob(chunk);
+            chunkJobs.AddChunkSaveJob(chunk);
         }
 
         private bool LoadChunk(Vector2 chunkCoord)

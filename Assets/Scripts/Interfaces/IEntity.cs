@@ -1,8 +1,10 @@
-﻿namespace Assets.Scripts.Interfaces
+﻿using Assets.Scripts.Blocks;
+
+namespace Assets.Scripts.Interfaces
 {
     public interface IEntity
     {
-        IBlock Block { get; set; }
+        Block Block { get; set; }
 
         void Draw();
     }

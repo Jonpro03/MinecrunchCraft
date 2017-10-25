@@ -2,13 +2,15 @@
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using Assets.Scripts.Blocks;
+using Assets.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Assets.Scripts.Chunks
 {
     public class ChunkLoadJob : ThreadedJob
     {
-        public Chunk Chunk { get; private set;  }
+        public Chunk Chunk { get; private set; }
 
         public Vector2 chunkCoord;
 
@@ -48,11 +50,23 @@ namespace Assets.Scripts.Chunks
                     data = (ChunkData)formatter.Deserialize(chunkFile);
                 }
 
-                Chunk.InitializeChunk(data.ChunkPosition);
+                Chunk.InitializeChunk(new Vector2(data.PositionX, data.PositionY));
                 Chunk.Biome = data.Biome;
                 Chunk.Generated = true;
-                Chunk.Blocks = data.Blocks;
                 Chunk.IsSerialized = true;
+                for (int x = 0; x < 16; x++)
+                {
+                    for (int y = 0; y < 256; y++)
+                    {
+                        for (int z = 0; z < 16; z++)
+                        {
+                            BlockData dataBlock = data.Blocks[x, y, z];
+                            Type blockType = BlockIds.GetBlockType(dataBlock.BlockId.Id, dataBlock.BlockId.Meta);
+                            Chunk.Blocks[x, y, z] = (Block)Activator.CreateInstance(blockType, new Vector3(dataBlock.WorldPositionX, dataBlock.WorldPositionY, dataBlock.WorldPositionZ));
+
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {

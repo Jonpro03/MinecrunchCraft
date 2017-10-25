@@ -10,6 +10,14 @@ namespace Assets.Scripts.Blocks
     [Serializable]
     public class SandBlock : Block
     {
+        public override BlockIdentification BlockId
+        {
+            get
+            {
+                return BlockIds.Sand;
+            }
+        }
+
         public override string Texture { get { return "Materials/SandBlock"; } }
 
         public override bool IsTransparent { get { return false; } }

@@ -39,9 +39,9 @@ public class Raycast : MonoBehaviour {
                 getPlacePos(objectHit.point, Camera.main.transform.forward, out placePos);
 
                 GameObject debugBlockGo = new GameObject("debugBlock(" + placePos.x + ", " + placePos.y + ", " + placePos.z + ")");
-                IBlock debugBlock = new GrassBlock(placePos);
+                Block debugBlock = new GrassBlock(placePos);
                 debugBlock.SetAllSidesVisible();
-                IEntity debugBlockentity = debugBlockGo.AddComponent<BlockEntity>();
+                BlockEntity debugBlockentity = debugBlockGo.AddComponent<BlockEntity>();
                 debugBlockentity.Block = debugBlock;            
             }
         }

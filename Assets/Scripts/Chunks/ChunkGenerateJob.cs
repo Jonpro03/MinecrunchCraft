@@ -39,7 +39,7 @@ namespace Assets.Scripts.Chunks
 
                         for (int by = 0; by < 256; by++)
                         {
-                            IBlock block = Chunk.Blocks[bx, by, bz];
+                            Block block = Chunk.Blocks[bx, by, bz];
                             block = new AirBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                             if (terrainY == by)
                             {

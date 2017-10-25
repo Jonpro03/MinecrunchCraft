@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using Assets.Scripts.Interfaces;
+using Assets.Scripts.Blocks;
 
 namespace Assets.Scripts.Chunks
 {
@@ -19,7 +20,7 @@ namespace Assets.Scripts.Chunks
 
         public Vector2 ChunkPosition { get; private set; }
 
-        public IBlock[,,] Blocks { get; set; }
+        public Block[,,] Blocks { get; set; }
 
         public Dictionary<int, string> Materials;
 
@@ -39,7 +40,7 @@ namespace Assets.Scripts.Chunks
             IsSerialized = false;
             ChunkPosition = coordinate;
             WorldPosition = ChunkPosition * 16;
-            Blocks = new IBlock[16, 256, 16];
+            Blocks = new Block[16, 256, 16];
             Materials = new Dictionary<int, string>();
             Triangles = new Dictionary<int, List<int>>();
             Verticies = new List<Vector3>();

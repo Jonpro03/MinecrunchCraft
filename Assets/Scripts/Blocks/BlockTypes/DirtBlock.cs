@@ -33,6 +33,11 @@ namespace Assets.Scripts.Blocks
 
         }
 
+        public DirtBlock(Vector3 worldPos) : base(worldPos)
+        {
+
+        }
+
         public override void OnDestroyed()
         {
 

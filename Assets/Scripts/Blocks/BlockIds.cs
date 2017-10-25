@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Blocks
 {
@@ -92,5 +93,24 @@ namespace Assets.Scripts.Blocks
 
         public static BlockIdentification Book = new BlockIdentification(340, 0);
 
+        public static Dictionary<BlockIdentification, Type> BlockDictionary = new Dictionary<BlockIdentification, Type>
+        {
+            { Air, typeof(AirBlock) },
+            { Stone, typeof(StoneBlock) },
+            { Granite, typeof(GraniteBlock) },
+            { PolishedGranite, typeof(PolishedGraniteBlock) },
+            { Diorite, typeof(DioriteBlock) },
+            { PolishedDiorite, typeof(PolishedDioriteBlock) },
+            { Bedrock, typeof(BedrockBlock) },
+            { Grass, typeof(GrassBlock) },
+            { Dirt, typeof(DirtBlock) },
+            { Sand, typeof(SandBlock) },
+            { Gravel, typeof(GravelBlock) }
+        };
+
+        public static Type GetBlockType(int blockId, int metaData = 0)
+        {
+            return BlockDictionary.FirstOrDefault(x => x.Key.Id == blockId && x.Key.Meta == metaData).Value;
+        }
     }
 }

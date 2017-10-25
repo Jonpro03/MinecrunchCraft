@@ -19,7 +19,7 @@ namespace Assets.Scripts.Chunks
         protected override void ThreadFunction()
         {
             bool reqsRedraw = false;
-            IBlock block = WorldTerrain.GetBlockRef(blockWorldPosition);
+            Block block = WorldTerrain.GetBlockRef(blockWorldPosition);
             int bx, by, bz;
             bx = (int) blockWorldPosition.x;
             by = (int) blockWorldPosition.y;

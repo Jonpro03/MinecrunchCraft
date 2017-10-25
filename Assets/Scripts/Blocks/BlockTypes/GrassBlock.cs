@@ -26,7 +26,7 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/GrassPlaced"; } }
 
-        public override BlockIdentification BlockId { get { return new BlockIdentification(2, 0); } }
+        public override BlockIdentification BlockId { get { return BlockIds.Grass; } }
 
         public GrassBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {

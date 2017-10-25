@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Assets.Scripts.Blocks
 {
     [Serializable]
-    public abstract class Block : IBlock
+    public abstract class Block : IBlock, IDrawable
     {
         public virtual BlockIdentification BlockId { get; set; }
 

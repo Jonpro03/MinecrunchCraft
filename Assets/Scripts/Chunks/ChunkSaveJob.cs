@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using Assets.Scripts.Blocks;
 using UnityEngine;
 
 namespace Assets.Scripts.Chunks
@@ -21,10 +22,35 @@ namespace Assets.Scripts.Chunks
             {
                 ChunkData chunkData = new ChunkData()
                 {
-                    ChunkPosition = Chunk.ChunkPosition,
+                    PositionX = (int) Chunk.ChunkPosition.x,
+                    PositionY = (int) Chunk.ChunkPosition.y,
                     Biome = Chunk.Biome,
-                    Blocks = Chunk.Blocks
+                    Blocks = new BlockData[16, 256, 16]
                 };
+
+                for (int x = 0; x < 16; x++)
+                {
+                    for (int y = 0; y < 256; y++)
+                    {
+                        for (int z = 0; z < 16; z++)
+                        {
+                            Block chunkBlock = Chunk.Blocks[x, y, z];
+
+                            if (null == chunkBlock.BlockId)
+                            {
+                                Debug.Log(chunkBlock.PositionInChunk);
+                                continue;
+                            }
+                            chunkData.Blocks[x, y, z] = new BlockData()
+                            {
+                                WorldPositionX = (int) chunkBlock.PositionInWorld.x,
+                                WorldPositionY = (int)chunkBlock.PositionInWorld.y,
+                                WorldPositionZ = (int)chunkBlock.PositionInWorld.z,
+                                BlockId = chunkBlock.BlockId
+                            };
+                        }
+                    }
+                }
 
                 string chunkFilePath = String.Format(
                     "{0}/chunks/{1},{2}.dat",

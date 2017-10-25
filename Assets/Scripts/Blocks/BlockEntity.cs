@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Blocks;
 using Assets.Scripts.Interfaces;
 using UnityEngine;
 
 public class BlockEntity : MonoBehaviour, IEntity
 {
 
-    public IBlock Block { get; set; }
+    public Block Block { get; set; }
 
     // Use this for initialization
     void Start()

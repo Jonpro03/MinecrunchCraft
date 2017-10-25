@@ -10,6 +10,14 @@ namespace Assets.Scripts.Blocks
     [Serializable]
     public class StoneBlock : Block
     {
+        public override BlockIdentification BlockId
+        {
+            get
+            {
+                return BlockIds.Stone;
+            }
+        }
+
         public override string Texture { get { return "Materials/StoneBlock"; } }
 
         public override bool IsTransparent { get { return false; } }
@@ -28,6 +36,11 @@ namespace Assets.Scripts.Blocks
 
 
         public StoneBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        {
+
+        }
+
+        public StoneBlock(Vector3 worldPos) : base(worldPos)
         {
 
         }
