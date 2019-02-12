@@ -20,7 +20,7 @@ namespace Assets.Scripts.World
         public static List<Chunk> Chunks { get; set; }
 
         //Generates the terrain
-        private void Awake()
+        private void Start()
         {
 
             if (!Directory.Exists(World.WorldSaveFolder + "/chunks"))
@@ -32,7 +32,7 @@ namespace Assets.Scripts.World
             chunkJobs = new ChunkJobManager();
 
             Vector2 playerLoc = Coordinates.ChunkPlayerIsIn(transform.position);
-            /*
+
             // Create the chunks
             for (int cx = (-1 * RenderSize) + (int)playerLoc.x; cx < RenderSize; cx++)
             {
@@ -46,12 +46,11 @@ namespace Assets.Scripts.World
                     }
                 }
             }
-            */
 
             //GenerateChunk(Vector2.zero);
-            LoadChunk(Vector2.zero);
+            //LoadChunk(Vector2.zero);
 
-            //InvokeRepeating("GenerateNewChunksAroundPlayers", 5, 5);
+            InvokeRepeating("GenerateNewChunksAroundPlayers", 5, 2);
 
             // Debug block        
             GameObject debugBlockGo = new GameObject("debugBlock");
@@ -84,6 +83,11 @@ namespace Assets.Scripts.World
                 }
             }
             chunkJobs.CompletedJobs.RemoveAll(c => c.IsDrawn);
+        }
+
+        private void OnApplicationQuit()
+        {
+            chunkJobs.StopAllJobs();
         }
 
         public void GenerateNewChunksAroundPlayers()

@@ -18,6 +18,7 @@ namespace Assets.Scripts.Chunks
 
         protected override void ThreadFunction()
         {
+            return;
             try
             {
                 ChunkData chunkData = new ChunkData()

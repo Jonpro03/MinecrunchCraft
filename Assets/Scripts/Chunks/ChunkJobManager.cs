@@ -8,7 +8,7 @@ namespace Assets.Scripts.Chunks
     {
         public List<ChunkGenerateJob> ChunkGenerateJobs { get; set; }
 
-        public List<ChunkUpdateJob> ChunkUpdateJobs { get; set; }
+        public List<ChunkUpdateJob> ChunkUpdateJobs { get; private set; }
 
         public List<Chunk> CompletedJobs { get; set; }
 
@@ -51,10 +51,27 @@ namespace Assets.Scripts.Chunks
                 {
                     ChunkUpdateJob updateJob = new ChunkUpdateJob(chunkJob.Chunk);
                     ChunkUpdateJobs.Add(updateJob);
+                    updateJob.Start();
                     //CompletedJobs.Add(chunkJob.Chunk);
                 }
             }
             ChunkLoadJobs.RemoveAll(c => c.IsDone);
+        }
+
+        public void StopAllJobs()
+        {
+            foreach (ChunkGenerateJob chunkJob in ChunkGenerateJobs)
+            {
+                chunkJob.Abort();
+            }
+            foreach (ChunkUpdateJob chunkJob in ChunkUpdateJobs)
+            {
+                chunkJob.Abort();
+            }
+            foreach (ChunkLoadJob chunkJob in ChunkLoadJobs)
+            {
+                chunkJob.Abort();
+            }
         }
 
         public bool AddGenerateJob(Chunk chunk)
