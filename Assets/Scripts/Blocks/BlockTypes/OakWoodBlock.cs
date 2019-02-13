@@ -32,6 +32,10 @@ namespace Assets.Scripts.Blocks
 
         }
 
+        public OakWoodBlock(Vector3 worldPos) : base(worldPos)
+        {
+        }
+
         public override void OnDestroyed()
         {
 

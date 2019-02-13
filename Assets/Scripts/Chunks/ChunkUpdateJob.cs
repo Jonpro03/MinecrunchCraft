@@ -73,27 +73,27 @@ namespace Assets.Scripts.Chunks
                             var block = Chunk.Blocks[bx, by, bz];
                             
                             // Chunk Boundaries
-                            /*
+                            
                             if (bx == 0)
                             {
-                                block.LeftVisible = WorldTerrain.GetBlockRef(new Vector3(bx,by,bz) + Vector3.left) is AirBlock;
+                                block.LeftVisible = true; // WorldTerrain.GetBlockRef(new Vector3(bx,by,bz) + Vector3.left) is AirBlock;
                             }
 
                             if (bx == 15)
                             {
-                                block.RightVisible = WorldTerrain.GetBlockRef(new Vector3(bx, by, bz) + Vector3.right) is AirBlock;
+                                block.RightVisible = true; // WorldTerrain.GetBlockRef(new Vector3(bx, by, bz) + Vector3.right) is AirBlock;
                             }
 
                             if (bz == 0)
                             {
-                                block.FrontVisible = WorldTerrain.GetBlockRef(new Vector3(bx, by, bz) + Vector3.back) is AirBlock;
+                                block.FrontVisible = true; // WorldTerrain.GetBlockRef(new Vector3(bx, by, bz) + Vector3.back) is AirBlock;
                             }
 
                             if (bz == 15)
                             {
-                                block.BackVisible = WorldTerrain.GetBlockRef(new Vector3(bx, by, bz) + Vector3.forward) is AirBlock;
+                                block.BackVisible = true; // WorldTerrain.GetBlockRef(new Vector3(bx, by, bz) + Vector3.forward) is AirBlock;
                             }
-                            */
+                            
                         }
                     }
                 }

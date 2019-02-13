@@ -19,8 +19,6 @@ namespace Assets.Scripts.World
 
         public static List<Chunk> Chunks { get; set; }
 
-        public GameObject Tree;
-
         //Generates the terrain
         private void Start()
         {
@@ -72,25 +70,55 @@ namespace Assets.Scripts.World
                 ));
         }
 
+        private GameObject GetTree()
+        {
+            GameObject treeGo = new GameObject("Tree");
+            for (var y=0; y<6; y++)
+            {
+                var oak = new GameObject(y.ToString());
+                var oakEntity = oak.AddComponent<BlockEntity>();
+                oakEntity.Block = new OakWoodBlock(new Vector3(3, y, 3));
+                oak.transform.parent = treeGo.transform;
+            }
+
+            for (int x=0; x<6; x++)
+            {
+                for (int y=4; y<7; y++)
+                {
+                    for (int z=0; z<6; z++)
+                    {
+                        var leaves = new GameObject();
+                        var leavesEntity = leaves.AddComponent<BlockEntity>();
+                        leavesEntity.Block = new OakWoodLeaves(new Vector3(x, y, z));
+                        leavesEntity.transform.parent = treeGo.transform;
+                    }
+                }
+            }
+
+            return treeGo;
+        }
+
         private void FixedUpdate()
         {
             chunkJobs.Update();
             foreach (Chunk chunk in chunkJobs.CompletedJobs)
             {
-                Chunks.Add(chunk);
                 DrawChunk(chunk);
                 if (!chunk.IsSerialized)
                 {
                     SaveChunk(chunk);
                 }
                 // Add some trees to this chunk.
-                for (int x=0; x<3; x++)
+                for (int x=0; x<2; x++)
                 {
-                    int randX = UnityEngine.Random.Range(0, 15) + (int) chunk.WorldPosition.x;
-                    int randZ = UnityEngine.Random.Range(0, 15) + (int) chunk.WorldPosition.y;
+                    int randX = UnityEngine.Random.Range(0, 10) + (int) chunk.WorldPosition.x;
+                    int randZ = UnityEngine.Random.Range(0, 10) + (int) chunk.WorldPosition.y;
                     int startingY = PerlinNoise.Terrain(randX, randZ, World.SeedHash, chunk.Biome);
 
-                    GameObject treeBlock = Instantiate(Tree, new Vector3(randX, startingY, randZ), Quaternion.identity);                    
+                    var tree = GetTree();
+                    tree.transform.position = new Vector3(randX, startingY-1, randZ);
+                    tree.transform.parent = chunk.gameObject.transform;
+
                 }
 
                 
@@ -211,6 +239,7 @@ namespace Assets.Scripts.World
             Chunk chunk = chunkGameObject.AddComponent<Chunk>();
             chunk.InitializeChunk(chunkPos);
             chunk.Biome = PerlinNoise.Biome(chunkPos, World.SeedHash);
+            Chunks.Add(chunk);
             chunkJobs.AddGenerateJob(chunk);
         }
 
