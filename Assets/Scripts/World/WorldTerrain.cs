@@ -19,6 +19,8 @@ namespace Assets.Scripts.World
 
         public static List<Chunk> Chunks { get; set; }
 
+        public GameObject Tree;
+
         //Generates the terrain
         private void Start()
         {
@@ -54,7 +56,7 @@ namespace Assets.Scripts.World
 
             // Debug block        
             GameObject debugBlockGo = new GameObject("debugBlock");
-            IEntity debugBlockEntity = debugBlockGo.AddComponent<BlockEntity>();
+            BlockEntity debugBlockEntity = debugBlockGo.AddComponent<BlockEntity>();
             debugBlockEntity.Block = new GlassBlock(new Vector3(0, 64, 0));
 
         }
@@ -81,6 +83,17 @@ namespace Assets.Scripts.World
                 {
                     SaveChunk(chunk);
                 }
+                // Add some trees to this chunk.
+                for (int x=0; x<3; x++)
+                {
+                    int randX = UnityEngine.Random.Range(0, 15) + (int) chunk.WorldPosition.x;
+                    int randZ = UnityEngine.Random.Range(0, 15) + (int) chunk.WorldPosition.y;
+                    int startingY = PerlinNoise.Terrain(randX, randZ, World.SeedHash, chunk.Biome);
+
+                    GameObject treeBlock = Instantiate(Tree, new Vector3(randX, startingY, randZ), Quaternion.identity);                    
+                }
+
+                
             }
             chunkJobs.CompletedJobs.RemoveAll(c => c.IsDrawn);
         }

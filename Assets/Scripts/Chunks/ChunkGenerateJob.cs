@@ -46,7 +46,11 @@ namespace Assets.Scripts.Chunks
                                 if ((int)Chunk.Biome == 5)
                                     block = new SandBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                                 else if ((int)Chunk.Biome == 4)
+                                {
                                     block = new GrassBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
+                                    // Generate tree
+                                }
+
                                 else if ((int)Chunk.Biome == 3)
                                     block = new StoneBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                                 else

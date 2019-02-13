@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BlockTexture : MonoBehaviour
@@ -8,40 +8,162 @@ public class BlockTexture : MonoBehaviour
     void Start()
     {
         Mesh mesh = GetComponent<MeshFilter>().mesh;
-        Vector2[] UVs = new Vector2[mesh.vertices.Length];
-        // Front
-        UVs[0] = new Vector2(0.333f, 0.0f);
-        UVs[1] = new Vector2(0.667f, 0.0f);
-        UVs[2] = new Vector2(0.333f, 0.5f);
-        UVs[3] = new Vector2(0.667f, 0.5f);
-        // Top
-        UVs[4] = new Vector2(0.0f, 0.0f);
-        UVs[5] = new Vector2(0.333f, 0.0f);
-        UVs[8] = new Vector2(0.0f, 0.5f);
-        UVs[9] = new Vector2(0.333f, 0.5f);
-        // Back
-        UVs[6] = new Vector2(1.0f, 0.0f);
-        UVs[7] = new Vector2(0.667f, 0.0f);
-        UVs[10] = new Vector2(1.0f, 0.5f);
-        UVs[11] = new Vector2(0.667f, 0.5f);
-        // Bottom
-        UVs[12] = new Vector2(0.0f, 0.5f);
-        UVs[13] = new Vector2(0.0f, 1.0f);
-        UVs[14] = new Vector2(0.333f, 1.0f);
-        UVs[15] = new Vector2(0.333f, 0.5f);
-        // Left
-        UVs[16] = new Vector2(0.334f, 0.5f);
-        UVs[17] = new Vector2(0.334f, 1.0f);
-        UVs[18] = new Vector2(0.666f, 1.0f);
-        UVs[19] = new Vector2(0.666f, 0.5f);
-        // Right        
-        UVs[20] = new Vector2(0.667f, 0.5f);
-        UVs[21] = new Vector2(0.667f, 1.0f);
-        UVs[22] = new Vector2(1.0f, 1.0f);
-        UVs[23] = new Vector2(1.0f, 0.5f);
-        mesh.uv = UVs;
+        List<Vector2> UVs = new List<Vector2>();
+        List<Vector3> Verticies = new List<Vector3>();
+        Dictionary<int, List<int>> Triangles = new Dictionary<int, List<int>>();
 
-        GetComponent<MeshFilter>().mesh = mesh;
+
+        // Left
+        Verticies.AddRange(new List<Vector3>
+        {
+            new Vector3(0, 1, 1),
+            new Vector3(0, 1, 0),
+            new Vector3(0, 0, 0),
+            new Vector3(0, 0, 0),
+            new Vector3(0, 0, 1),
+            new Vector3(0, 1, 1),
+        });
+
+        UVs.AddRange(new List<Vector2>
+        {
+            new Vector2(0, 0.5f),
+            new Vector2(0.25f, 0.5f),
+            new Vector2(0.25f, 0),
+            new Vector2(0.25f, 0),
+            new Vector2(0, 0),
+            new Vector2(0, 0.5f),
+        });
+
+
+        // Right
+        Verticies.AddRange(new List<Vector3>
+        {
+            new Vector3(1, 1, 0),
+            new Vector3(1, 1, 1),
+            new Vector3(1, 0, 1),
+            new Vector3(1, 0, 1),
+            new Vector3(1, 0, 0),
+            new Vector3(1, 1, 0),
+        });
+
+        UVs.AddRange(new List<Vector2>
+        {
+            new Vector2(0.5f, 0.5f),
+            new Vector2(0.75f, 0.5f),
+            new Vector2(0.75f, 0),
+            new Vector2(0.75f, 0),
+            new Vector2(0.5f, 0),
+            new Vector2(0.5f, 0.5f),
+        });
+
+
+        // Top
+        Verticies.AddRange(new List<Vector3>
+        {
+            new Vector3(0, 1, 1),
+            new Vector3(1, 1, 1),
+            new Vector3(1, 1, 0),
+            new Vector3(1, 1, 0),
+            new Vector3(0, 1, 0),
+            new Vector3(0, 1, 1)
+        });
+
+        UVs.AddRange(new List<Vector2>
+        {
+            new Vector2(0.25f + 0.25f, 0.5f + 0.5f),
+            new Vector2(0 + 0.25f, 0.5f + 0.5f),
+            new Vector2(0 + 0.25f, 0 + 0.5f),
+            new Vector2(0 + 0.25f, 0 + 0.5f),
+            new Vector2(0.25f + 0.25f, 0 + 0.5f),
+            new Vector2(0.25f + 0.25f, 0.5f + 0.5f),
+        });
+
+        // Bottom
+        Verticies.AddRange(new List<Vector3>
+        {
+            new Vector3(0, 0, 0),
+            new Vector3(1, 0, 0),
+            new Vector3(1, 0, 1),
+            new Vector3(1, 0, 1),
+            new Vector3(0, 0, 1),
+            new Vector3(0, 0, 0)
+        });
+
+        UVs.AddRange(new List<Vector2>
+        {
+            new Vector2(0.25f, 0.5f + 0.5f),
+            new Vector2(0, 0.5f + 0.5f),
+            new Vector2(0, 0 + 0.5f),
+            new Vector2(0, 0 + 0.5f),
+            new Vector2(0.25f, 0 + 0.5f),
+            new Vector2(0.25f, 0.5f + 0.5f)
+        });
+
+
+        // Front
+        Verticies.AddRange(new List<Vector3>
+        {
+            new Vector3(1, 1, 0),
+            new Vector3(1, 0, 0),
+            new Vector3(0, 0, 0),
+            new Vector3(0, 0, 0),
+            new Vector3(0, 1, 0),
+            new Vector3(1, 1, 0)
+        });
+
+        UVs.AddRange(new List<Vector2>
+        {
+            new Vector2(0.25f + 0.25f, 0.5f),
+            new Vector2(0.25f + 0.25f, 0),
+            new Vector2(0 + 0.25f, 0),
+            new Vector2(0 + 0.25f, 0),
+            new Vector2(0 + 0.25f, 0.5f),
+            new Vector2(0.25f + 0.25f, 0.5f),
+        });
+
+
+        // Back
+        Verticies.AddRange(new List<Vector3>
+        {
+            new Vector3(0, 0, 1),
+            new Vector3(1, 0, 1),
+            new Vector3(1, 1, 1),
+            new Vector3(1, 1, 1),
+            new Vector3(0, 1, 1),
+            new Vector3(0, 0, 1)
+        });
+
+
+
+        UVs.AddRange(new List<Vector2>
+        {
+            new Vector2(0.5f, 1),
+            new Vector2(0.75f, 1),
+            new Vector2(0.75f, 0.5f),
+            new Vector2(0.75f, 0.5f),
+            new Vector2(0.5f, 0.5f),
+            new Vector2(0.5f, 1),
+        });
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        mesh.SetVertices(Verticies);
+        mesh.SetUVs(0, UVs);        
+
+        //mesh.SetTriangles(Enumerable.Range(0, 11).ToArray(), 0);
+
+        MeshFilter mf = GetComponent<MeshFilter>();
+        mf.mesh = mesh;
+        mesh.RecalculateNormals();
     }
 }
 

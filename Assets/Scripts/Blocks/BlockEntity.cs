@@ -4,10 +4,10 @@ using Assets.Scripts.Blocks;
 using Assets.Scripts.Interfaces;
 using UnityEngine;
 
-public class BlockEntity : MonoBehaviour, IEntity
+public class BlockEntity : MonoBehaviour
 {
 
-    public Block Block { get; set; }
+    public Block Block;
 
     // Use this for initialization
     void Start()

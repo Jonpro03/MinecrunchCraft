@@ -188,8 +188,7 @@ namespace Assets.Scripts.Blocks
                         new Vector2(0.25f + 0.25f, 0.5f),
                         new Vector2(0.25f + 0.25f, 0),                        
                         new Vector2(0 + 0.25f, 0),
-                        new Vector2(0 + 0.25f, 0),
-                        
+                        new Vector2(0 + 0.25f, 0),                        
                         new Vector2(0 + 0.25f, 0.5f),
                         new Vector2(0.25f + 0.25f, 0.5f),
                     });
