@@ -27,7 +27,7 @@ namespace Assets.Scripts.Blocks
 
         public string Color { get; set; }
 
-        public SmoothSandstoneBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public SmoothSandstoneBlock(Vector3 pos) : base(pos)
         {
 
         }

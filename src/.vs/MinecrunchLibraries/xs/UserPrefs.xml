@@ -1,0 +1,37 @@
+﻿<Properties StartupConfiguration="{67DBCA60-B22D-5F53-7FA5-5BB5AA74572E}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="minecrunch.game.models/Blocks.cs">
+    <Files>
+      <File FileName="minecrunch.game.models/Blocks.cs" Line="22" Column="21" />
+      <File FileName="minecrunch.game.models/BlockJsonModel.cs" Line="19" Column="1" />
+      <File FileName="minecrunch.tests/Program.cs" Line="15" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="MinecrunchLibraries" expanded="True">
+            <Node name="minecrunch.data.models" expanded="True" />
+            <Node name="minecrunch.game.models" expanded="True" selected="True">
+              <Node name="References" expanded="True" />
+            </Node>
+            <Node name="minecrunch.mappers" expanded="True">
+              <Node name="References" expanded="True" />
+            </Node>
+            <Node name="minecrunch.tests" expanded="True">
+              <Node name="References" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.minecrunch.mappers FirstBuild="True" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/Jon/git/caseinsensitive/minecrunchcraft/src/minecrunch.tests/Program.cs" relfile="minecrunch.tests/Program.cs" line="10" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

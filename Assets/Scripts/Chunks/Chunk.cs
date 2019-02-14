@@ -32,6 +32,8 @@ namespace Assets.Scripts.Chunks
 
         public float Biome { get; set; }
 
+        public Dictionary<Vector2Int, int> SurfaceMap { get; set; }
+
         public void InitializeChunk(Vector2 coordinate)
         {
             Generated = false;
@@ -45,6 +47,7 @@ namespace Assets.Scripts.Chunks
             Triangles = new Dictionary<int, List<int>>();
             Verticies = new List<Vector3>();
             UVs = new List<Vector2>();
+            SurfaceMap = new Dictionary<Vector2Int, int>();
         }
     }
 }

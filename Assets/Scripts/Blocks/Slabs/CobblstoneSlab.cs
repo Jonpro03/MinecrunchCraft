@@ -25,7 +25,7 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
-        public CobblestoneSlab(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public CobblestoneSlab(Vector3 pos) : base(pos)
         {
 
         }

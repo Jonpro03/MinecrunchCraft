@@ -8,13 +8,11 @@ using UnityEngine;
 namespace Assets.Scripts.Blocks
 {
     [Serializable]
-    public abstract class Block : IBlock, IDrawable
+    public abstract class Block : IDrawable
     {
         public virtual BlockIdentification BlockId { get; set; }
 
         public virtual Vector3 PositionInChunk { get; private set; }
-
-        public virtual Vector3 PositionInWorld { get; private set; }
 
         public virtual List<Vector3> Verticies { get; private set; }
 
@@ -229,27 +227,14 @@ namespace Assets.Scripts.Blocks
             }
         }
 
-        public Block(Vector3 posInChunk, Vector2 chunk)
+        public Block(Vector3 posInChunk)
         {
             PositionInChunk = posInChunk;
-            PositionInWorld = new Vector3((chunk.x * 16) + posInChunk.x, posInChunk.y, (chunk.y * 16) + posInChunk.z);
             leftVisible = rightVisible = topVisible = bottomVisible = frontVisible = backVisible = false;
             Verticies = new List<Vector3>();
             UVs = new List<Vector2>();
         }
 
-        public Block(Vector3 worldPos)
-        {
-            Vector2 chunk;
-            Vector3 chunkPos;
-            Coordinates.WorldPosToChunkPos(worldPos, out chunkPos, out chunk);
-            PositionInChunk = chunkPos;
-            PositionInWorld = worldPos;
-
-            Verticies = new List<Vector3>();
-            UVs = new List<Vector2>();
-            SetAllSidesVisible();
-        }
 
         public abstract void OnDestroyed();
 

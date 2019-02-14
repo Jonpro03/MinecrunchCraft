@@ -10,8 +10,6 @@ namespace Assets.Scripts.Blocks
     [Serializable]
     public class AirBlock : Block
     {
-        public override BlockIdentification BlockId { get { return BlockIds.Air; } }
-
         public override string Texture { get { return null; } }
 
         public override bool IsTransparent { get { return false; } }
@@ -33,13 +31,9 @@ namespace Assets.Scripts.Blocks
 
         public override string SoundBlockPlacedAsset { get { return null; } }
 
-        public AirBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public AirBlock(Vector3 pos) : base(pos)
         {
 
-        }
-
-        public AirBlock(Vector3 worldPos) : base(worldPos)
-        {
         }
 
         public override void OnDestroyed()

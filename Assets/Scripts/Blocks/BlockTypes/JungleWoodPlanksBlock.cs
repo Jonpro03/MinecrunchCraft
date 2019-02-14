@@ -27,7 +27,7 @@ namespace Assets.Scripts.Blocks
 
         public override BlockIdentification BlockId { get { return new BlockIdentification(5, 3); } }
 
-        public JungleWoodPlanksBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public JungleWoodPlanksBlock(Vector3 pos) : base(pos)
         {
 
         }

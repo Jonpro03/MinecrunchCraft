@@ -27,7 +27,7 @@ namespace Assets.Scripts.Blocks
 
         public string Color { get; set; }
 
-        public JungleWoodBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public JungleWoodBlock(Vector3 pos) : base(pos)
         {
 
         }

@@ -28,15 +28,11 @@ namespace Assets.Scripts.Blocks
 
         public override BlockIdentification BlockId { get { return BlockIds.Bookshelf; } }
 
-        public BookshelfBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        public BookshelfBlock(Vector3 pos) : base(pos)
         {
 
         }
 
-        public BookshelfBlock(Vector3 worldLoc) : base(worldLoc)
-        {
-
-        }
 
         public override void OnDestroyed()
         {
