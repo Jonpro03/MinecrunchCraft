@@ -12,14 +12,14 @@ namespace Assets.Scripts.Blocks
             { "stone", typeof(StoneBlock) },
         };
 
-        public static IBlockBase GetBlockById (string id)
+        public static IBlockState GetBlockById (string id)
         {
             Type t = Lookup[id];
             if (t is null)
             {
-                return new BlockBase() as IBlockBase;
+                return new BlocStatse() as IBlockState;
             }
-            IBlockBase instance = Activator.CreateInstance(t) as IBlockBase;
+            IBlockState instance = Activator.CreateInstance(t) as IBlockState;
             return instance;
         }
     }

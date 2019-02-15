@@ -811,12 +811,6 @@
     </Reference>
     <Compile Include="Assets\Scripts\Blocks\BlockDictionary.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="src\minecrunch.game.models\minecrunch.game.models.csproj">
-      <Project>{C11DA5C4-2DAA-410B-85B1-87FA2DAEA843}</Project>
-      <Name>minecrunch.game.models</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,5 +1,6 @@
 ﻿using System;
 using minecrunch.game.models;
+using minecrunch.mappers.XML.Blocks;
 
 namespace minecrunch.tests
 {
@@ -7,8 +8,9 @@ namespace minecrunch.tests
     {
         public static void Main(string[] args)
         {
-            Blocks b = new Blocks();
-            Console.WriteLine(b.blocksJson.Blocks.Count);
+
+            BlockParameters blockdata = BlockInfo.GetBlockData();
+            Console.WriteLine(blockdata.BlockList.Count);
         }
     }
 }

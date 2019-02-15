@@ -41,11 +41,5 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\minecrunch.game.models\minecrunch.game.models.csproj">
-      <Project>{C11DA5C4-2DAA-410B-85B1-87FA2DAEA843}</Project>
-      <Name>minecrunch.game.models</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
