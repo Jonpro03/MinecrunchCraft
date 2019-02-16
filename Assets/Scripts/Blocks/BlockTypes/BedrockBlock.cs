@@ -29,7 +29,12 @@ namespace Assets.Scripts.Blocks
 
         public override BlockIdentification BlockId { get { return BlockIds.Bedrock; } }
 
-        public BedrockBlock(Vector3 pos) : base(pos)
+        public BedrockBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        {
+
+        }
+
+        public BedrockBlock(Vector3 worldPosition) : base(worldPosition)
         {
 
         }

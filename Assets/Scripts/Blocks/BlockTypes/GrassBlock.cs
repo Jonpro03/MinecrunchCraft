@@ -28,11 +28,15 @@ namespace Assets.Scripts.Blocks
 
         public override BlockIdentification BlockId { get { return BlockIds.Grass; } }
 
-        public GrassBlock(Vector3 pos) : base(pos)
+        public GrassBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }
 
+        public GrassBlock(Vector3 worldPos) : base(worldPos)
+        {
+
+        }
 
         public override void OnDestroyed()
         {

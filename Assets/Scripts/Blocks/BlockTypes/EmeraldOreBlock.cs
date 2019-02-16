@@ -27,7 +27,7 @@ namespace Assets.Scripts.Blocks
 
         public override BlockIdentification BlockId { get { return new BlockIdentification(129, 0); } }
 
-        public EmeraldOreBlock(Vector3 pos) : base(pos)
+        public EmeraldOreBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

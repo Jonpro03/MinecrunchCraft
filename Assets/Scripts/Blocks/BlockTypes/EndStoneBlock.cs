@@ -27,7 +27,7 @@ namespace Assets.Scripts.Blocks
 
         public override BlockIdentification BlockId { get { return new BlockIdentification(121, 0); } }
 
-        public EndStoneBlock(Vector3 pos) : base(pos)
+        public EndStoneBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }

@@ -24,7 +24,12 @@ namespace Assets.Scripts.Blocks
 
         public override BlockIdentification BlockId { get { return BlockIds.AcaciaWood; } }
 
-        public AcaciaWoodBlock(Vector3 pos) : base(pos)
+        public AcaciaWoodBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
+        {
+
+        }
+
+        public AcaciaWoodBlock(Vector3 worldPos) : base(worldPos)
         {
         }
 

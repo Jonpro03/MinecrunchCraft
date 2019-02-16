@@ -29,7 +29,7 @@ namespace Assets.Scripts.Chunks
                 if (chunkJob.IsDone)
                 {
                     // Generate jobs go into update jobs queue.
-                    ChunkUpdateJob updateJob = new ChunkUpdateJob(chunkJob.chunk);
+                    ChunkUpdateJob updateJob = new ChunkUpdateJob(chunkJob.Chunk);
                     ChunkUpdateJobs.Add(updateJob);
                     updateJob.Start();
                 }

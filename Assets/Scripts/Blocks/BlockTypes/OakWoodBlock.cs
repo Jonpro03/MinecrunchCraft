@@ -27,9 +27,13 @@ namespace Assets.Scripts.Blocks
 
         public string Color { get; set; }
 
-        public OakWoodBlock(Vector3 pos) : base(pos)
+        public OakWoodBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
+        }
+
+        public OakWoodBlock(Vector3 worldPos) : base(worldPos)
+        {
         }
 
         public override void OnDestroyed()

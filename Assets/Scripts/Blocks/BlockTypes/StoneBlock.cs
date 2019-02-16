@@ -35,11 +35,15 @@ namespace Assets.Scripts.Blocks
         public override string SoundBlockPlacedAsset { get { return "Sounds/StonePlaced"; } }
 
 
-        public StoneBlock(Vector3 pos) : base(pos)
+        public StoneBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }
 
+        public StoneBlock(Vector3 worldPos) : base(worldPos)
+        {
+
+        }
 
         public override void OnDestroyed()
         {

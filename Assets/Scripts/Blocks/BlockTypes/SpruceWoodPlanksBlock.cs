@@ -29,7 +29,7 @@ namespace Assets.Scripts.Blocks
 
         public string Color { get; set; }
 
-        public SpruceWoodPlanksBlock(Vector3 pos) : base(pos)
+        public SpruceWoodPlanksBlock(Vector3 chunkPos, Vector2 chunkLoc) : base(chunkPos, chunkLoc)
         {
 
         }
