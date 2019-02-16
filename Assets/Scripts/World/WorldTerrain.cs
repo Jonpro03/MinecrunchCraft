@@ -51,7 +51,7 @@ namespace Assets.Scripts.World
             //GenerateChunk(Vector2.zero);
             //LoadChunk(Vector2.zero);
 
-            InvokeRepeating("GenerateNewChunksAroundPlayers", 5, 2);
+            InvokeRepeating("GenerateNewChunksAroundPlayers", 10, 6);
 
             // Debug block        
             GameObject debugBlockGo = new GameObject("debugBlock");
@@ -104,6 +104,10 @@ namespace Assets.Scripts.World
             chunkJobs.Update();
             foreach (Chunk chunk in chunkJobs.CompletedJobs)
             {
+                if (chunk == null || chunk.gameObject == null)
+                {
+                    return;
+                }
                 DrawChunk(chunk);
                 if (!chunk.IsSerialized)
                 {
@@ -134,7 +138,7 @@ namespace Assets.Scripts.World
 
         public void GenerateNewChunksAroundPlayers()
         {
-            const int UpdateDistance = 2;
+            int UpdateDistance = RenderSize;
             foreach (Player.WorldPlayer player in World.Players)
             {
                 var playerPos = Coordinates.ChunkPlayerIsIn(player.transform.position);
@@ -150,8 +154,16 @@ namespace Assets.Scripts.World
                         neededChunks.Add(playerPos + (Vector2.down * a) + (Vector2.left * b));
                     }
                 }
-                
-                Chunks.RemoveAll(c => c.Verticies.Count == 0);
+
+                List<Chunk> toRemove = Chunks.Where(c => c.Verticies.Count == 0).ToList();
+                toRemove.AddRange(Chunks.Where(c => !neededChunks.Any(v2 => v2 == c.ChunkPosition)));
+
+                toRemove.ForEach(c => {
+                    Destroy(c.gameObject);
+                    Chunks.Remove(c);
+                    });
+
+                //Chunks.RemoveAll(c => c.Verticies.Count == 0);
 
                 foreach (var chunkCoord in neededChunks)
                 {
@@ -160,6 +172,10 @@ namespace Assets.Scripts.World
                         GenerateChunk(chunkCoord);
                     }
                 }
+                toRemove.ForEach(c => {
+                    Destroy(c.gameObject);
+                    Chunks.Remove(c);
+                });
             }
         }
 
@@ -207,11 +223,13 @@ namespace Assets.Scripts.World
 
         private void SaveChunk(Chunk chunk)
         {
+            return;
             chunkJobs.AddChunkSaveJob(chunk);
         }
 
         private bool LoadChunk(Vector2 chunkCoord)
         {
+            return false;
             string chunkFilePath = String.Format("{0}/chunks/{1},{2}.dat", World.WorldSaveFolder, chunkCoord.x, chunkCoord.y);
             if (!File.Exists(chunkFilePath))
             {
@@ -244,6 +262,10 @@ namespace Assets.Scripts.World
 
         private void DrawChunk(Chunk chunk)
         {
+            if (chunk == null || chunk.gameObject == null)
+            {
+                return;
+            }
             GameObject chunkGameObject = chunk.gameObject;
             Material[] mats;
             MeshRenderer meshRenderer;
