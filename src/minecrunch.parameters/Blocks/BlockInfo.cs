@@ -8,7 +8,7 @@ namespace minecrunch.parameters.Blocks
 {
     public sealed class BlockInfo
     {
-        private const string filename = "Blocks.xml";
+        private const string filename = "BlockParameters.xml";
         private readonly BlockParameters bxml;
         private static readonly Lazy<BlockInfo> lazy = new Lazy<BlockInfo>(() => new BlockInfo());
 

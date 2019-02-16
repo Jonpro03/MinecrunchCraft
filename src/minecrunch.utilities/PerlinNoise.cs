@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SharpNoise.Modules;
 
 namespace minecrunch.utilities
@@ -6,7 +8,11 @@ namespace minecrunch.utilities
     public sealed class PerlinNoise
     {
         private Perlin perlin;
-        const float BIOME_SIZE_FACTOR = 200f;  // Todo: this better
+        const float BIOME_SIZE_FACTOR = 200f;  // Todo: get these values from settings module
+        const float MAGIC_SEED_FACTOR1 = 0.0145f;
+        const float CAVE_FILL_PERCENT = 0.35f;
+        const float CAVE_HEIGHT_FACTOR = 0.55f;
+        const float CAVE_STRETCH_FACTOR = 0.0675f;
 
         private static readonly Lazy<PerlinNoise> lazy = new Lazy<PerlinNoise>(() => new PerlinNoise());
 
@@ -22,61 +28,48 @@ namespace minecrunch.utilities
         {
             perlin = new Perlin
             {
-                Seed = 3, //Todo: fix this
-                Frequency = 1,
-                Lacunarity = 1,
-                Quality = SharpNoise.NoiseQuality.Best,
-                OctaveCount = 1,
-                Persistence = 1
+                Seed = 365449857, //Todo: get from settings
+                //Frequency = 1,
+                Lacunarity = 3,
+                Quality = SharpNoise.NoiseQuality.Fast,
+                OctaveCount = 3,
+                //Persistence = 1
             };
         }
 
-        public double Biome(int bx, int bz)
+        public int Biome(int bx, int bz)
         {
-            return perlin.GetValue(bx / BIOME_SIZE_FACTOR, bz / BIOME_SIZE_FACTOR, 0);
+            return (int) perlin.GetValue(bx / BIOME_SIZE_FACTOR, bz / BIOME_SIZE_FACTOR, 0);
         }
 
         //Function that inputs the position and spits out a float value based on the perlin noise
-        public static int Terrain(float x, float z, int seedHash, float biome = 5.0f)
+        public int Terrain(float x, float z, int biome = 5)
         {
-            int digitsInHash = seedHash.ToString().Length;
-            float seedDecimal = seedHash / Mathf.Pow(10, digitsInHash);
             int TerrainHeight = 50;
             //Generate a value from the given position, position is divided to make the noise more frequent.
-            float pass1 = Mathf.PerlinNoise((x + seedDecimal) * 0.0145f, (z + seedDecimal) * 0.0145f) * 10;
-            float pass2 = Mathf.PerlinNoise((x + z) * 0.0145f, (x - z) * 0.0145f) * biome;
-            float pass3 = Mathf.PerlinNoise(((seedDecimal - x)), ((seedDecimal - z))) * 0.36f;
+            double perlin1 = perlin.GetValue(x * MAGIC_SEED_FACTOR1, z * MAGIC_SEED_FACTOR1, biome) * 10;
 
-            //Return the noise value
-            return (int)((pass1 * pass2 - pass3) + TerrainHeight);
+            int result = (int)perlin1 + TerrainHeight;
+            return result < 0 ? 0 : result > 255 ? 255 : result;
         }
 
-        public static bool Cave(Vector3 loc, int seedHash)
+        public bool Cave(float x, float y, float z)
         {
-            const float CAVEFILLPERCENT = 0.35f;
-            const float CAVEHEIGHTFACTOR = 0.55f;
-            const float STRETCHFACTOR = 0.0675f;
+            y *= CAVE_HEIGHT_FACTOR;
+            x *= CAVE_STRETCH_FACTOR;
+            z *= CAVE_STRETCH_FACTOR;
 
-            int digitsInHash = seedHash.ToString().Length; float seedDecimal = seedHash / Mathf.Pow(10, digitsInHash - 1);
-            loc.y /= CAVEHEIGHTFACTOR;
-
-            float x = loc.x * STRETCHFACTOR / seedDecimal;
-            float y = loc.y * STRETCHFACTOR / seedDecimal;
-            float z = loc.z * STRETCHFACTOR / seedDecimal;
-
-            List<float> Perlins = new List<float>()
+            List<double> Perlins = new List<double>()
             {
-                Mathf.PerlinNoise(x, z),
-                Mathf.PerlinNoise(y, z),
-                Mathf.PerlinNoise(z, y),
-                Mathf.PerlinNoise(x, y),
-                Mathf.PerlinNoise(y, x),
-                Mathf.PerlinNoise(z, x),
-                Mathf.PerlinNoise(x, x),
-                Mathf.PerlinNoise(y, y)
+                perlin.GetValue(x, y, z),
+                perlin.GetValue(x, z, y),
+                perlin.GetValue(z, y, x),
+                perlin.GetValue(z, x, y),
+                perlin.GetValue(y, x, z),
+                perlin.GetValue(y, z, x)
             };
 
-            return Perlins.Average() < CAVEFILLPERCENT;
+            return Perlins.Average() < CAVE_FILL_PERCENT;
         }
     }
 }

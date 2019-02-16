@@ -3,7 +3,7 @@ namespace minecrunch.models.Blocks
 {
     public interface IBlock
     {
-        string BlockId { get; }
+        string Id { get; }
         Sides FacesVisible { get; }
     }
 }

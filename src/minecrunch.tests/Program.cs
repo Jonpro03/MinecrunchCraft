@@ -1,6 +1,9 @@
 ﻿using System;
-using minecrunch.game.models;
-using minecrunch.mappers.XML.Blocks;
+using System.Linq;
+using System.Threading;
+using minecrunch.models.Chunks;
+using minecrunch.parameters.Blocks;
+using minecrunch.tasks;
 
 namespace minecrunch.tests
 {
@@ -8,9 +11,23 @@ namespace minecrunch.tests
     {
         public static void Main(string[] args)
         {
+            var blockdata = BlockInfo.Instance.GetAllBlockData();
+            Console.WriteLine(blockdata.Count);
 
-            BlockParameters blockdata = BlockInfo.GetBlockData();
-            Console.WriteLine(blockdata.BlockList.Count);
+            Chunk c = new Chunk()
+            {
+                x = 0,
+                y = 0
+            };
+            ChunkGenerateTask cgt = new ChunkGenerateTask(c);
+            cgt.Start();
+            while(!cgt.IsDone) {
+                Console.WriteLine("Processing");
+                Thread.Sleep(100);
+            }
+            var lines = cgt.chunk.SurfaceMap.Select(kvp => $"{kvp.Key}: {kvp.Value}").ToList();
+            lines.ForEach(l => Console.WriteLine(l));
+
         }
     }
 }

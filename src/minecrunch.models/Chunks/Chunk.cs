@@ -1,4 +1,7 @@
-﻿using System;
+﻿using minecrunch.models.Biomes;
+using System;
+using System.Collections.Generic;
+
 namespace minecrunch.models.Chunks
 {
     [Serializable]
@@ -6,7 +9,8 @@ namespace minecrunch.models.Chunks
     {
         public int x;
         public int y;
-        public float biome;
+        public Biome biome;
         public ChunkSection[] sections = new ChunkSection[16];
+        public Dictionary<string, int> SurfaceMap = new Dictionary<string, int>();
     }
 }

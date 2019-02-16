@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -40,6 +40,20 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\minecrunch.models\minecrunch.models.csproj">
+      <Project>{60861A58-D1B1-43B8-9CD2-9800ACD77454}</Project>
+      <Name>minecrunch.models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\minecrunch.parameters\minecrunch.parameters.csproj">
+      <Project>{BD979C35-8F2F-474C-97EA-029AB0FB8796}</Project>
+      <Name>minecrunch.parameters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\minecrunch.tasks\minecrunch.tasks.csproj">
+      <Project>{84077242-25DF-4644-A6B3-FF9EA0254BA0}</Project>
+      <Name>minecrunch.tasks</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
