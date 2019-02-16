@@ -442,11 +442,11 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
-    <Reference Include="minecrunch.data.models">
-      <HintPath>C:/Users/Jon/Documents/git/MinecrunchCraft/Assets/Plugins/minecrunch.data.models.dll</HintPath>
+    <Reference Include="minecrunch.utilities">
+      <HintPath>C:/Users/Jon/Documents/git/MinecrunchCraft/Assets/Plugins/minecrunch.utilities.dll</HintPath>
     </Reference>
-    <Reference Include="minecrunch.game.models">
-      <HintPath>C:/Users/Jon/Documents/git/MinecrunchCraft/Assets/Plugins/minecrunch.game.models.dll</HintPath>
+    <Reference Include="SharpNoise">
+      <HintPath>C:/Users/Jon/Documents/git/MinecrunchCraft/Assets/Plugins/SharpNoise.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
       <HintPath>C:/Users/Jon/Documents/git/MinecrunchCraft/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>

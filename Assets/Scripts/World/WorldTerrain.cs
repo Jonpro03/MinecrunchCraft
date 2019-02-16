@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using Assets.Scripts.Interfaces;
 using Assets.Scripts.Blocks;
 using System.Linq;
-using Assets.Scripts.Utility;
 using System;
 using System.IO;
+using minecrunch.utilities;
+using Assets.Scripts.Utility;
 
 namespace Assets.Scripts.World
 {
@@ -113,7 +114,7 @@ namespace Assets.Scripts.World
                 {
                     int randX = UnityEngine.Random.Range(0, 10) + (int) chunk.WorldPosition.x;
                     int randZ = UnityEngine.Random.Range(0, 10) + (int) chunk.WorldPosition.y;
-                    int startingY = PerlinNoise.Terrain(randX, randZ, World.SeedHash, chunk.Biome);
+                    int startingY = minecrunch.utilities.PerlinNoise.Instance.Terrain(randX, randZ, (int) chunk.Biome);
 
                     var tree = GetTree();
                     tree.transform.position = new Vector3(randX, startingY-1, randZ);
@@ -149,16 +150,14 @@ namespace Assets.Scripts.World
                         neededChunks.Add(playerPos + (Vector2.down * a) + (Vector2.left * b));
                     }
                 }
+                
+                Chunks.RemoveAll(c => c.Verticies.Count == 0);
 
                 foreach (var chunkCoord in neededChunks)
                 {
                     if (!ChunkExists(chunkCoord))
                     {
-                        bool chunkOnDisk = LoadChunk(chunkCoord);
-                        if (!chunkOnDisk)
-                        {
-                            GenerateChunk(chunkCoord);
-                        }
+                        GenerateChunk(chunkCoord);
                     }
                 }
             }
@@ -238,7 +237,7 @@ namespace Assets.Scripts.World
             GameObject chunkGameObject = new GameObject(string.Format("chunk{0}generated", chunkPos.ToString()));
             Chunk chunk = chunkGameObject.AddComponent<Chunk>();
             chunk.InitializeChunk(chunkPos);
-            chunk.Biome = PerlinNoise.Biome(chunkPos, World.SeedHash);
+            chunk.Biome = minecrunch.utilities.PerlinNoise.Instance.Biome((int) chunkPos.x, (int) chunkPos.y);
             Chunks.Add(chunk);
             chunkJobs.AddGenerateJob(chunk);
         }

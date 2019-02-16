@@ -7,6 +7,7 @@ using Assets.Scripts;
 using UnityEngine;
 using Assets.Scripts.Interfaces;
 using Assets.Scripts.World;
+using minecrunch.utilities;
 
 namespace Assets.Scripts.Chunks
 {
@@ -33,7 +34,8 @@ namespace Assets.Scripts.Chunks
                     {
                         int blockWorldPosX = bx + (cx * 16);
                         int blockWorldPosZ = bz + (cz * 16);
-                        int terrainY = Utility.PerlinNoise.Terrain(blockWorldPosX, blockWorldPosZ, World.World.SeedHash, (int)Chunk.Biome);
+                        //int terrainY = Utility.PerlinNoise.Terrain(blockWorldPosX, blockWorldPosZ, World.World.SeedHash, (int)Chunk.Biome);
+                        int terrainY = PerlinNoise.Instance.Terrain(blockWorldPosX, blockWorldPosZ, (int)Chunk.Biome);
                         terrainY = Mathf.Max(0, terrainY);
                         terrainY = Mathf.Min(255, terrainY);
 
@@ -54,13 +56,13 @@ namespace Assets.Scripts.Chunks
                                 else if ((int)Chunk.Biome == 3)
                                     block = new StoneBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                                 else
-                                    block = new CobblestoneBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
+                                    block = new GrassBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                             }
                             else if (by < 6)
                             {
                                 block = new BedrockBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                             }
-                            else if (by < 52)
+                            else if (by < terrainY - 3)
                             {
                                 block = new StoneBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                             }
@@ -83,7 +85,7 @@ namespace Assets.Scripts.Chunks
                 // Cut out some caves
                 for (int bx = 0; bx < 16; bx++)
                 {
-                    for (int by = 5; by < 256; by++)
+                    for (int by = 5; by < 45; by++)
                     {
                         for (int bz = 0; bz < 16; bz++)
                         {
@@ -92,10 +94,10 @@ namespace Assets.Scripts.Chunks
                             {
                                 continue;
                             }
-                            bool isCaveBlock = Utility.PerlinNoise.Cave(block.PositionInWorld, World.World.SeedHash);
+                            bool isCaveBlock = PerlinNoise.Instance.Cave((int)block.PositionInWorld.x, (int)block.PositionInWorld.y, (int)block.PositionInWorld.z);
                             if (isCaveBlock)
                             {
-                                block = new AirBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
+                                Chunk.Blocks[bx, by, bz] = new AirBlock(new Vector3(bx, by, bz), Chunk.ChunkPosition);
                             }
                         }
                     }
