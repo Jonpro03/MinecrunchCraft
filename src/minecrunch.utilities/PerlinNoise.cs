@@ -9,7 +9,7 @@ namespace minecrunch.utilities
     {
         private Perlin terrainPerlin;
         private Perlin cavePerlin;
-        const float BIOME_SIZE_FACTOR = 20f;  // Todo: get these values from settings module
+        const float BIOME_SIZE_FACTOR = 400;  // Todo: get these values from settings module
         const float MAGIC_SEED_FACTOR1 = 0.0145f;
         const float CAVE_FILL_PERCENT = 0.008f;
         const float CAVE_HEIGHT_FACTOR = 0.11f;
@@ -39,7 +39,7 @@ namespace minecrunch.utilities
 
             cavePerlin = new Perlin
             {
-                Seed = 365449857,
+                Seed = 326544987,
                 Lacunarity = 1,
                 Quality = SharpNoise.NoiseQuality.Standard,
                 OctaveCount = 1
@@ -48,7 +48,7 @@ namespace minecrunch.utilities
 
         public int Biome(int bx, int bz)
         {
-            return (int) terrainPerlin.GetValue(bx / BIOME_SIZE_FACTOR, bz / BIOME_SIZE_FACTOR, 0);
+            return (int) (terrainPerlin.GetValue(bx / BIOME_SIZE_FACTOR, bz / BIOME_SIZE_FACTOR, 0)*10) ;
         }
 
         //Function that inputs the position and spits out a float value based on the perlin noise

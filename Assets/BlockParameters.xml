@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<blockParameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <blocks>
+    <block id="debug">
+      <name>Debug Block</name>
+      <material>Materials/blockKey</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="air">
+      <name>Air</name>
+      <material></material>
+      <transparent>true</transparent>
+    </block>
+    <block id="stone">
+      <name>Stone</name>
+      <material>Materials/StoneBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="bedrock">
+      <name>Bedrock</name>
+      <material>Materials/BedrockBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="dirt">
+      <name>Dirt</name>
+      <material>Materials/DirtBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="grass">
+      <name>Grass</name>
+      <material>Materials/GrassBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="sand">
+      <name>Sand</name>
+      <material>Materials/SandBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="oak_wood">
+      <name>Oak Wood</name>
+      <material>Materials/OakWoodBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="oak_leaves">
+      <name>Air</name>
+      <material>Materials/OakLeavesBlock</material>
+      <transparent>true</transparent>
+    </block>
+  </blocks>
+</blockParameters>

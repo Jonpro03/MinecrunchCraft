@@ -40,6 +40,11 @@ public class PlayerController : MonoBehaviour
         }
         moveDirection.y -= gravity * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
+
+        if (transform.position.y < 0 || Input.GetKeyDown(KeyCode.K))
+        {
+            transform.position += new Vector3(0, 70, 0);
+        }
     }
 
 }

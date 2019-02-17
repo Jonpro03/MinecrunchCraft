@@ -28,7 +28,7 @@ public class PauseGame : MonoBehaviour {
     {
         canvas.gameObject.SetActive(true);
         //Stops time which stops physics
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
         ReleaseMouse();
     }
 
@@ -36,7 +36,7 @@ public class PauseGame : MonoBehaviour {
     {
         canvas.gameObject.SetActive(false);
         //Sets time back to default value
-        Time.timeScale = 1;
+        //Time.timeScale = 1;
         CaptureMouse();
     }
 

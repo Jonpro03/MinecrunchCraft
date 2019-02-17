@@ -1,12 +1,13 @@
-﻿using minecrunch.models.Chunks;
-using minecrunch.tasks;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using System.Threading.Tasks;
+using minecrunch.models.Chunks;
+using minecrunch.tasks;
 
-namespace Assets.Scripts.Chunks
+namespace MinecrunchServer.Logic
 {
-    public class ChunkJobManager
+    public class ChunkTaskManager
     {
         public List<ChunkGenerateTerrainTask> ChunkGenerateTerrainTasks { get; set; }
 
@@ -18,7 +19,7 @@ namespace Assets.Scripts.Chunks
 
         public List<Chunk> CompletedChunks { get; set; }
 
-        public ChunkJobManager()
+        public ChunkTaskManager()
         {
             ChunkGenerateTerrainTasks = new List<ChunkGenerateTerrainTask>();
             ChunkGenerateCavesTasks = new List<ChunkGenerateCavesTask>();
@@ -34,7 +35,8 @@ namespace Assets.Scripts.Chunks
                 if (job.IsDone)
                 {
                     var nextJob = new ChunkGenerateCavesTask(job.chunk);
-                    ChunkGenerateCavesTasks.Add(nextJob);                 
+                    ChunkGenerateCavesTasks.Add(nextJob);
+                    nextJob.Start();
                 }
             }
             ChunkGenerateTerrainTasks.RemoveAll(task => task.IsDone);
@@ -46,6 +48,7 @@ namespace Assets.Scripts.Chunks
                 {
                     var nextJob = new ChunkCalculateFacesTask(job.chunk);
                     ChunkCalculateFacesTasks.Add(nextJob);
+                    nextJob.Start();
                 }
             }
             ChunkGenerateCavesTasks.RemoveAll(task => task.IsDone);
@@ -56,6 +59,7 @@ namespace Assets.Scripts.Chunks
                 {
                     var nextJob = new ChunkCalcVerticiesTask(job.chunk);
                     ChunkCalcVerticiesTasks.Add(nextJob);
+                    nextJob.Start();
                 }
             }
             ChunkCalculateFacesTasks.RemoveAll(task => task.IsDone);
@@ -68,13 +72,6 @@ namespace Assets.Scripts.Chunks
                 }
             }
             ChunkCalcVerticiesTasks.RemoveAll(task => task.IsDone);
-
-            int parallel = 5;
-            ChunkGenerateTerrainTasks.Take(parallel).ToList().ForEach(t => t.Start());
-            ChunkGenerateCavesTasks.Take(parallel).ToList().ForEach(t => t.Start());
-            ChunkCalculateFacesTasks.Take(parallel).ToList().ForEach(t => t.Start());
-            ChunkCalcVerticiesTasks.Take(parallel).ToList().ForEach(t => t.Start());
-
         }
 
         public void StopAllJobs()
@@ -89,12 +86,13 @@ namespace Assets.Scripts.Chunks
         public bool AddGenerateJob(Chunk chunk)
         {
 
-            if (chunk.GetBlockByChunkCoord(0,0,0) != null) // Hacky way to see if the chunk is generated.
+            if (chunk.GetBlockByChunkCoord(0, 0, 0) != null) // Hacky way to see if the chunk is generated.
             {
                 return false;
             }
             var job = new ChunkGenerateTerrainTask(chunk);
             ChunkGenerateTerrainTasks.Add(job);
+            job.Start();
             return true;
         }
 

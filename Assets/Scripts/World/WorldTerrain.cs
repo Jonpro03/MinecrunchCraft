@@ -50,9 +50,9 @@ namespace Assets.Scripts.World
 
             //GenerateChunk(Vector2.zero);
             //LoadChunk(Vector2.zero);
-
-            InvokeRepeating("GenerateNewChunksAroundPlayers", 10, 6);
             InvokeRepeating("ChunkMaintanence", 0, 1);
+            InvokeRepeating("GenerateNewChunksAroundPlayers", 60, 10);
+            
         }
 
         private void OnGUI()
@@ -132,7 +132,7 @@ namespace Assets.Scripts.World
 
         public void GenerateNewChunksAroundPlayers()
         {
-            int UpdateDistance = RenderSize;
+            int UpdateDistance = 3;
             foreach (Player.WorldPlayer player in World.Players)
             {
                 var playerPos = Coordinates.ChunkPlayerIsIn(player.transform.position);
@@ -149,8 +149,8 @@ namespace Assets.Scripts.World
                     }
                 }
 
-                List<Chunk> toRemove = Chunks.Where(c => c.sections[0].Verticies.Count == 0).ToList();
-                toRemove.AddRange(Chunks.Where(c => !neededChunks.Any(v2 => v2.x == c.x && v2.y == c.y)));
+                List<Chunk> toRemove = Chunks.Where(c => c.sections[0].blocks[0,0,0] is null).ToList();
+                //toRemove.AddRange(Chunks.Where(c => !neededChunks.Any(v2 => v2.x == c.x && v2.y == c.y)));
 
                 toRemove.ForEach(c => {
                     Destroy(GameObject.Find(c.name));
@@ -263,6 +263,10 @@ namespace Assets.Scripts.World
         private void DrawChunk(Chunk chunk)
         {
             GameObject chunkGameObject = GameObject.Find(chunk.name);
+            if (chunkGameObject is null)
+            {
+                chunkGameObject = new GameObject(chunk.name);
+            }
             chunkGameObject.transform.position = new Vector3(chunk.x * 16, 0, chunk.y * 16);
 
             //Parallel.ForEach(sections, DrawSubChunk);
