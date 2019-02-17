@@ -48,4 +48,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)*.* $(SolutionDir)..\Assets\Plugins\ /y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

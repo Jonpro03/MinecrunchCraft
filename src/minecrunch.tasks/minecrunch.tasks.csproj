@@ -29,10 +29,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChunkCalculateFacesTask.cs" />
+    <Compile Include="ChunkCalcVerticiesTask.cs" />
+    <Compile Include="ChunkGenerateCavesTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ChunkGenerateTask.cs" />
+    <Compile Include="ChunkGenerateTerrainTask.cs" />
     <Compile Include="ThreadedTask.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -50,4 +57,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)*.* $(SolutionDir)..\Assets\Plugins\ /y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

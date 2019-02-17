@@ -8,7 +8,7 @@ namespace minecrunch.parameters.Blocks
 {
     public sealed class BlockInfo
     {
-        private const string filename = "BlockParameters.xml";
+        private const string filename = "Assets/BlockParameters.xml";
         private readonly BlockParameters bxml;
         private static readonly Lazy<BlockInfo> lazy = new Lazy<BlockInfo>(() => new BlockInfo());
 
@@ -54,7 +54,12 @@ namespace minecrunch.parameters.Blocks
         /// <param name="id">Block Identifier.</param>
         public string GetBlockTexture(string id)
         {
-            return GetBlock(id).Texture;
+            return GetBlock(id).Material;
+        }
+
+        public bool IsTransparent(string id)
+        {
+            return GetBlock(id).Transparent;
         }
     }
 }

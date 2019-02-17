@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Blocks;
 using Assets.Scripts;
 using UnityEngine;
 using Assets.Scripts.Interfaces;
@@ -23,9 +22,7 @@ public class Raycast : MonoBehaviour {
             if (Physics.Raycast(inputRay, out objectHit))
             {
                 Debug.Log("ObjectHit: " + objectHit.collider.gameObject.name);
-                
-                Chunk chunk = objectHit.collider.GetComponent<Chunk>();
-                Debug.Log("Chunk: " + chunk);
+
             }
         }
 
@@ -38,11 +35,13 @@ public class Raycast : MonoBehaviour {
                 Vector3 placePos;
                 getPlacePos(objectHit.point, Camera.main.transform.forward, out placePos);
 
+                /**
                 GameObject debugBlockGo = new GameObject("debugBlock(" + placePos.x + ", " + placePos.y + ", " + placePos.z + ")");
                 Block debugBlock = new GrassBlock(placePos);
                 debugBlock.SetAllSidesVisible();
                 BlockEntity debugBlockentity = debugBlockGo.AddComponent<BlockEntity>();
-                debugBlockentity.Block = debugBlock;            
+                debugBlockentity.Block = debugBlock;       
+                **/
             }
         }
 

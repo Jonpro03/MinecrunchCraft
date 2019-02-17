@@ -13,10 +13,13 @@ namespace minecrunch.parameters.Blocks
         {
             [XmlAttribute("id")]
             public string Id { get; set; }
-            [XmlElement("texture")]
-            public string Texture { get; set; }
+            [XmlElement("material")]
+            public string Material { get; set; }
             [XmlElement("name")]
             public string Name { get; set; }
+            [XmlElement("transparent")]
+            public bool Transparent { get; set; }
+
         }
 
         [XmlArray("blocks"), XmlArrayItem(typeof(Block), ElementName = "block")]

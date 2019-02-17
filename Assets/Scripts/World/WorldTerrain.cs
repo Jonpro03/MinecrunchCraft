@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Chunks;
 using System.Collections.Generic;
-using Assets.Scripts.Interfaces;
-using Assets.Scripts.Blocks;
 using System.Linq;
 using System;
 using System.IO;
-using minecrunch.utilities;
 using Assets.Scripts.Utility;
+using minecrunch.models.Chunks;
+using minecrunch.models.Biomes;
+using System.Threading.Tasks;
 
 namespace Assets.Scripts.World
 {
@@ -52,25 +52,23 @@ namespace Assets.Scripts.World
             //LoadChunk(Vector2.zero);
 
             InvokeRepeating("GenerateNewChunksAroundPlayers", 10, 6);
-
-            // Debug block        
-            GameObject debugBlockGo = new GameObject("debugBlock");
-            BlockEntity debugBlockEntity = debugBlockGo.AddComponent<BlockEntity>();
-            debugBlockEntity.Block = new GlassBlock(new Vector3(0, 64, 0));
-
+            InvokeRepeating("ChunkMaintanence", 0, 1);
         }
 
         private void OnGUI()
         {
-            GUI.Label(new Rect(10, 10, 1000, 20), String.Format(
-                "Generate:{0} Update:{1} Load:{2} Total:{3}",
-                chunkJobs.ChunkGenerateJobs.Count,
-                chunkJobs.ChunkUpdateJobs.Count,
-                chunkJobs.ChunkLoadJobs.Count,
+            GUI.Label(new Rect(10, 10, 1000, 20), string.Format(
+                "T:{0} C:{1} F:{2} V:{3} D:{4} L:{5}",
+                chunkJobs.ChunkGenerateTerrainTasks.Count,
+                chunkJobs.ChunkGenerateCavesTasks.Count,
+                chunkJobs.ChunkCalculateFacesTasks.Count,
+                chunkJobs.ChunkCalcVerticiesTasks.Count,
+                chunkJobs.CompletedChunks.Count,
                 Chunks.Count
                 ));
         }
 
+        /**
         private GameObject GetTree()
         {
             GameObject treeGo = new GameObject("Tree");
@@ -98,21 +96,16 @@ namespace Assets.Scripts.World
 
             return treeGo;
         }
-
-        private void FixedUpdate()
+    **/
+        private void ChunkMaintanence()
         {
             chunkJobs.Update();
-            foreach (Chunk chunk in chunkJobs.CompletedJobs)
+
+            foreach (Chunk chunk in chunkJobs.CompletedChunks)
             {
-                if (chunk == null || chunk.gameObject == null)
-                {
-                    return;
-                }
                 DrawChunk(chunk);
-                if (!chunk.IsSerialized)
-                {
-                    SaveChunk(chunk);
-                }
+
+                /**
                 // Add some trees to this chunk.
                 for (int x=0; x<2; x++)
                 {
@@ -126,9 +119,10 @@ namespace Assets.Scripts.World
 
                 }
 
-                
+                **/
+
             }
-            chunkJobs.CompletedJobs.RemoveAll(c => c.IsDrawn);
+            chunkJobs.CompletedChunks.Clear();
         }
 
         private void OnApplicationQuit()
@@ -155,11 +149,11 @@ namespace Assets.Scripts.World
                     }
                 }
 
-                List<Chunk> toRemove = Chunks.Where(c => c.Verticies.Count == 0).ToList();
-                toRemove.AddRange(Chunks.Where(c => !neededChunks.Any(v2 => v2 == c.ChunkPosition)));
+                List<Chunk> toRemove = Chunks.Where(c => c.sections[0].Verticies.Count == 0).ToList();
+                toRemove.AddRange(Chunks.Where(c => !neededChunks.Any(v2 => v2.x == c.x && v2.y == c.y)));
 
                 toRemove.ForEach(c => {
-                    Destroy(c.gameObject);
+                    Destroy(GameObject.Find(c.name));
                     Chunks.Remove(c);
                     });
 
@@ -167,18 +161,15 @@ namespace Assets.Scripts.World
 
                 foreach (var chunkCoord in neededChunks)
                 {
-                    if (!ChunkExists(chunkCoord))
+                    if (!ChunkExists($"chunk{chunkCoord.ToString()}"))
                     {
                         GenerateChunk(chunkCoord);
                     }
                 }
-                toRemove.ForEach(c => {
-                    Destroy(c.gameObject);
-                    Chunks.Remove(c);
-                });
             }
         }
 
+        /**
         public static Block GetBlockRef(Vector3 worldPos)
         {
             Vector3 blockRelativePos;
@@ -226,10 +217,12 @@ namespace Assets.Scripts.World
             return;
             chunkJobs.AddChunkSaveJob(chunk);
         }
+    **/
 
         private bool LoadChunk(Vector2 chunkCoord)
         {
             return false;
+            /**
             string chunkFilePath = String.Format("{0}/chunks/{1},{2}.dat", World.WorldSaveFolder, chunkCoord.x, chunkCoord.y);
             if (!File.Exists(chunkFilePath))
             {
@@ -243,85 +236,94 @@ namespace Assets.Scripts.World
                 Destroy(chunkGameObject);
             }
             return true;
+    **/
         }
 
         private void GenerateChunk(Vector2 chunkPos)
         {
-            if (ChunkExists(chunkPos))
+            string chunkName = string.Format("chunk{0}", chunkPos.ToString());
+            if (ChunkExists(chunkName))
             {
                 return;
             }
 
-            GameObject chunkGameObject = new GameObject(string.Format("chunk{0}generated", chunkPos.ToString()));
-            Chunk chunk = chunkGameObject.AddComponent<Chunk>();
-            chunk.InitializeChunk(chunkPos);
-            chunk.Biome = minecrunch.utilities.PerlinNoise.Instance.Biome((int) chunkPos.x, (int) chunkPos.y);
+            GameObject chunkGameObject = new GameObject(chunkName);
+            Chunk chunk = new Chunk()
+            {
+                name = chunkName,
+                x = (int) chunkPos.x,
+                y = (int) chunkPos.y,
+                biome = (Biome) minecrunch.utilities.PerlinNoise.Instance.Biome((int)chunkPos.x, (int)chunkPos.y)
+            };
+
             Chunks.Add(chunk);
             chunkJobs.AddGenerateJob(chunk);
         }
 
         private void DrawChunk(Chunk chunk)
         {
-            if (chunk == null || chunk.gameObject == null)
+            GameObject chunkGameObject = GameObject.Find(chunk.name);
+            chunkGameObject.transform.position = new Vector3(chunk.x * 16, 0, chunk.y * 16);
+
+            //Parallel.ForEach(sections, DrawSubChunk);
+            foreach(var section in chunk.sections)
             {
-                return;
+                GameObject subChunkGameObject = new GameObject(section.name);
+                subChunkGameObject.transform.SetParent(chunkGameObject.transform);
+                subChunkGameObject.transform.localPosition = new Vector3(0, 0, 0);
+                DrawSubChunk(section, subChunkGameObject);
             }
-            GameObject chunkGameObject = chunk.gameObject;
-            Material[] mats;
+        }
+
+        private void DrawSubChunk(ChunkSection section, GameObject subChunkGameObject)
+        {           
+            Material[] mats = new Material[section.Materials.Count];
             MeshRenderer meshRenderer;
-            Mesh chunkMesh = new Mesh();
+            Mesh subchunkMesh = new Mesh();
 
-            if (chunk.IsDrawn)
+            foreach (int key in section.Materials.Keys)
             {
-                return;
+                mats[key] = Resources.Load<Material>(section.Materials[key]);
             }
 
-            chunkGameObject.transform.position = new Vector3(chunk.ChunkPosition.x * 16, 0, chunk.ChunkPosition.y * 16);
-            mats = new Material[chunk.Materials.Count];
-
-            foreach (int key in chunk.Materials.Keys)
+            if (subChunkGameObject.GetComponents<MeshRenderer>().Count().Equals(0))
             {
-                mats[key] = Resources.Load<Material>(chunk.Materials[key]);
-            }
-
-            if (chunkGameObject.GetComponents<MeshRenderer>().Count().Equals(0))
-            {
-                meshRenderer = chunkGameObject.AddComponent<MeshRenderer>();
+                meshRenderer = subChunkGameObject.AddComponent<MeshRenderer>();
             }
             else
             {
-                meshRenderer = chunkGameObject.GetComponent<MeshRenderer>();
+                meshRenderer = subChunkGameObject.GetComponent<MeshRenderer>();
             }
 
             meshRenderer.materials = mats;
-            chunkMesh = new Mesh();
-            chunkMesh.Clear();
-            chunkMesh.name = "TerrainMesh";
-            chunkMesh.SetVertices(chunk.Verticies.ToList());
-            chunkMesh.subMeshCount = chunk.Materials.Count;
-            chunkMesh.SetUVs(0, chunk.UVs.ToList());
+            subchunkMesh = new Mesh();
+            subchunkMesh.Clear();
+            subchunkMesh.name = section.name + "mesh";
+            subchunkMesh.SetVertices(section.Verticies.ToList());
+            subchunkMesh.subMeshCount = section.Materials.Count;
+            subchunkMesh.SetUVs(0, section.UVs.ToList());
 
-            foreach (int key in chunk.Triangles.Keys)
+            foreach (int key in section.Triangles.Keys)
             {
-                chunkMesh.SetTriangles(chunk.Triangles[key].ToList(), key);
+                subchunkMesh.SetTriangles(section.Triangles[key].ToList(), key);
             }
 
-            var meshFilter = chunkGameObject.AddComponent<MeshFilter>();
+            var meshFilter = subChunkGameObject.AddComponent<MeshFilter>();
 
-            meshFilter.mesh = chunkMesh;
-            chunkMesh.RecalculateNormals();
-            chunkGameObject.AddComponent<MeshCollider>();
-            chunk.IsDrawn = true;
+            meshFilter.mesh = subchunkMesh;
+            subchunkMesh.RecalculateNormals();
+            subChunkGameObject.AddComponent<MeshCollider>();
         }
 
+        /**
         private Chunk GetChunk(Vector2 chunkLoc)
         {
             return Chunks.FirstOrDefault(x => x.ChunkPosition == chunkLoc);
         }
-
-        private bool ChunkExists(Vector2 chunkLoc)
+    **/
+        private bool ChunkExists(string name)
         {
-            return Chunks.Any(x => x.ChunkPosition == chunkLoc);
+            return GameObject.Find(name) != null;
         }
     }
 }

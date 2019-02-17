@@ -2,13 +2,13 @@
 namespace minecrunch.models.Blocks
 {
     [Serializable]
-    public struct Sides
+    public class Sides
     {
-        public bool left;
-        public bool right;
-        public bool top;
-        public bool bottom;
-        public bool back;
-        public bool front;
+        public bool left = false;
+        public bool right = false;
+        public bool top = false;
+        public bool bottom = false;
+        public bool back = false;
+        public bool front = false;
     }
 }

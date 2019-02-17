@@ -11,5 +11,10 @@ namespace minecrunch.models.Blocks
 
         public Sides FacesVisible { get; set; }
 
+        public Block()
+        {
+            FacesVisible = new Sides();
+        }
+
     }
 }
