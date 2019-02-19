@@ -20,5 +20,7 @@ namespace minecrunch.models.Blocks
         public const string COAL_ORE = "coal_ore";
         public const string IRON_ORE = "iron_ore";
         public const string DIAMOND_ORE = "diamond_ore";
+        public const string ACACIA_WOOD = "acacia_wood";
+        public const string ANDESITE = "andesite";
     }
 }

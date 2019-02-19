@@ -35,3 +35,7 @@ sysinfo.txt
 bin/
 packages/
 **/obj/Debug/*
+Assets/Plugins/minecrunch.models.dll
+.vs/
+*.meta
+Logs/

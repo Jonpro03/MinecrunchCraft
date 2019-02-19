@@ -29,20 +29,22 @@ namespace minecrunch.tasks
         private void AddTrees()
         {
             Random rand = new Random();
-            for (var tree = 0; tree < 2; tree++)
+            for (var tree = 0; tree < 3; tree++)
             {
                 int treeX = rand.Next(0, 9);
                 int treeZ = rand.Next(0, 9);
                 int treeY = chunk.SurfaceMap[$"{treeX+3},{treeZ+3}"];
+                int treeHeight = rand.Next(6, 9);
+
                 if (chunk.GetBlockByChunkCoord(treeX, treeY, treeZ).Id != BlockIds.GRASS) { return; }
-                for (var y = 0; y < 6; y++)
+                for (var y = 0; y < treeHeight; y++)
                 {
-                    chunk.GetBlockByChunkCoord(treeX+3, treeY + y, treeZ+3).Id = BlockIds.OAK_WOOD;
+                    chunk.GetBlockByChunkCoord(treeX+3, treeY + y, treeZ+3).Id = BlockIds.ACACIA_WOOD;
                 }
 
                 for (int x = 0; x < 7; x++)
                 {
-                    for (int y = 4; y < 7; y++)
+                    for (int y = treeHeight-1; y < treeHeight+3; y++)
                     {
                         for (int z = 0; z < 7; z++)
                         {

@@ -2,12 +2,13 @@
 using Assets.Scripts.Chunks;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.IO;
 using Assets.Scripts.Utility;
 using minecrunch.models.Chunks;
 using minecrunch.models.Biomes;
-using System.Threading.Tasks;
+using UnityEditor;
+using minecrunch.models.runtime;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Assets.Scripts.World
 {
@@ -27,6 +28,7 @@ namespace Assets.Scripts.World
             if (!Directory.Exists(World.WorldSaveFolder + "/chunks"))
             {
                 Directory.CreateDirectory(World.WorldSaveFolder + "/chunks");
+                Directory.CreateDirectory(World.WorldSaveFolder + "/meshes");
             }
 
             Chunks = new List<Chunk>();
@@ -51,7 +53,8 @@ namespace Assets.Scripts.World
             //GenerateChunk(Vector2.zero);
             //LoadChunk(Vector2.zero);
             InvokeRepeating("ChunkMaintanence", 0, 1);
-            InvokeRepeating("GenerateNewChunksAroundPlayers", 60, 10);
+            InvokeRepeating("GenerateNewChunksAroundPlayers", 5, 3);
+            //InvokeRepeating("SaveChunk", 20, 10);
             
         }
 
@@ -68,35 +71,6 @@ namespace Assets.Scripts.World
                 ));
         }
 
-        /**
-        private GameObject GetTree()
-        {
-            GameObject treeGo = new GameObject("Tree");
-            for (var y=0; y<6; y++)
-            {
-                var oak = new GameObject(y.ToString());
-                var oakEntity = oak.AddComponent<BlockEntity>();
-                oakEntity.Block = new OakWoodBlock(new Vector3(3, y, 3));
-                oak.transform.parent = treeGo.transform;
-            }
-
-            for (int x=0; x<6; x++)
-            {
-                for (int y=4; y<7; y++)
-                {
-                    for (int z=0; z<6; z++)
-                    {
-                        var leaves = new GameObject();
-                        var leavesEntity = leaves.AddComponent<BlockEntity>();
-                        leavesEntity.Block = new OakWoodLeaves(new Vector3(x, y, z));
-                        leavesEntity.transform.parent = treeGo.transform;
-                    }
-                }
-            }
-
-            return treeGo;
-        }
-    **/
         private void ChunkMaintanence()
         {
             chunkJobs.Update();
@@ -120,7 +94,7 @@ namespace Assets.Scripts.World
                 }
 
                 **/
-
+                //SaveChunk(chunk);
             }
             chunkJobs.CompletedChunks.Clear();
         }
@@ -132,7 +106,11 @@ namespace Assets.Scripts.World
 
         public void GenerateNewChunksAroundPlayers()
         {
-            int UpdateDistance = 3;
+            if (chunkJobs.ChunkCalculateFacesTasks.Count > 0)
+            {
+                return;
+            }
+            int UpdateDistance = RenderSize;
             foreach (Player.WorldPlayer player in World.Players)
             {
                 var playerPos = Coordinates.ChunkPlayerIsIn(player.transform.position);
@@ -148,7 +126,7 @@ namespace Assets.Scripts.World
                         neededChunks.Add(playerPos + (Vector2.down * a) + (Vector2.left * b));
                     }
                 }
-
+                /**
                 List<Chunk> toRemove = Chunks.Where(c => c.sections[0].blocks[0,0,0] is null).ToList();
                 //toRemove.AddRange(Chunks.Where(c => !neededChunks.Any(v2 => v2.x == c.x && v2.y == c.y)));
 
@@ -158,12 +136,16 @@ namespace Assets.Scripts.World
                     });
 
                 //Chunks.RemoveAll(c => c.Verticies.Count == 0);
-
+                **/
                 foreach (var chunkCoord in neededChunks)
                 {
                     if (!ChunkExists($"chunk{chunkCoord.ToString()}"))
                     {
-                        GenerateChunk(chunkCoord);
+                        bool chunkOnDisk = LoadChunk(chunkCoord);
+                        if (!chunkOnDisk)
+                        {
+                            GenerateChunk(chunkCoord);
+                        }
                     }
                 }
             }
@@ -211,32 +193,87 @@ namespace Assets.Scripts.World
                 ScheduleChunkUpdate(chunk);
             }
         }
-
-        private void SaveChunk(Chunk chunk)
+**/
+        private void SaveChunk()
         {
-            return;
-            chunkJobs.AddChunkSaveJob(chunk);
+
+            //chunkJobs.AddChunkSaveJob(chunk);
         }
-    **/
+
 
         private bool LoadChunk(Vector2 chunkCoord)
         {
-            return false;
-            /**
-            string chunkFilePath = String.Format("{0}/chunks/{1},{2}.dat", World.WorldSaveFolder, chunkCoord.x, chunkCoord.y);
+            string chunkName = $"chunk{chunkCoord.ToString()}";
+            
+            if (File.Exists(World.WorldSaveFolder + $"/meshes/{chunkName}-subchunk0.mesh"))
+            {
+                GameObject chunkGameObject = new GameObject(chunkName);
+
+                for (var x=0; x<8; x++)
+                {
+                    string subchunkName = $"subchunk{x}";
+                    string meshPath = World.WorldSaveFolder + $"/meshes/{chunkName}-{subchunkName}.mesh";
+                    string matPath = World.WorldSaveFolder + $"/meshes/{chunkName}-{subchunkName}.mat";
+                    string triPath = World.WorldSaveFolder + $"/meshes/{chunkName}-{subchunkName}.tri";
+
+                    if (!File.Exists(meshPath)) { continue; }
+
+                    var bf = new BinaryFormatter();
+                    Material[] mats;
+                    MeshRenderer meshRenderer;
+                    GameObject subChunkGameObject = new GameObject(chunkName + "-" + subchunkName);
+                    Dictionary<int, string> matDict;
+                    Dictionary<int, List<int>> triDict;
+                    using (FileStream materials = File.OpenRead(matPath))
+                    {
+                        matDict = bf.Deserialize(materials) as Dictionary<int, string>;
+                        mats = new Material[matDict.Count];
+                        foreach (int key in matDict.Keys)
+                        {
+                            mats[key] = Resources.Load<Material>(matDict[key]);
+                        }
+                    }
+                    using (FileStream triangles = File.OpenRead(triPath))
+                    {
+                        triDict = bf.Deserialize(triangles) as Dictionary<int, List<int>>;
+                    }
+
+                    meshRenderer = subChunkGameObject.AddComponent<MeshRenderer>();
+                    meshRenderer.materials = mats;
+
+                    var meshBytes = File.ReadAllBytes(meshPath);
+                    var subchunkMesh = MeshSerializer.ReadMesh(meshBytes);
+                    subchunkMesh.triangles = new int[0];
+                    subchunkMesh.subMeshCount = matDict.Count;
+                    foreach (int key in triDict.Keys)
+                    {
+                        subchunkMesh.SetTriangles(triDict[key], key);
+                    }
+
+                    subchunkMesh.name = subchunkName + "mesh";
+                    var meshFilter = subChunkGameObject.AddComponent<MeshFilter>();
+                    meshFilter.mesh = subchunkMesh;
+                    
+                    subchunkMesh.RecalculateNormals();
+                    subChunkGameObject.AddComponent<MeshCollider>();
+
+                    subChunkGameObject.transform.SetParent(chunkGameObject.transform);
+                    subChunkGameObject.transform.localPosition = new Vector3(0, 0, 0);
+                    
+                }
+                chunkGameObject.transform.position = new Vector3(chunkCoord.x * 16, 0, chunkCoord.y * 16);
+
+                return true;
+            }
+
+
+            string chunkFilePath = string.Format("{0}/chunks/{1},{2}.dat", World.WorldSaveFolder, chunkCoord.x, chunkCoord.y);
             if (!File.Exists(chunkFilePath))
             {
                 return false;
             }
-
-            GameObject chunkGameObject = new GameObject(string.Format("chunk{0}loaded", chunkCoord.ToString()));
-            Chunk chunk = chunkGameObject.AddComponent<Chunk>();
-            if (!chunkJobs.AddChunkLoadJob(chunkCoord, chunk))
-            {
-                Destroy(chunkGameObject);
-            }
+            chunkJobs.AddChunkLoadJob(chunkCoord);
             return true;
-    **/
         }
 
         private void GenerateChunk(Vector2 chunkPos)
@@ -253,7 +290,7 @@ namespace Assets.Scripts.World
                 name = chunkName,
                 x = (int) chunkPos.x,
                 y = (int) chunkPos.y,
-                biome = (Biome) minecrunch.utilities.PerlinNoise.Instance.Biome((int)chunkPos.x, (int)chunkPos.y)
+                biome = (Biome) minecrunch.utilities.PerlinNoise.Instance.Biome((int)chunkPos.x, 0, (int)chunkPos.y)
             };
 
             Chunks.Add(chunk);
@@ -267,20 +304,28 @@ namespace Assets.Scripts.World
             {
                 chunkGameObject = new GameObject(chunk.name);
             }
+            
             chunkGameObject.transform.position = new Vector3(chunk.x * 16, 0, chunk.y * 16);
 
             //Parallel.ForEach(sections, DrawSubChunk);
             foreach(var section in chunk.sections)
             {
-                GameObject subChunkGameObject = new GameObject(section.name);
+                GameObject subChunkGameObject = new GameObject(chunk.name + "-" + section.name);
                 subChunkGameObject.transform.SetParent(chunkGameObject.transform);
                 subChunkGameObject.transform.localPosition = new Vector3(0, 0, 0);
                 DrawSubChunk(section, subChunkGameObject);
             }
+
+            Debug.Log($"Chunk time {chunk.processTimeMs / 1000.0f} seconds");
         }
 
         private void DrawSubChunk(ChunkSection section, GameObject subChunkGameObject)
-        {           
+        {   
+            if (section.Materials.Count.Equals(0))
+            {
+                return;
+            }
+
             Material[] mats = new Material[section.Materials.Count];
             MeshRenderer meshRenderer;
             Mesh subchunkMesh = new Mesh();
@@ -309,7 +354,7 @@ namespace Assets.Scripts.World
 
             foreach (int key in section.Triangles.Keys)
             {
-                subchunkMesh.SetTriangles(section.Triangles[key].ToList(), key);
+                subchunkMesh.SetTriangles(section.Triangles[key], key);
             }
 
             var meshFilter = subChunkGameObject.AddComponent<MeshFilter>();
@@ -317,6 +362,22 @@ namespace Assets.Scripts.World
             meshFilter.mesh = subchunkMesh;
             subchunkMesh.RecalculateNormals();
             subChunkGameObject.AddComponent<MeshCollider>();
+
+            //Save to disk
+            string meshPath = World.WorldSaveFolder + $"/meshes/{subChunkGameObject.name}.mesh";
+            var serializedMesh = MeshSerializer.WriteMesh(subchunkMesh, false);
+            File.WriteAllBytes(meshPath, serializedMesh);
+
+            string matPath = World.WorldSaveFolder + $"/meshes/{subChunkGameObject.name}.mat";
+            using (FileStream materials = File.Create(matPath))
+            {
+                new BinaryFormatter().Serialize(materials, section.Materials);
+            }
+            string triPath = World.WorldSaveFolder + $"/meshes/{subChunkGameObject.name}.tri";
+            using (FileStream triangles = File.Create(triPath))
+            {
+                new BinaryFormatter().Serialize(triangles, section.Triangles);
+            }
         }
 
         /**

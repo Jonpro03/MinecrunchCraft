@@ -17,7 +17,7 @@ namespace Assets.Scripts.World
 
         public static List<Player.WorldPlayer> Players;
 
-        public static string WorldName = "world";
+        public static string WorldName = "world1";
 
         public static string WorldSaveFolder;
 

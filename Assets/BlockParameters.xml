@@ -46,5 +46,30 @@
       <material>Materials/OakLeavesBlock</material>
       <transparent>true</transparent>
     </block>
+    <block id="iron_ore">
+      <name>Iron Ore</name>
+      <material>Materials/IronOreBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="coal_ore">
+      <name>Coal Ore</name>
+      <material>Materials/CoalOreBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="diamond_ore">
+      <name>Diamond Ore</name>
+      <material>Materials/DiamondOreBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="acacia_wood">
+      <name>Diamond Ore</name>
+      <material>Materials/AcaciaWoodBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="andesite">
+      <name>Andesite</name>
+      <material>Materials/AndesiteBlock</material>
+      <transparent>false</transparent>
+    </block>
   </blocks>
 </blockParameters>

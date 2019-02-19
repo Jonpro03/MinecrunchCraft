@@ -16,6 +16,7 @@ public class PauseGame : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            Application.Quit();
             //Brings up pause menu if not already active otherwhys it is closed
             if (canvas.gameObject.activeInHierarchy == false)
                 Pause();
