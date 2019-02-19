@@ -9,7 +9,8 @@ namespace minecrunch.utilities
     {
         private Perlin terrainPerlin;
         private Perlin cavePerlin;
-        const float BIOME_SIZE_FACTOR = 400;  // Todo: get these values from settings module
+        private Voronoi biomePerlin;
+        const float BIOME_SIZE_FACTOR = 300;  // Todo: get these values from settings module
         const float MAGIC_SEED_FACTOR1 = 0.0145f;
         const float CAVE_FILL_PERCENT = 0.008f;
         const float CAVE_HEIGHT_FACTOR = 0.11f;
@@ -27,28 +28,37 @@ namespace minecrunch.utilities
 
         private PerlinNoise()
         {
+
+
             terrainPerlin = new Perlin
             {
-                Seed = 365449857, //Todo: get from settings
+                Seed = 1, //Todo: get from settings
                 //Frequency = 1,
                 Lacunarity = 3,
-                Quality = SharpNoise.NoiseQuality.Fast,
+                Quality = SharpNoise.NoiseQuality.Best,
                 OctaveCount = 3,
                 //Persistence = 1
             };
 
+            biomePerlin = new Voronoi
+            {
+                Seed = 3,
+                Frequency=3
+            };
+
             cavePerlin = new Perlin
             {
-                Seed = 326544987,
+                Seed = 326500087,
                 Lacunarity = 1,
                 Quality = SharpNoise.NoiseQuality.Standard,
                 OctaveCount = 1
             };
         }
 
-        public int Biome(int bx, int bz)
+        public int Biome(int bx, int by, int bz)
         {
-            return (int) (terrainPerlin.GetValue(bx / BIOME_SIZE_FACTOR, bz / BIOME_SIZE_FACTOR, 0)*10) ;
+            double val = biomePerlin.GetValue(bx / BIOME_SIZE_FACTOR, by / BIOME_SIZE_FACTOR, bz / BIOME_SIZE_FACTOR) * 2;
+            return (int) val > 1 ? 1 : (int) val;
         }
 
         //Function that inputs the position and spits out a float value based on the perlin noise
@@ -56,9 +66,10 @@ namespace minecrunch.utilities
         {
             int TerrainHeight = 50;
             //Generate a value from the given position, position is divided to make the noise more frequent.
-            double perlin1 = terrainPerlin.GetValue(x * MAGIC_SEED_FACTOR1, z * MAGIC_SEED_FACTOR1, biome) * 10;
+            double perlin1 = terrainPerlin.GetValue(x * MAGIC_SEED_FACTOR1, 0, z * MAGIC_SEED_FACTOR1) * 10;
+            double perlin2 = terrainPerlin.GetValue(x / 400, 0, z / 400) * 5;
 
-            int result = (int)perlin1 + TerrainHeight;
+            int result = (int) (perlin1 * perlin2) + TerrainHeight;
             return result < 0 ? 0 : result > 255 ? 255 : result;
         }
 

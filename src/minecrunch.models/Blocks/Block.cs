@@ -7,6 +7,10 @@ namespace minecrunch.models.Blocks
     [Serializable]
     public class Block : IBlock
     {
+        public int x;
+        public int y;
+        public int z;
+
         public string Id { get; set; }
 
         public Sides FacesVisible { get; set; }

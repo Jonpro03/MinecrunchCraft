@@ -35,7 +35,7 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
-            chunk.biome = (Biome)pNoise.Biome(chunk.x, chunk.y);
+            chunk.biome = (Biome)pNoise.Biome(chunk.x, 0, chunk.y);
 
             for (int bx = 0; bx < 16; bx++)
             {
@@ -61,7 +61,12 @@ namespace minecrunch.tasks
 
                     for (int by = sectionYOffset; by < sectionYOffset + 16; by++)
                     {
-                        Block block = new Block();
+                        Block block = new Block
+                        {
+                            x = bx,
+                            y = by,
+                            z = bz
+                        };
 
                         // If above the terrain, just mark it air and move on.
                         if (by > terrainY)
@@ -71,7 +76,9 @@ namespace minecrunch.tasks
                             continue;
                         }
 
-                        switch (chunk.biome)
+                        var biome = (Biome) pNoise.Biome(bx + (chunk.x * 16), by, bz + (chunk.y*16));
+
+                        switch (biome)
                         {
                             case Biome.Desert:
                                 {
@@ -86,7 +93,7 @@ namespace minecrunch.tasks
                                 {
                                     if (by == terrainY)
                                     {
-                                        block.Id = BlockIds.DIRT;
+                                        block.Id = BlockIds.STONE;
                                     }
                                     else if (by > terrainY - 5)
                                     {

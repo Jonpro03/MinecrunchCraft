@@ -15,6 +15,10 @@ namespace minecrunch.models.Blocks
         public const string DIRT = "dirt";
         public const string GRASS = "grass";
         public const string SAND = "sand";
-
+        public const string OAK_WOOD = "oak_wood";
+        public const string OAK_LEAVES = "oak_leaves";
+        public const string COAL_ORE = "coal_ore";
+        public const string IRON_ORE = "iron_ore";
+        public const string DIAMOND_ORE = "diamond_ore";
     }
 }

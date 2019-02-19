@@ -3,6 +3,7 @@ using minecrunch.models.Chunks;
 using minecrunch.parameters.Blocks;
 using minecrunch.utilities;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -22,7 +23,10 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
+            //chunk.sections.ToList().ForEach(s => ProcessSection(s));
+            
             Parallel.ForEach(chunk.sections, ProcessSection);
+            
         }
 
         private void ProcessSection(ChunkSection section)
