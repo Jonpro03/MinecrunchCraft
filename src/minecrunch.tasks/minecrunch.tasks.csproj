@@ -53,10 +53,6 @@
       <Project>{BD979C35-8F2F-474C-97EA-029AB0FB8796}</Project>
       <Name>minecrunch.parameters</Name>
     </ProjectReference>
-    <ProjectReference Include="..\minecrunch.utilities\minecrunch.utilities.csproj">
-      <Project>{A08AD621-6269-4569-91D8-2BBD120D0099}</Project>
-      <Name>minecrunch.utilities</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

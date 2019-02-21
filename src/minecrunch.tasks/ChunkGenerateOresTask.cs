@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using minecrunch.models.Blocks;
+﻿using minecrunch.models.Blocks;
 using minecrunch.models.Chunks;
 using minecrunch.parameters.Blocks;
-using minecrunch.utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace minecrunch.tasks
 {
@@ -12,15 +11,19 @@ namespace minecrunch.tasks
     {
         public readonly Chunk chunk;
         private BlockInfo bInfo;
+        private IEnumerable<Block> blocks;
+        private Random rand;
 
         public ChunkGenerateOresTask(Chunk c)
         {
             chunk = c;
             bInfo = BlockInfo.Instance;
+            rand = new Random();
         }
 
         protected override void ThreadFunction()
         {
+            blocks = chunk.GetAllBlocks().Where(b => b.Id is BlockIds.STONE);
             AddCoal();
             AddAndesite();
             AddIron();
@@ -29,13 +32,15 @@ namespace minecrunch.tasks
 
         private void AddCoal()
         {
-            Random rand = new Random();
-            for (var ore = 0; ore < 30; ore++)
+            int numOreVeins = rand.Next(5, 10);
+
+            for (int v = 0; v < numOreVeins; v++)
             {
-                int oreX = rand.Next(0, 12);
-                int oreY = rand.Next(0, 12);
-                int oreZ = rand.Next(8, chunk.SurfaceMap[$"{oreX+2},{oreY+2}"]);
-                if (chunk.GetBlockByChunkCoord(oreX, oreZ, oreY).Id != BlockIds.STONE) { continue; }
+                int randIndex = rand.Next(0, blocks.Count());
+                var b = blocks.Skip(randIndex).First();
+                int oreX = b.x > 12 ? 12 : b.x;
+                int oreY = b.y > 255 ? 255: b.y;
+                int oreZ = b.z > 12 ? 12 : b.z;
 
                 for (int x = 0; x < 3; x++)
                 {
@@ -43,51 +48,53 @@ namespace minecrunch.tasks
                     {
                         for (int z = 0; z < 3; z++)
                         {
-                            Block block = chunk.GetBlockByChunkCoord(oreX + x, oreZ + y, oreY + z);
+                            Block block = chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z);
                             if (block.Id != BlockIds.AIR)
-                                chunk.GetBlockByChunkCoord(oreX+x, oreZ+y, oreY+z).Id = BlockIds.COAL_ORE;
+                                chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z).Id = BlockIds.COAL_ORE;
                         }
                     }
                 }
-
             }
         }
 
         private void AddIron()
         {
-            Random rand = new Random();
-            for (var ore = 0; ore < 40; ore++)
-            {
-                int oreX = rand.Next(0, 12);
-                int oreY = rand.Next(0, 12);
-                int oreZ = rand.Next(8, chunk.SurfaceMap[$"{oreX + 2},{oreY + 2}"]);
-                if (chunk.GetBlockByChunkCoord(oreX, oreZ, oreY).Id != BlockIds.STONE) { continue; }
+            int numOreVeins = rand.Next(1, 4);
 
-                for (int x = 0; x < 2; x++)
+            for (int v = 0; v < numOreVeins; v++)
+            {
+                int randIndex = rand.Next(0, blocks.Count());
+                var b = blocks.Skip(randIndex).First();
+                int oreX = b.x > 12 ? 12 : b.x;
+                int oreY = b.y > 255 ? 255 : b.y;
+                int oreZ = b.z > 12 ? 12 : b.z;
+
+                for (int x = 0; x < 3; x++)
                 {
                     for (int y = 0; y < 2; y++)
                     {
                         for (int z = 0; z < 3; z++)
                         {
-                            Block block = chunk.GetBlockByChunkCoord(oreX + x, oreZ + y, oreY + z);
+                            Block block = chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z);
                             if (block.Id != BlockIds.AIR)
-                                chunk.GetBlockByChunkCoord(oreX + x, oreZ + y, oreY + z).Id = BlockIds.IRON_ORE;
+                                chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z).Id = BlockIds.IRON_ORE;
                         }
                     }
                 }
-
             }
         }
 
         private void AddDiamond()
         {
-            Random rand = new Random();
-            for (var ore = 0; ore < 40; ore++)
+            int numOreVeins = rand.Next(2, 4);
+            for (var ore = 0; ore < numOreVeins; ore++)
             {
-                int oreX = rand.Next(0, 12);
-                int oreY = rand.Next(0, 12);
-                int oreZ = rand.Next(8, chunk.SurfaceMap[$"{oreX + 2},{oreY + 2}"]);
-                if (chunk.GetBlockByChunkCoord(oreX, oreZ, oreY).Id != BlockIds.STONE) { continue; }
+                int randIndex = rand.Next(0, blocks.Count());
+                var b = blocks.Skip(randIndex).First();
+                int oreX = b.x > 12 ? 12 : b.x;
+                int oreY = b.y > 255 ? 255 : b.y;
+                int oreZ = b.z > 12 ? 12 : b.z;
+                if (chunk.GetBlockByChunkCoord(oreX, oreY, oreZ).Id != BlockIds.STONE) { continue; }
 
                 for (int x = 0; x < 2; x++)
                 {
@@ -95,9 +102,9 @@ namespace minecrunch.tasks
                     {
                         for (int z = 0; z < 2; z++)
                         {
-                            Block block = chunk.GetBlockByChunkCoord(oreX + x, oreZ + y, oreY + z);
+                            Block block = chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z);
                             if (block.Id != BlockIds.AIR)
-                                chunk.GetBlockByChunkCoord(oreX + x, oreZ + y, oreY + z).Id =  BlockIds.DIAMOND_ORE;
+                                chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z).Id = BlockIds.DIAMOND_ORE;
                         }
                     }
                 }
@@ -107,13 +114,15 @@ namespace minecrunch.tasks
 
         private void AddAndesite()
         {
-            Random rand = new Random();
-            for (var ore = 0; ore < 30; ore++)
+            int numOreVeins = rand.Next(2, 8);
+            for (var ore = 0; ore < numOreVeins; ore++)
             {
-                int oreX = rand.Next(0, 12);
-                int oreY = rand.Next(0, 12);
-                int oreZ = rand.Next(8, chunk.SurfaceMap[$"{oreX + 2},{oreY + 2}"]);
-                if (chunk.GetBlockByChunkCoord(oreX, oreZ, oreY).Id != BlockIds.STONE) { continue; }
+                int randIndex = rand.Next(0, blocks.Count());
+                var b = blocks.Skip(randIndex).First();
+                int oreX = b.x > 12 ? 12 : b.x;
+                int oreY = b.y > 255 ? 255 : b.y;
+                int oreZ = b.z > 12 ? 12 : b.z;
+                if (chunk.GetBlockByChunkCoord(oreX, oreY, oreZ).Id != BlockIds.STONE) { continue; }
 
                 for (int x = 0; x < 3; x++)
                 {
@@ -121,9 +130,9 @@ namespace minecrunch.tasks
                     {
                         for (int z = 0; z < 3; z++)
                         {
-                            Block block = chunk.GetBlockByChunkCoord(oreX + x, oreZ + y, oreY + z);
+                            Block block = chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z);
                             if (block.Id != BlockIds.AIR)
-                                chunk.GetBlockByChunkCoord(oreX + x, oreZ + y, oreY + z).Id = BlockIds.ANDESITE;
+                                chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z).Id = BlockIds.ANDESITE;
                         }
                     }
                 }

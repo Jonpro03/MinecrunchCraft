@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using SharpNoise.Modules;
 
-namespace minecrunch.utilities
+namespace minecrunch.models
 {
     public class PerlinNoise
     {
         private Perlin terrainPerlin;
         private Perlin cavePerlin;
         private Voronoi biomePerlin;
-        const float BIOME_SIZE_FACTOR = 300;  // Todo: get these values from settings module
+        private int biome_size;
+        private float cave_fill;
+        private float cave_height;
+        private float cave_stretch;
         const float MAGIC_SEED_FACTOR1 = 0.0145f;
-        const float CAVE_FILL_PERCENT = 0.004f;
-        const float CAVE_HEIGHT_FACTOR = 0.11f;
-        const float CAVE_STRETCH_FACTOR = 0.0675f;
 
         private static readonly Lazy<PerlinNoise> lazy = new Lazy<PerlinNoise>(() => new PerlinNoise());
 
@@ -28,11 +28,14 @@ namespace minecrunch.utilities
 
         private PerlinNoise()
         {
-
+            biome_size = Properties.Settings.Default.BIOME_SIZE_FACTOR * 100;
+            cave_fill = (Properties.Settings.Default.CAVE_FILL_PERCENT / 100.0f * 0.70f) + 0.30f;
+            cave_height = Properties.Settings.Default.CAVE_HEIGHT_PERCENT / 100.0f * 0.25f;
+            cave_stretch = Properties.Settings.Default.CAVE_STRETCH_PERCENT / 1000.0f * 0.8f;
 
             terrainPerlin = new Perlin
             {
-                Seed = 1, //Todo: get from settings
+                Seed = 10, //Todo: get from settings
                 //Frequency = 1,
                 Lacunarity = 3,
                 Quality = SharpNoise.NoiseQuality.Best,
@@ -48,16 +51,16 @@ namespace minecrunch.utilities
 
             cavePerlin = new Perlin
             {
-                Seed = 326500087,
-                Lacunarity = 1,
-                Quality = SharpNoise.NoiseQuality.Standard,
+                Seed = 3265087,
+                Lacunarity = 0,
+                Quality = SharpNoise.NoiseQuality.Fast,
                 OctaveCount = 1
             };
         }
 
         public int Biome(int bx, int by, int bz)
         {
-            double val = biomePerlin.GetValue(bx / BIOME_SIZE_FACTOR, by / BIOME_SIZE_FACTOR, bz / BIOME_SIZE_FACTOR) * 2;
+            double val = biomePerlin.GetValue(bx / biome_size, by / biome_size, bz / biome_size) * 2;
             return (int) val > 1 ? 1 : (int) val;
         }
 
@@ -75,11 +78,11 @@ namespace minecrunch.utilities
 
         public bool Cave(float x, float y, float z)
         {
-            y *= CAVE_HEIGHT_FACTOR;
-            x *= CAVE_STRETCH_FACTOR;
-            z *= CAVE_STRETCH_FACTOR;
-
-            return cavePerlin.GetValue(x, y, z) < CAVE_FILL_PERCENT;
+            y *= cave_height;
+            x *= cave_stretch;
+            z *= cave_stretch;
+            double val = cavePerlin.GetValue(x, y, z);
+            return !(val < cave_fill && val > 0);
         }
     }
 }

@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "..\Assembly-CSharp.csproj", "{5A011A0A-0878-68A1-C443-F4B25F2A9B77}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "minecrunch.tests", "minecrunch.tests\minecrunch.tests.csproj", "{C9D0159D-1E3D-446A-8408-3B55E5A3126F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "minecrunch.parameters", "minecrunch.parameters\minecrunch.parameters.csproj", "{BD979C35-8F2F-474C-97EA-029AB0FB8796}"
@@ -12,9 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "minecrunch.models", "minecr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "minecrunch.tasks", "minecrunch.tasks\minecrunch.tasks.csproj", "{84077242-25DF-4644-A6B3-FF9EA0254BA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "minecrunch.utilities", "minecrunch.utilities\minecrunch.utilities.csproj", "{A08AD621-6269-4569-91D8-2BBD120D0099}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecrunchServer", "MinecrunchServer\MinecrunchServer.csproj", "{C3A1E208-188F-4133-ACDC-7571BDB9AFB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinecrunchServer", "MinecrunchServer\MinecrunchServer.csproj", "{C3A1E208-188F-4133-ACDC-7571BDB9AFB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5A011A0A-0878-68A1-C443-F4B25F2A9B77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A011A0A-0878-68A1-C443-F4B25F2A9B77}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A011A0A-0878-68A1-C443-F4B25F2A9B77}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A011A0A-0878-68A1-C443-F4B25F2A9B77}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C9D0159D-1E3D-446A-8408-3B55E5A3126F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C9D0159D-1E3D-446A-8408-3B55E5A3126F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9D0159D-1E3D-446A-8408-3B55E5A3126F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -42,10 +34,6 @@ Global
 		{84077242-25DF-4644-A6B3-FF9EA0254BA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84077242-25DF-4644-A6B3-FF9EA0254BA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84077242-25DF-4644-A6B3-FF9EA0254BA0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A08AD621-6269-4569-91D8-2BBD120D0099}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A08AD621-6269-4569-91D8-2BBD120D0099}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A08AD621-6269-4569-91D8-2BBD120D0099}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A08AD621-6269-4569-91D8-2BBD120D0099}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C3A1E208-188F-4133-ACDC-7571BDB9AFB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C3A1E208-188F-4133-ACDC-7571BDB9AFB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3A1E208-188F-4133-ACDC-7571BDB9AFB7}.Release|Any CPU.ActiveCfg = Release|Any CPU

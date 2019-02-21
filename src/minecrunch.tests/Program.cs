@@ -53,7 +53,13 @@ namespace minecrunch.tests
             cgct.Start();
             while (!cgct.IsDone)
             {
-                //Console.WriteLine("Processing Caves");
+                Thread.Sleep(10);
+            }
+
+            ChunkGenerateOresTask ores = new ChunkGenerateOresTask(c);
+            ores.Start();
+            while (!ores.IsDone)
+            {
                 Thread.Sleep(10);
             }
 
@@ -66,7 +72,6 @@ namespace minecrunch.tests
             faces.Start();
             while (!faces.IsDone)
             {
-                //Console.WriteLine("Processing Faces");
                 startTime++;
                 Thread.Sleep(10);
             }
@@ -77,7 +82,6 @@ namespace minecrunch.tests
             verts.Start();
             while(!verts.IsDone)
             {
-                //Console.WriteLine("Processing Verts");
                 startTime++;
                 Thread.Sleep(10);
             }

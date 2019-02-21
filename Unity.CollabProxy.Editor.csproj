@@ -296,6 +296,9 @@
     <Reference Include="SharpNoise">
       <HintPath>Assets/Plugins/SharpNoise.dll</HintPath>
     </Reference>
+    <Reference Include="SyntaxTree.Mono.Cecil">
+      <HintPath>Assets/UnityVS/Editor/SyntaxTree.Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.Advertisements">
       <HintPath>C:/Users/Jon/Documents/git/MinecrunchCraft/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
     </Reference>

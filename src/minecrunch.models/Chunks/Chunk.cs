@@ -20,7 +20,25 @@ namespace minecrunch.models.Chunks
         {
             int sectionBlockIsIn = (int) (y / 16.0);
             int ySection = y % 16;
+
+            if ((x>15) || (z>15))
+            {
+                return null;
+            }
+
             return sections[sectionBlockIsIn]?.blocks[x, ySection, z] ?? null;
+        }
+
+        public List<Block> GetAllBlocks()
+        {
+            List<Block> allBlocks = new List<Block>();
+            for (int i=0; i<16; i++)
+            {
+                if (sections[i] is null) { continue; }
+                var s = sections[i];
+                allBlocks.AddRange(s.GetAllBlocks());
+            }
+            return allBlocks;
         }
     }
 }

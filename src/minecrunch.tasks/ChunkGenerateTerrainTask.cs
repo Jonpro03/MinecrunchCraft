@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using minecrunch.models;
 using minecrunch.models.Biomes;
 using minecrunch.models.Blocks;
 using minecrunch.models.Chunks;
 using minecrunch.parameters.Blocks;
-using minecrunch.utilities;
 
 namespace minecrunch.tasks
 {
@@ -111,7 +111,7 @@ namespace minecrunch.tasks
                                     {
                                         block.Id = BlockIds.GRASS;
                                     }
-                                    else if (by > terrainY - 5)
+                                    else if (by > terrainY - 3)
                                     {
                                         block.Id = BlockIds.DIRT;
                                     }

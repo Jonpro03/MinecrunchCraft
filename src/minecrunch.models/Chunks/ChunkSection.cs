@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using minecrunch.models.Blocks;
 using UnityEngine;
 
@@ -19,5 +20,10 @@ namespace minecrunch.models.Chunks
         public List<Vector3> Verticies = new List<Vector3>();
 
         public List<Vector2> UVs = new List<Vector2>();
+
+        public List<Block> GetAllBlocks()
+        {
+            return blocks.Cast<Block>().ToList();
+        }
     }
 }

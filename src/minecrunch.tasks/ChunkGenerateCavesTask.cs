@@ -1,9 +1,9 @@
 ﻿
 using System.Threading.Tasks;
+using minecrunch.models;
 using minecrunch.models.Blocks;
 using minecrunch.models.Chunks;
 using minecrunch.parameters.Blocks;
-using minecrunch.utilities;
 
 namespace minecrunch.tasks
 {
@@ -12,6 +12,8 @@ namespace minecrunch.tasks
         public readonly Chunk chunk;
         private PerlinNoise pNoise;
         private BlockInfo bInfo;
+
+        private const int CAVE_BREAKTHROUGH_LIMIT = 45;
 
         public ChunkGenerateCavesTask(Chunk c)
         {
@@ -38,7 +40,8 @@ namespace minecrunch.tasks
                     for (int by = sectionYOffset; by < sectionYOffset + 16; by++)
                     {
                         // If above the terrain, just move on.
-                        if (by > 45 || by < 4) { continue; }
+                        int caveYLimit = terrainY < CAVE_BREAKTHROUGH_LIMIT ? CAVE_BREAKTHROUGH_LIMIT : terrainY - 5;
+                        if (by > caveYLimit || by < 4) { continue; }
 
                         if (pNoise.Cave(bx + (chunk.x * 16), by, bz + (chunk.y * 16)))
                         {
