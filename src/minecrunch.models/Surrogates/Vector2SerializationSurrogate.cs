@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace minecrunch.models.Surrogates
 {
-    sealed class Vector2SerializationSurrogate : ISerializationSurrogate
+    public sealed class Vector2SerializationSurrogate : ISerializationSurrogate
     {
 
         // Method called to serialize a Vector2 object

@@ -93,7 +93,9 @@ namespace Assets.Scripts.Chunks
             {
                 if (job.IsDone)
                 {
-                    CompletedChunks.Add(job.chunk);                    
+                    string meshPath = World.World.WorldSaveFolder + $"/chunks/{job.chunk.name}.dat";
+                    new ChunkMeshSaveTask(job.chunk, meshPath).Start();
+                    CompletedChunks.Add(job.chunk);
                 }
             }
             ChunkCalcVerticiesTasks.RemoveAll(task => task.IsDone);
@@ -117,6 +119,7 @@ namespace Assets.Scripts.Chunks
             ChunkCalcVerticiesTasks.ForEach(task => task.Abort());
 
         }
+
 
         public bool AddGenerateJob(Chunk chunk)
         {
@@ -142,7 +145,7 @@ namespace Assets.Scripts.Chunks
             job.Start();
             return true;
         }
-        **/
+
 
         public async Task AddChunkSaveJob(Chunk chunk)
         {
@@ -174,5 +177,6 @@ namespace Assets.Scripts.Chunks
             CompletedChunks.Add(chunk);
 
         }
+        **/
     }
 }

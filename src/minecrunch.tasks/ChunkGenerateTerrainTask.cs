@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using minecrunch.models;
+﻿using minecrunch.models;
 using minecrunch.models.Biomes;
 using minecrunch.models.Blocks;
 using minecrunch.models.Chunks;
 using minecrunch.parameters.Blocks;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace minecrunch.tasks
 {
@@ -41,8 +41,7 @@ namespace minecrunch.tasks
             {
                 for (int bz = 0; bz < 16; bz++)
                 {
-                    string key = $"{bx},{bz}";
-                    chunk.SurfaceMap[key] = pNoise.Terrain(bx + (chunk.x * 16), bz + (chunk.y * 16), (int)chunk.biome);
+                    chunk.SurfaceMap[bx, bz] = pNoise.Terrain(bx + (chunk.x * 16), bz + (chunk.y * 16), (int)chunk.biome);
                 }
             }
 
@@ -57,15 +56,15 @@ namespace minecrunch.tasks
             {
                 for (int bz = 0; bz < 16; bz++)
                 {
-                    int terrainY = chunk.SurfaceMap[$"{bx},{bz}"];
+                    int terrainY = chunk.SurfaceMap[bx,bz];
 
                     for (int by = sectionYOffset; by < sectionYOffset + 16; by++)
                     {
                         Block block = new Block
                         {
-                            x = bx,
-                            y = by,
-                            z = bz
+                            x = (byte)bx,
+                            y = (byte)by,
+                            z = (byte)bz
                         };
 
                         // If above the terrain, just mark it air and move on.
@@ -76,7 +75,7 @@ namespace minecrunch.tasks
                             continue;
                         }
 
-                        var biome = (Biome) pNoise.Biome(bx + (chunk.x * 16), by, bz + (chunk.y*16));
+                        var biome = (Biome)pNoise.Biome(bx + (chunk.x * 16), by, bz + (chunk.y * 16));
 
                         switch (biome)
                         {

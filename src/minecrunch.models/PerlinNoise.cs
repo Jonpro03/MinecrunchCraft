@@ -28,10 +28,10 @@ namespace minecrunch.models
 
         private PerlinNoise()
         {
-            biome_size = Properties.Settings.Default.BIOME_SIZE_FACTOR * 100;
-            cave_fill = (Properties.Settings.Default.CAVE_FILL_PERCENT / 100.0f * 0.70f) + 0.30f;
-            cave_height = Properties.Settings.Default.CAVE_HEIGHT_PERCENT / 100.0f * 0.25f;
-            cave_stretch = Properties.Settings.Default.CAVE_STRETCH_PERCENT / 1000.0f * 0.8f;
+            biome_size = 3 * 100;
+            cave_fill = (60 / 100.0f * 0.70f) + 0.30f;
+            cave_height = 50 / 100.0f * 0.25f;
+            cave_stretch = 80 / 1000.0f * 0.8f;
 
             terrainPerlin = new Perlin
             {

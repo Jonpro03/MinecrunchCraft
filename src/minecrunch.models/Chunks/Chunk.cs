@@ -13,7 +13,7 @@ namespace minecrunch.models.Chunks
         public int y;
         public Biome biome;
         public ChunkSection[] sections = new ChunkSection[16];
-        public Dictionary<string, int> SurfaceMap = new Dictionary<string, int>();
+        public int[,] SurfaceMap = new int[16, 16];
         public long processTimeMs = 0;
 
         public Block GetBlockByChunkCoord(int x, int y, int z)

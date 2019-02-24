@@ -49,7 +49,6 @@ namespace minecrunch.models.runtime
                 throw new Exception("Invalid vertex format in the mesh data!");
 
             var mesh = new Mesh();
-            int i;
 
             // positions
             var verts = new Vector3[vertCount];

@@ -46,6 +46,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Runtime\SerializableMesh.cs" />
     <Compile Include="Runtime\MeshSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Blocks\IBlock.cs" />
@@ -53,7 +54,7 @@
     <Compile Include="Blocks\Sides.cs" />
     <Compile Include="Chunks\ChunkSection.cs" />
     <Compile Include="Chunks\Chunk.cs" />
-    <Compile Include="Chunks\Serializer.cs" />
+    <Compile Include="Serializer.cs" />
     <Compile Include="Surrogates\Vector2SerializationSurrogate.cs" />
     <Compile Include="Surrogates\Vector3SerializationSurrogate.cs" />
   </ItemGroup>

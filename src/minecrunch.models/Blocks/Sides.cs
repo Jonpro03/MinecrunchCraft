@@ -1,14 +1,12 @@
-﻿using System;
-namespace minecrunch.models.Blocks
+﻿namespace minecrunch.models.Blocks
 {
-    [Serializable]
-    public class Sides
+    public enum Sides : byte
     {
-        public bool left = false;
-        public bool right = false;
-        public bool top = false;
-        public bool bottom = false;
-        public bool back = false;
-        public bool front = false;
+        Top =       0b00100000,
+        Bottom =    0b00010000,
+        Left =      0b00001000,
+        Right =     0b00000100,
+        Front =     0b00000010,
+        Back =      0b00000001
     }
 }

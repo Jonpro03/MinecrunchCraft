@@ -27,8 +27,7 @@ namespace minecrunch.tests
                 //Console.WriteLine("Processing Terrain");
                 Thread.Sleep(100);
             }
-            var lines = cgt.chunk.SurfaceMap.Select(kvp => $"{kvp.Key}: {kvp.Value}").ToList();
-            lines.ForEach(l => Console.WriteLine(l));
+
             int numGrass = 0;
             int numStone = 0;
             int numBR = 0;
@@ -86,13 +85,11 @@ namespace minecrunch.tests
                 Thread.Sleep(10);
             }
             Console.WriteLine($"Took {startTime / 100.0f} seconds to finish verticies.");
-            Console.WriteLine($"Num Verticies {verts.chunk.sections[0].Verticies.Count}");
+            Console.WriteLine($"Num Verticies {verts.chunk.sections[0].Mesh.Verticies.Count}");
 
-            Serializer.Serialize(c, "chunk.dat");
 
             Thread.Sleep(2);
 
-            Chunk chunk = Serializer.Deserialize("chunk.dat");
         }
     }
 }

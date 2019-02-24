@@ -42,35 +42,30 @@ namespace minecrunch.tasks
 
                         int textureKey = 0;
 
-                        if (!(block.FacesVisible.back ||
-                            block.FacesVisible.front ||
-                            block.FacesVisible.left ||
-                            block.FacesVisible.right ||
-                            block.FacesVisible.top ||
-                            block.FacesVisible.bottom))
+                        if (block.faceByte == 0b00000000)
                         {
                             continue;
                         }
 
                         string texture = bInfo.GetBlockTexture(block.Id);
-                        if (section.Materials.Values.Contains(texture))
+                        if (section.Mesh.Materials.Values.Contains(texture))
                         {
-                            textureKey = section.Materials.FirstOrDefault(a => a.Value == texture).Key;
+                            textureKey = section.Mesh.Materials.FirstOrDefault(a => a.Value == texture).Key;
                         }
                         else
                         {
-                            textureKey = section.Materials.Count;
-                            section.Materials.Add(textureKey, texture);
-                            section.Triangles.Add(textureKey, new List<int>());
+                            textureKey = section.Mesh.Materials.Count;
+                            section.Mesh.Materials.Add(textureKey, texture);
+                            section.Mesh.Triangles.Add(textureKey, new List<int>());
                         }
 
                         Vector3 chunkPos = new Vector3(bx, by + sectionYOffset, bz);
                         int verticieCount = 0;
 
-                        if (block.FacesVisible.left)
+                        if (block.GetFaceVisible(Sides.Left))
                         {
                             verticieCount += 6;
-                            section.Verticies.AddRange(new List<Vector3>
+                            section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
                                 new Vector3(0, 1, 1) + chunkPos, //Todo: can this be optimized?
                                 new Vector3(0, 1, 0) + chunkPos,
@@ -80,7 +75,7 @@ namespace minecrunch.tasks
                                 new Vector3(0, 1, 1) + chunkPos
                             });
 
-                            section.UVs.AddRange(new List<Vector2>
+                            section.Mesh.UVs.AddRange(new List<Vector2>
                             {
                                 new Vector2(0, 0.5f),
                                 new Vector2(0.25f, 0.5f),
@@ -91,10 +86,10 @@ namespace minecrunch.tasks
                             });
                         }
 
-                        if (block.FacesVisible.right)
+                        if (block.GetFaceVisible(Sides.Right))
                         {
                             verticieCount += 6;
-                            section.Verticies.AddRange(new List<Vector3>
+                            section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
                                 new Vector3(1, 1, 0) + chunkPos,
                                 new Vector3(1, 1, 1) + chunkPos,
@@ -104,7 +99,7 @@ namespace minecrunch.tasks
                                 new Vector3(1, 1, 0) + chunkPos
                             });
 
-                            section.UVs.AddRange(new List<Vector2>
+                            section.Mesh.UVs.AddRange(new List<Vector2>
                             {
                                 new Vector2(0.5f, 0.5f),
                                 new Vector2(0.75f, 0.5f),
@@ -115,10 +110,10 @@ namespace minecrunch.tasks
                             });
                         }
 
-                        if (block.FacesVisible.top)
+                        if (block.GetFaceVisible(Sides.Top))
                         {
                             verticieCount += 6;
-                            section.Verticies.AddRange(new List<Vector3>
+                            section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
                                 new Vector3(0, 1, 1) + chunkPos,
                                 new Vector3(1, 1, 1) + chunkPos,
@@ -128,7 +123,7 @@ namespace minecrunch.tasks
                                 new Vector3(0, 1, 1) + chunkPos
                             });
 
-                            section.UVs.AddRange(new List<Vector2>
+                            section.Mesh.UVs.AddRange(new List<Vector2>
                             {
                                 new Vector2(0.5f, 1),
                                 new Vector2(0.25f, 1),
@@ -139,10 +134,10 @@ namespace minecrunch.tasks
                             });
                         }
 
-                        if (block.FacesVisible.bottom)
+                        if (block.GetFaceVisible(Sides.Bottom))
                         {
                             verticieCount += 6;
-                            section.Verticies.AddRange(new List<Vector3>
+                            section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
                                 new Vector3(0, 0, 0) + chunkPos,
                                 new Vector3(1, 0, 0) + chunkPos,
@@ -152,7 +147,7 @@ namespace minecrunch.tasks
                                 new Vector3(0, 0, 0) + chunkPos
                             });
 
-                            section.UVs.AddRange(new List<Vector2>
+                            section.Mesh.UVs.AddRange(new List<Vector2>
                             {
                                 new Vector2(0.25f, 1),
                                 new Vector2(0, 1),
@@ -163,10 +158,10 @@ namespace minecrunch.tasks
                             });
                         }
 
-                        if (block.FacesVisible.front)
+                        if (block.GetFaceVisible(Sides.Front))
                         {
                             verticieCount += 6;
-                            section.Verticies.AddRange(new List<Vector3>
+                            section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
                                 new Vector3(1, 1, 0) + chunkPos,
                                 new Vector3(1, 0, 0) + chunkPos,
@@ -176,7 +171,7 @@ namespace minecrunch.tasks
                                 new Vector3(1, 1, 0) + chunkPos
                             });
 
-                            section.UVs.AddRange(new List<Vector2>
+                            section.Mesh.UVs.AddRange(new List<Vector2>
                             {
                                 new Vector2(0.5f, 0.5f),
                                 new Vector2(0.5f, 0),
@@ -187,10 +182,10 @@ namespace minecrunch.tasks
                             });
                         }
 
-                        if (block.FacesVisible.back)
+                        if (block.GetFaceVisible(Sides.Back))
                         {
                             verticieCount += 6;
-                            section.Verticies.AddRange(new List<Vector3>
+                            section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
                                 new Vector3(0, 0, 1) + chunkPos,
                                 new Vector3(1, 0, 1) + chunkPos,
@@ -200,7 +195,7 @@ namespace minecrunch.tasks
                                 new Vector3(0, 0, 1) + chunkPos
                             });
 
-                            section.UVs.AddRange(new List<Vector2>
+                            section.Mesh.UVs.AddRange(new List<Vector2>
                             {
                                 new Vector2(0.5f, 1),
                                 new Vector2(0.75f, 1),
@@ -213,7 +208,7 @@ namespace minecrunch.tasks
 
                         for (var a = 0; a < verticieCount; a++)
                         {
-                            section.Triangles[textureKey].Add(trianglesCount + a);
+                            section.Mesh.Triangles[textureKey].Add(trianglesCount + a);
                         }
                         trianglesCount += verticieCount;
                     }
