@@ -45,7 +45,8 @@ namespace minecrunch.tasks
 
                         if (pNoise.Cave(bx + (chunk.x * 16), by, bz + (chunk.y * 16)))
                         {
-                            section.blocks[bx, by - sectionYOffset, bz].Id = BlockIds.AIR;
+                            //section.blocks[bx, by - sectionYOffset, bz].Id = BlockIds.AIR;
+                            section.blocks[bx, by - sectionYOffset, bz] = null;
                         }
                     }
                 }

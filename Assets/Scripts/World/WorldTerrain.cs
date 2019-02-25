@@ -9,6 +9,8 @@ using minecrunch.models.Biomes;
 using UnityEditor;
 using minecrunch.models.runtime;
 using System.Runtime.Serialization.Formatters.Binary;
+using minecrunch.tasks;
+using System;
 
 namespace Assets.Scripts.World
 {
@@ -34,12 +36,12 @@ namespace Assets.Scripts.World
             Chunks = new List<Chunk>();
             chunkJobs = new ChunkJobManager();
 
-            Vector2 playerLoc = Coordinates.ChunkPlayerIsIn(transform.position);
+            Vector2 playerChunkLoc = Coordinates.ChunkPlayerIsIn(transform.position);
 
             // Create the chunks
-            for (int cx = (-1 * RenderSize) + (int)playerLoc.x; cx < RenderSize; cx++)
+            for (int cx = (-1 * RenderSize) + (int)playerChunkLoc.x; cx < RenderSize; cx++)
             {
-                for (int cz = (-1 * RenderSize) + (int)playerLoc.y; cz < RenderSize; cz++)
+                for (int cz = (-1 * RenderSize) + (int)playerChunkLoc.y; cz < RenderSize; cz++)
                 {
                     Vector2 chunkCoord = new Vector2(cx, cz);
                     bool chunkOnDisk = LoadChunk(new Vector2(cx, cz));
@@ -50,7 +52,15 @@ namespace Assets.Scripts.World
                 }
             }
 
-            InvokeRepeating("ChunkMaintanence", 0, 1);
+            chunkJobs.ChunkGenerateTerrainTasks.Sort((chunk1, chunk2) =>
+            {
+                return Math.Abs(playerChunkLoc.x - chunk1.chunk.x) + 
+                Math.Abs(playerChunkLoc.y - chunk1.chunk.y) < 
+                Math.Abs(playerChunkLoc.x - chunk2.chunk.x) + 
+                Math.Abs(playerChunkLoc.y - chunk2.chunk.y) ? -1 : 1;
+            });
+
+            InvokeRepeating("ChunkMaintanence", 0, 0.5f);
             InvokeRepeating("GenerateNewChunksAroundPlayers", 5, 3);
         }
 
@@ -92,17 +102,17 @@ namespace Assets.Scripts.World
             int UpdateDistance = RenderSize;
             foreach (Player.WorldPlayer player in World.Players)
             {
-                var playerPos = Coordinates.ChunkPlayerIsIn(player.transform.position);
+                var playerChunkLoc = Coordinates.ChunkPlayerIsIn(player.transform.position);
                 List<Vector2> neededChunks = new List<Vector2>();
 
                 for (var a = 0; a <= UpdateDistance; a++)
                 {
                     for (var b = 0; b <= UpdateDistance; b++)
                     {
-                        neededChunks.Add(playerPos + (Vector2.up * a) + (Vector2.right * b));
-                        neededChunks.Add(playerPos + (Vector2.up * a) + (Vector2.left * b));
-                        neededChunks.Add(playerPos + (Vector2.down * a) + (Vector2.right * b));
-                        neededChunks.Add(playerPos + (Vector2.down * a) + (Vector2.left * b));
+                        neededChunks.Add(playerChunkLoc + (Vector2.up * a) + (Vector2.right * b));
+                        neededChunks.Add(playerChunkLoc + (Vector2.up * a) + (Vector2.left * b));
+                        neededChunks.Add(playerChunkLoc + (Vector2.down * a) + (Vector2.right * b));
+                        neededChunks.Add(playerChunkLoc + (Vector2.down * a) + (Vector2.left * b));
                     }
                 }
                 /**
@@ -127,6 +137,14 @@ namespace Assets.Scripts.World
                         }
                     }
                 }
+
+                chunkJobs.ChunkGenerateTerrainTasks.Sort((chunk1, chunk2) =>
+                {
+                    return Math.Abs(playerChunkLoc.x - chunk1.chunk.x) +
+                    Math.Abs(playerChunkLoc.y - chunk1.chunk.y) <
+                    Math.Abs(playerChunkLoc.x - chunk2.chunk.x) +
+                    Math.Abs(playerChunkLoc.y - chunk2.chunk.y) ? -1 : 1;
+                });
             }
         }
 
@@ -319,11 +337,18 @@ namespace Assets.Scripts.World
 
             meshRenderer.materials = mats;
             subchunkMesh = new Mesh();
-            subchunkMesh.Clear();
             subchunkMesh.name = section.name + "mesh";
             subchunkMesh.SetVertices(section.Mesh.Verticies);
+
+            if (subchunkMesh.vertices.Count() != section.Mesh.Verticies.Count())
+            {
+                Debug.LogAssertion($"{subchunkMesh.vertices.Count()} should be {section.Mesh.Verticies.Count()}");
+                subchunkMesh.Clear();
+                subchunkMesh.name = section.name + "mesh";
+                subchunkMesh.SetVertices(section.Mesh.Verticies);
+            }
+
             subchunkMesh.subMeshCount = section.Mesh.Materials.Count;
-            subchunkMesh.CombineMeshes(new CombineInstance[)
             subchunkMesh.SetUVs(0, section.Mesh.UVs);
 
             foreach (int key in section.Mesh.Triangles.Keys)

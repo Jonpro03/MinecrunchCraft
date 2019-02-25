@@ -23,7 +23,7 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
-            blocks = chunk.GetAllBlocks().Where(b => b.Id is BlockIds.STONE);
+            blocks = chunk.GetAllBlocks().Where(b => b?.Id is BlockIds.STONE);
             AddCoal();
             AddAndesite();
             AddIron();
@@ -49,8 +49,12 @@ namespace minecrunch.tasks
                         for (int z = 0; z < 3; z++)
                         {
                             Block block = chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z);
-                            if (block.Id != BlockIds.AIR)
-                                chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z).Id = BlockIds.COAL_ORE;
+                            //if (block.Id != BlockIds.AIR)
+                            if (block != null)
+                            {
+                                block.Id = BlockIds.COAL_ORE;
+                                //chunk.SetBlock(block);
+                            }
                         }
                     }
                 }
@@ -76,8 +80,12 @@ namespace minecrunch.tasks
                         for (int z = 0; z < 3; z++)
                         {
                             Block block = chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z);
-                            if (block.Id != BlockIds.AIR)
-                                chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z).Id = BlockIds.IRON_ORE;
+                            //if (block.Id != BlockIds.AIR)
+                            if (block != null)
+                            {
+                                block.Id = BlockIds.IRON_ORE;
+                                //chunk.SetBlock(block);
+                            }
                         }
                     }
                 }
@@ -94,7 +102,7 @@ namespace minecrunch.tasks
                 int oreX = b.x > 12 ? 12 : b.x;
                 int oreY = b.y > 255 ? 255 : b.y;
                 int oreZ = b.z > 12 ? 12 : b.z;
-                if (chunk.GetBlockByChunkCoord(oreX, oreY, oreZ).Id != BlockIds.STONE) { continue; }
+                if (chunk.GetBlockByChunkCoord(oreX, oreY, oreZ)?.Id != BlockIds.STONE) { continue; }
 
                 for (int x = 0; x < 2; x++)
                 {
@@ -103,8 +111,13 @@ namespace minecrunch.tasks
                         for (int z = 0; z < 2; z++)
                         {
                             Block block = chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z);
-                            if (block.Id != BlockIds.AIR)
-                                chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z).Id = BlockIds.DIAMOND_ORE;
+                            //if (block.Id != BlockIds.AIR)
+                            if (block != null)
+                            {
+                                block.Id = BlockIds.DIAMOND_ORE;
+                                //chunk.SetBlock(block);
+                            }
+
                         }
                     }
                 }
@@ -122,7 +135,7 @@ namespace minecrunch.tasks
                 int oreX = b.x > 12 ? 12 : b.x;
                 int oreY = b.y > 255 ? 255 : b.y;
                 int oreZ = b.z > 12 ? 12 : b.z;
-                if (chunk.GetBlockByChunkCoord(oreX, oreY, oreZ).Id != BlockIds.STONE) { continue; }
+                if (chunk.GetBlockByChunkCoord(oreX, oreY, oreZ)?.Id != BlockIds.STONE) { continue; }
 
                 for (int x = 0; x < 3; x++)
                 {
@@ -131,8 +144,12 @@ namespace minecrunch.tasks
                         for (int z = 0; z < 3; z++)
                         {
                             Block block = chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z);
-                            if (block.Id != BlockIds.AIR)
-                                chunk.GetBlockByChunkCoord(oreX + x, oreY + y, oreZ + z).Id = BlockIds.ANDESITE;
+                            //if (block.Id != BlockIds.AIR)
+                            if (block != null)
+                            {
+                                block.Id = BlockIds.ANDESITE;
+                                //chunk.SetBlock(block);
+                            }
                         }
                     }
                 }

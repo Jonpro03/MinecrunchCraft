@@ -2,6 +2,7 @@
 using minecrunch.models.Chunks;
 using minecrunch.parameters.Blocks;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -21,10 +22,18 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
+            var watch = Stopwatch.StartNew();
+
+            foreach (ChunkSection sec in chunk.sections)
+            {
+                ProcessSection(sec);
+            }
+
             //chunk.sections.ToList().ForEach(s => ProcessSection(s));
-            
-            Parallel.ForEach(chunk.sections, ProcessSection);
-            
+            //Parallel.ForEach(chunk.sections, ProcessSection);
+            watch.Stop();
+            chunk.processTimeMs = watch.ElapsedMilliseconds;
+
         }
 
         private void ProcessSection(ChunkSection section)
@@ -38,15 +47,12 @@ namespace minecrunch.tasks
                     for (int by = 0; by < 16; by++)
                     {
                         Block block = section.blocks[bx, by, bz];
-                        if (block.Id is BlockIds.AIR) { continue; }
+                        //if (block.Id is BlockIds.AIR) { continue; }
+                        if (block is null) { continue; }
+
+                        if (block.faceByte == 0b00000000) { continue; }
 
                         int textureKey = 0;
-
-                        if (block.faceByte == 0b00000000)
-                        {
-                            continue;
-                        }
-
                         string texture = bInfo.GetBlockTexture(block.Id);
                         if (section.Mesh.Materials.Values.Contains(texture))
                         {

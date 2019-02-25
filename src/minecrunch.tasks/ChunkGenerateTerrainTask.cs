@@ -70,8 +70,8 @@ namespace minecrunch.tasks
                         // If above the terrain, just mark it air and move on.
                         if (by > terrainY)
                         {
-                            block.Id = BlockIds.AIR;
-                            section.blocks[bx, by - sectionYOffset, bz] = block;
+                            //block.Id = BlockIds.AIR;
+                            //section.blocks[bx, by - sectionYOffset, bz] = block;
                             continue;
                         }
 
@@ -126,12 +126,15 @@ namespace minecrunch.tasks
                         {
                             block.Id = BlockIds.STONE;
                         }
+                        /**
                         else if (string.IsNullOrEmpty(block.Id))
                         {
                             block.Id = BlockIds.AIR;
                         }
+                        **/
 
-                        section.blocks[bx, by - sectionYOffset, bz] = block;
+                        if (!string.IsNullOrEmpty(block.Id))
+                            section.blocks[bx, by - sectionYOffset, bz] = block;
                     }
                 }
             }

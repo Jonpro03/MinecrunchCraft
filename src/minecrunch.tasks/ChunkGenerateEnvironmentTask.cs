@@ -34,10 +34,21 @@ namespace minecrunch.tasks
                 int treeY = chunk.SurfaceMap[treeX+3,treeZ+3];
                 int treeHeight = rand.Next(6, 9);
 
-                if (chunk.GetBlockByChunkCoord(treeX, treeY, treeZ).Id != BlockIds.GRASS) { return; }
+                if (chunk.GetBlockByChunkCoord(treeX, treeY, treeZ)?.Id != BlockIds.GRASS) { return; }
                 for (var y = 0; y < treeHeight; y++)
                 {
-                    chunk.GetBlockByChunkCoord(treeX+3, treeY + y, treeZ+3).Id = BlockIds.ACACIA_WOOD;
+                    var block = chunk.GetBlockByChunkCoord(treeX + 3, treeY + y, treeZ + 3);
+                    if (block is null)
+                    {
+                        block = new Block
+                        {
+                            x = (byte) (treeX + 3),
+                            y = (byte) (treeY + y),
+                            z = (byte) (treeZ + 3)
+                        };
+                    }
+                    block.Id = BlockIds.ACACIA_WOOD;
+                    chunk.SetBlock(block);
                 }
 
                 for (int x = 0; x < 7; x++)
@@ -47,7 +58,20 @@ namespace minecrunch.tasks
                         for (int z = 0; z < 7; z++)
                         {
                             if (!((x == 0 || x == 6) && (z == 0 || z == 6)))
-                                chunk.GetBlockByChunkCoord(treeX+x, treeY+y, treeZ+z).Id = BlockIds.OAK_LEAVES;
+                            {
+                                var block = chunk.GetBlockByChunkCoord(treeX + x, treeY + y, treeZ + z);
+                                if (block is null)
+                                {
+                                    block = new Block
+                                    {
+                                        x = (byte)(treeX + x),
+                                        y = (byte)(treeY + y),
+                                        z = (byte)(treeZ + z)
+                                    };
+                                }
+                                block.Id = BlockIds.OAK_LEAVES;
+                                chunk.SetBlock(block);
+                            }
                         }
                     }
                 }

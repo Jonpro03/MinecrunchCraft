@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace minecrunch.tasks
 {
@@ -10,11 +11,13 @@ namespace minecrunch.tasks
 
         private object handle = new object();
 
-        private Thread thread = null;
+        private Task thread = null;
 
         protected virtual void ThreadFunction() { }
 
         protected virtual void OnFinished() { }
+
+        public Exception e = null;
 
         /// <summary>
         /// Whether this <see cref="T:minecrunch.tasks.ThreadedTask"/> is done.
@@ -45,7 +48,8 @@ namespace minecrunch.tasks
         /// </summary>
         public virtual void Start()
         {
-            thread = new Thread(Run);
+            thread = new Task(Run);
+            thread.ContinueWith(ExceptionHandler, TaskContinuationOptions.OnlyOnFaulted);
             thread.Start();
         }
 
@@ -54,7 +58,7 @@ namespace minecrunch.tasks
         /// </summary>
         public virtual void Abort()
         {
-            thread.Abort();
+            
         }
 
         /// <summary>
@@ -89,6 +93,11 @@ namespace minecrunch.tasks
         {
             ThreadFunction();
             IsDone = true;
+        }
+
+        void ExceptionHandler(Task task)
+        {
+            e = task.Exception;
         }
     }
 }

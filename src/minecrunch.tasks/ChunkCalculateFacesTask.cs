@@ -24,10 +24,9 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
-            var watch = Stopwatch.StartNew();
+            
             Parallel.ForEach(sections, ProcessSection);
-            watch.Stop();
-            chunk.processTimeMs = watch.ElapsedMilliseconds;
+            
         }
 
         private void ProcessSection(ChunkSection section)
@@ -35,7 +34,8 @@ namespace minecrunch.tasks
             int sectionYOffset = 16 * section.number;
 
             // Check to see if there's only air in this section. If so, we're done.
-            IEnumerable<Block> nonAir = from Block block in section.blocks where block.Id != BlockIds.AIR select block;
+            //IEnumerable<Block> nonAir = from Block block in section.blocks where block.Id != BlockIds.AIR select block;
+            IEnumerable<Block> nonAir = from Block block in section.blocks where block != null select block;
             if (nonAir.Count() is 0)
             {
                 return;
@@ -48,51 +48,52 @@ namespace minecrunch.tasks
                 int bz = block.z;
                 int yIndex = by - sectionYOffset;
 
+                var sBlock = section.blocks[bx, yIndex, bz];
+
                 // Check front, back, left and right to see if there's another visible block there.
                 // Adjacent block might not be in this section, so use the chunk's get block method.
                 // Top
-                if (bInfo.IsTransparent(
-                    chunk.GetBlockByChunkCoord(bx, by is 255 ? by : by + 1, bz).Id))
+                var neighbor = chunk.GetBlockByChunkCoord(bx, by is 255 ? by : by + 1, bz);
+                if (neighbor is null || bInfo.IsTransparent(neighbor.Id))
                 {
-                    section.blocks[bx, yIndex, bz].SetFaceVisible(Sides.Top, true);
+                    sBlock.SetFaceVisible(Sides.Top, true);
                 }
-
+                
                 // Bottom
-                if (bInfo.IsTransparent(
-                    chunk.GetBlockByChunkCoord(bx, by is 0 ? by : by - 1, bz).Id))
+                neighbor = chunk.GetBlockByChunkCoord(bx, by is 0 ? by : by - 1, bz);
+                if (neighbor is null || bInfo.IsTransparent(neighbor.Id))
                 {
-                    section.blocks[bx, yIndex, bz].SetFaceVisible(Sides.Bottom, true);
+                    sBlock.SetFaceVisible(Sides.Bottom, true);
                 }
 
                 // Left
-                if (bx is 0 || bInfo.IsTransparent(
-                    section.blocks[bx is 0 ? bx : bx - 1, yIndex, bz].Id))
+                neighbor = section.blocks[bx is 0 ? bx : bx - 1, yIndex, bz];
+                if (bx is 0 || neighbor is null || bInfo.IsTransparent(neighbor.Id))
                 {
-                    section.blocks[bx, yIndex, bz].SetFaceVisible(Sides.Left, true);
+                    sBlock.SetFaceVisible(Sides.Left, true);
                 }
 
                 // Right
-                if (bx is 15 || bInfo.IsTransparent(
-                    section.blocks[bx is 15 ? bx : bx + 1, yIndex, bz].Id))
+                neighbor = section.blocks[bx is 15 ? bx : bx + 1, yIndex, bz];
+                if (bx is 15 || neighbor is null || bInfo.IsTransparent(neighbor.Id))
                 {
-                    section.blocks[bx, yIndex, bz].SetFaceVisible(Sides.Right, true);
+                    sBlock.SetFaceVisible(Sides.Right, true);
                 }
 
                 // Front
-                if (bz is 0 || bInfo.IsTransparent(
-                    section.blocks[bx, yIndex, bz is 0 ? bz : bz - 1].Id))
+                neighbor = section.blocks[bx, yIndex, bz is 0 ? bz : bz - 1];
+                if (bz is 0 || neighbor is null || bInfo.IsTransparent(neighbor.Id))
                 {
-                    section.blocks[bx, yIndex, bz].SetFaceVisible(Sides.Front, true);
+                    sBlock.SetFaceVisible(Sides.Front, true);
                 }
 
                 // Back
-                if (bz is 15 || bInfo.IsTransparent(
-                    section.blocks[bx, yIndex, bz is 15 ? bz : bz + 1].Id))
+                neighbor = section.blocks[bx, yIndex, bz is 15 ? bz : bz + 1];
+                if (bz is 15 || neighbor is null || bInfo.IsTransparent(neighbor.Id))
                 {
-                    section.blocks[bx, yIndex, bz].SetFaceVisible(Sides.Back, true);
+                    sBlock.SetFaceVisible(Sides.Back, true);
                 }
             }
         }
-
     }
 }

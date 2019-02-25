@@ -29,6 +29,17 @@ namespace minecrunch.models.Chunks
             return sections[sectionBlockIsIn]?.blocks[x, ySection, z] ?? null;
         }
 
+        public void SetBlock(Block block)
+        {
+            int sectionBlockIsIn = (int)(block.y / 16.0);
+            int ySection = block.y % 16;
+            if (sections[sectionBlockIsIn] is null)
+            {
+                sections[sectionBlockIsIn] = new ChunkSection();
+            }
+            sections[sectionBlockIsIn].blocks[block.x, ySection, block.z] = block;
+        }
+
         public List<Block> GetAllBlocks()
         {
             List<Block> allBlocks = new List<Block>();

@@ -37,6 +37,7 @@ namespace minecrunch.tests
                 {
                     for (var z = 0; z < 16; z++)
                     {
+                        if (cgt.chunk.sections[3].blocks[x, y, z] is null) { continue; }
                         string id = cgt.chunk.sections[3].blocks[x, y, z].Id;
                         if (id is BlockIds.GRASS) { numGrass++; }
                         if (id is BlockIds.STONE) { numStone++; }

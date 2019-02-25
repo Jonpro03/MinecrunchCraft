@@ -93,6 +93,11 @@ namespace Assets.Scripts.Chunks
             {
                 if (job.IsDone)
                 {
+                    if (job.e != null)
+                    {
+                        Debug.LogException(job.e);
+                    }
+
                     string meshPath = World.World.WorldSaveFolder + $"/chunks/{job.chunk.name}.dat";
                     new ChunkMeshSaveTask(job.chunk, meshPath).Start();
                     CompletedChunks.Add(job.chunk);
@@ -100,9 +105,9 @@ namespace Assets.Scripts.Chunks
             }
             ChunkCalcVerticiesTasks.RemoveAll(task => task.IsDone);
 
-            int parallel = 2;
+            int parallel = 1;
             if (ChunkCalculateFacesTasks.Count < parallel)
-                ChunkGenerateTerrainTasks.Skip(ChunkGenerateTerrainTasks.Count / 2).Take(parallel).ToList().ForEach(t => t.Start());
+                ChunkGenerateTerrainTasks.Take(parallel).ToList().ForEach(t => t.Start());
             ChunkGenerateCavesTasks.Take(parallel).ToList().ForEach(t => t.Start());
             ChunkGenerateOresTasks.Take(parallel).ToList().ForEach(t => t.Start());
             ChunkGenerateEnvironmentTasks.Take(parallel).ToList().ForEach(t => t.Start());
