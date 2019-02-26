@@ -62,159 +62,245 @@ namespace minecrunch.tasks
                         {
                             textureKey = section.Mesh.Materials.Count;
                             section.Mesh.Materials.Add(textureKey, texture);
-                            section.Mesh.Triangles.Add(textureKey, new List<int>());
+                            section.Mesh.Quads.Add(textureKey, new List<int>());
                         }
 
                         Vector3 chunkPos = new Vector3(bx, by + sectionYOffset, bz);
                         int verticieCount = 0;
 
+                        //Left
                         if (block.GetFaceVisible(Sides.Left))
                         {
-                            verticieCount += 6;
+                            verticieCount += 4;
                             section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
+                                new Vector3(0, 0, 1) + chunkPos,
+                                new Vector3(0, 1, 1) + chunkPos,
+                                new Vector3(0, 1, 0) + chunkPos,
+                                new Vector3(0, 0, 0) + chunkPos,
+
+                                /**
                                 new Vector3(0, 1, 1) + chunkPos, //Todo: can this be optimized?
                                 new Vector3(0, 1, 0) + chunkPos,
                                 new Vector3(0, 0, 0) + chunkPos,
                                 new Vector3(0, 0, 0) + chunkPos,
                                 new Vector3(0, 0, 1) + chunkPos,
                                 new Vector3(0, 1, 1) + chunkPos
+    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
                             {
+                                new Vector2(0, 0),
+                                new Vector2(0, 0.5f),
+                                new Vector2(0.25f, 0.5f),
+                                new Vector2(0.25f, 0),
+                                /**
                                 new Vector2(0, 0.5f),
                                 new Vector2(0.25f, 0.5f),
                                 new Vector2(0.25f, 0),
                                 new Vector2(0.25f, 0),
                                 new Vector2(0, 0),
                                 new Vector2(0, 0.5f)
+                                **/
                             });
                         }
 
                         if (block.GetFaceVisible(Sides.Right))
                         {
-                            verticieCount += 6;
+                            verticieCount += 4;
                             section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
+                                new Vector3(1, 0, 0) + chunkPos,
+                                new Vector3(1, 1, 0) + chunkPos,
+                                new Vector3(1, 1, 1) + chunkPos,
+                                new Vector3(1, 0, 1) + chunkPos,
+
+                                /**
                                 new Vector3(1, 1, 0) + chunkPos,
                                 new Vector3(1, 1, 1) + chunkPos,
                                 new Vector3(1, 0, 1) + chunkPos,
                                 new Vector3(1, 0, 1) + chunkPos,
                                 new Vector3(1, 0, 0) + chunkPos,
                                 new Vector3(1, 1, 0) + chunkPos
+    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
                             {
+                                new Vector2(0.5f, 0),
+                                new Vector2(0.5f, 0.5f),
+                                new Vector2(0.75f, 0.5f),
+                                new Vector2(0.75f, 0),
+                                /**
                                 new Vector2(0.5f, 0.5f),
                                 new Vector2(0.75f, 0.5f),
                                 new Vector2(0.75f, 0),
                                 new Vector2(0.75f, 0),
                                 new Vector2(0.5f, 0),
                                 new Vector2(0.5f, 0.5f)
+    **/
                             });
                         }
 
                         if (block.GetFaceVisible(Sides.Top))
                         {
-                            verticieCount += 6;
+                            verticieCount += 4;
                             section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
+                                new Vector3(0, 1, 0) + chunkPos,
+                                new Vector3(0, 1, 1) + chunkPos,
+                                new Vector3(1, 1, 1) + chunkPos,
+                                new Vector3(1, 1, 0) + chunkPos,
+
+                                /**
                                 new Vector3(0, 1, 1) + chunkPos,
                                 new Vector3(1, 1, 1) + chunkPos,
                                 new Vector3(1, 1, 0) + chunkPos,
                                 new Vector3(1, 1, 0) + chunkPos,
                                 new Vector3(0, 1, 0) + chunkPos,
                                 new Vector3(0, 1, 1) + chunkPos
+    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
                             {
+                                new Vector2(0.25f, 0.5f),
+                                new Vector2(0.25f, 1),
+                                new Vector2(0.5f, 1),
+                                new Vector2(0.5f, 0.5f),
+
+                                /**
                                 new Vector2(0.5f, 1),
                                 new Vector2(0.25f, 1),
                                 new Vector2(0.25f, 0.5f),
                                 new Vector2(0.25f, 0.5f),
                                 new Vector2(0.5f, 0.5f),
                                 new Vector2(0.5f, 1),
+    **/
                             });
                         }
 
                         if (block.GetFaceVisible(Sides.Bottom))
                         {
-                            verticieCount += 6;
+                            verticieCount += 4;
                             section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
+                                new Vector3(0, 0, 1) + chunkPos,
+                                new Vector3(0, 0, 0) + chunkPos,
+                                new Vector3(1, 0, 0) + chunkPos,
+                                new Vector3(1, 0, 1) + chunkPos,
+
+
+                                /**
                                 new Vector3(0, 0, 0) + chunkPos,
                                 new Vector3(1, 0, 0) + chunkPos,
                                 new Vector3(1, 0, 1) + chunkPos,
                                 new Vector3(1, 0, 1) + chunkPos,
                                 new Vector3(0, 0, 1) + chunkPos,
                                 new Vector3(0, 0, 0) + chunkPos
+    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
                             {
+                                new Vector2(0, 0.5f),
+                                new Vector2(0, 1),
+                                new Vector2(0.25f, 1),
+                                new Vector2(0.25f, 0.5f),
+
+                                /**
                                 new Vector2(0.25f, 1),
                                 new Vector2(0, 1),
                                 new Vector2(0, 0.5f),
                                 new Vector2(0, 0.5f),
                                 new Vector2(0.25f, 0.5f),
                                 new Vector2(0.25f, 1)
+    **/
                             });
                         }
 
                         if (block.GetFaceVisible(Sides.Front))
                         {
-                            verticieCount += 6;
+                            verticieCount += 4;
                             section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
+                                new Vector3(0, 0, 0) + chunkPos,
+                                new Vector3(0, 1, 0) + chunkPos,
+                                new Vector3(1, 1, 0) + chunkPos,
+                                new Vector3(1, 0, 0) + chunkPos
+
+                                /**
                                 new Vector3(1, 1, 0) + chunkPos,
                                 new Vector3(1, 0, 0) + chunkPos,
                                 new Vector3(0, 0, 0) + chunkPos,
                                 new Vector3(0, 0, 0) + chunkPos,
                                 new Vector3(0, 1, 0) + chunkPos,
                                 new Vector3(1, 1, 0) + chunkPos
+    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
                             {
+                                new Vector2(0.25f, 0),
+                                new Vector2(0.25f, 0.5f),
+                                new Vector2(0.5f, 0.5f),
+                                new Vector2(0.5f, 0),
+
+                                /**
                                 new Vector2(0.5f, 0.5f),
                                 new Vector2(0.5f, 0),
                                 new Vector2(0.25f, 0),
                                 new Vector2(0.25f, 0),
                                 new Vector2(0.25f, 0.5f),
                                 new Vector2(0.5f, 0.5f)
+    **/
                             });
                         }
 
                         if (block.GetFaceVisible(Sides.Back))
+
                         {
-                            verticieCount += 6;
+                            verticieCount += 4;
                             section.Mesh.Verticies.AddRange(new List<Vector3>
                             {
+                                new Vector3(1, 0, 1) + chunkPos,
+                                new Vector3(1, 1, 1) + chunkPos,
+                                new Vector3(0, 1, 1) + chunkPos,
+                                new Vector3(0, 0, 1) + chunkPos,
+
+                                /**
                                 new Vector3(0, 0, 1) + chunkPos,
                                 new Vector3(1, 0, 1) + chunkPos,
                                 new Vector3(1, 1, 1) + chunkPos,
                                 new Vector3(1, 1, 1) + chunkPos,
                                 new Vector3(0, 1, 1) + chunkPos,
                                 new Vector3(0, 0, 1) + chunkPos
+    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
                             {
+                                new Vector2(0.5f, 0.5f),
+                                new Vector2(0.5f, 1),
+                                new Vector2(0.75f, 1),
+                                new Vector2(0.75f, 0.5f),
+
+
+                                /**
                                 new Vector2(0.5f, 1),
                                 new Vector2(0.75f, 1),
                                 new Vector2(0.75f, 0.5f),
                                 new Vector2(0.75f, 0.5f),
                                 new Vector2(0.5f, 0.5f),
                                 new Vector2(0.5f, 1)
+    **/
                             });
                         }
 
                         for (var a = 0; a < verticieCount; a++)
                         {
-                            section.Mesh.Triangles[textureKey].Add(trianglesCount + a);
+                            section.Mesh.Quads[textureKey].Add(trianglesCount + a);
                         }
                         trianglesCount += verticieCount;
                     }

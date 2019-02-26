@@ -11,6 +11,7 @@ using minecrunch.models.runtime;
 using System.Runtime.Serialization.Formatters.Binary;
 using minecrunch.tasks;
 using System;
+using minecrunch.models.Runtime;
 
 namespace Assets.Scripts.World
 {
@@ -55,37 +56,49 @@ namespace Assets.Scripts.World
             chunkJobs.ChunkGenerateTerrainTasks.Sort((chunk1, chunk2) =>
             {
                 return Math.Abs(playerChunkLoc.x - chunk1.chunk.x) + 
-                Math.Abs(playerChunkLoc.y - chunk1.chunk.y) < 
+                Math.Abs(playerChunkLoc.y - chunk1.chunk.y) <
                 Math.Abs(playerChunkLoc.x - chunk2.chunk.x) + 
                 Math.Abs(playerChunkLoc.y - chunk2.chunk.y) ? -1 : 1;
             });
 
-            InvokeRepeating("ChunkMaintanence", 0, 0.5f);
-            InvokeRepeating("GenerateNewChunksAroundPlayers", 5, 3);
+            
+            InvokeRepeating("ChunkMaintanence", 0, 0.3f);
+            InvokeRepeating("GenerateNewChunksAroundPlayers", 3, 5);
+            //while (!chunkJobs.ChunkGenerateTerrainTasks.Count.Equals(0)) { ChunkMaintanence(); }
         }
 
         private void OnGUI()
         {
             GUI.Label(new Rect(10, 10, 1000, 20), string.Format(
-                "T:{0} C:{1} F:{2} V:{3} D:{4} L:{5}",
+                "T:{0} C:{1} F:{2} V:{3} D:{4} dups:{5}",
                 chunkJobs.ChunkGenerateTerrainTasks.Count,
                 chunkJobs.ChunkGenerateCavesTasks.Count,
                 chunkJobs.ChunkCalculateFacesTasks.Count,
                 chunkJobs.ChunkCalcVerticiesTasks.Count,
                 chunkJobs.CompletedChunks.Count,
-                Chunks.Count
+                chunkJobs.ChunkGenerateTerrainTasks.GroupBy(c => c.chunk.name).Where(c => c.Count() > 1).Count()
                 ));
+        }
+
+        private void FixedUpdate()
+        {
+            if (chunkJobs.CompletedChunks.Count > 0)
+            {
+                var chunk = chunkJobs.CompletedChunks.First();
+                if (DrawChunk(chunk))
+                {
+                    chunkJobs.CompletedChunks.Remove(chunk);
+                } 
+                else
+                {
+                    Chunks.Remove(chunk);
+                }
+            }
         }
 
         private void ChunkMaintanence()
         {
             chunkJobs.Update();
-
-            foreach (Chunk chunk in chunkJobs.CompletedChunks)
-            {
-                DrawChunk(chunk);
-            }
-            chunkJobs.CompletedChunks.Clear();
         }
 
         private void OnApplicationQuit()
@@ -95,10 +108,7 @@ namespace Assets.Scripts.World
 
         public void GenerateNewChunksAroundPlayers()
         {
-            if (chunkJobs.ChunkCalculateFacesTasks.Count > 0)
-            {
-                return;
-            }
+
             int UpdateDistance = RenderSize;
             foreach (Player.WorldPlayer player in World.Players)
             {
@@ -115,9 +125,9 @@ namespace Assets.Scripts.World
                         neededChunks.Add(playerChunkLoc + (Vector2.down * a) + (Vector2.left * b));
                     }
                 }
-                /**
-                List<Chunk> toRemove = Chunks.Where(c => c.sections[0].blocks[0,0,0] is null).ToList();
-                //toRemove.AddRange(Chunks.Where(c => !neededChunks.Any(v2 => v2.x == c.x && v2.y == c.y)));
+
+                //List<Chunk> toRemove = Chunks.Where(c => c.sections[0].blocks[0,0,0] is null).ToList();
+                List<Chunk> toRemove = Chunks.Where(c => !neededChunks.Any(v2 => v2.x == c.x && v2.y == c.y)).ToList();
 
                 toRemove.ForEach(c => {
                     Destroy(GameObject.Find(c.name));
@@ -125,7 +135,7 @@ namespace Assets.Scripts.World
                     });
 
                 //Chunks.RemoveAll(c => c.Verticies.Count == 0);
-                **/
+
                 foreach (var chunkCoord in neededChunks)
                 {
                     if (!ChunkExists($"chunk{chunkCoord.ToString()}"))
@@ -139,6 +149,14 @@ namespace Assets.Scripts.World
                 }
 
                 chunkJobs.ChunkGenerateTerrainTasks.Sort((chunk1, chunk2) =>
+                {
+                    return Math.Abs(playerChunkLoc.x - chunk1.chunk.x) +
+                    Math.Abs(playerChunkLoc.y - chunk1.chunk.y) <
+                    Math.Abs(playerChunkLoc.x - chunk2.chunk.x) +
+                    Math.Abs(playerChunkLoc.y - chunk2.chunk.y) ? -1 : 1;
+                });
+
+                chunkJobs.ChunkCalculateFacesTasks.Sort((chunk1, chunk2) =>
                 {
                     return Math.Abs(playerChunkLoc.x - chunk1.chunk.x) +
                     Math.Abs(playerChunkLoc.y - chunk1.chunk.y) <
@@ -288,7 +306,7 @@ namespace Assets.Scripts.World
             chunkJobs.AddGenerateJob(chunk);
         }
 
-        private void DrawChunk(Chunk chunk)
+        private bool DrawChunk(Chunk chunk)
         {
             GameObject chunkGameObject = GameObject.Find(chunk.name);
             if (chunkGameObject is null)
@@ -298,23 +316,26 @@ namespace Assets.Scripts.World
             
             chunkGameObject.transform.position = new Vector3(chunk.x * 16, 0, chunk.y * 16);
 
-            //Parallel.ForEach(sections, DrawSubChunk);
             foreach(var section in chunk.sections)
             {
                 GameObject subChunkGameObject = new GameObject(chunk.name + "-" + section.name);
                 subChunkGameObject.transform.SetParent(chunkGameObject.transform);
                 subChunkGameObject.transform.localPosition = new Vector3(0, 0, 0);
-                DrawSubChunk(section, subChunkGameObject);
+                if (!DrawSubChunk(section, subChunkGameObject))
+                {
+                    Destroy(chunkGameObject);
+                    return false;
+                }
             }
-
-            Debug.Log($"Chunk time {chunk.processTimeMs / 1000.0f} seconds");
+            return true;
+            //Debug.Log($"Chunk time {chunk.processTimeMs / 1000.0f} seconds");
         }
 
-        private void DrawSubChunk(ChunkSection section, GameObject subChunkGameObject)
+        private bool DrawSubChunk(ChunkSection section, GameObject subChunkGameObject)
         {   
             if (section.Mesh.Materials.Count.Equals(0))
             {
-                return;
+                return true;
             }
 
             Material[] mats = new Material[section.Mesh.Materials.Count];
@@ -338,23 +359,22 @@ namespace Assets.Scripts.World
             meshRenderer.materials = mats;
             subchunkMesh = new Mesh();
             subchunkMesh.name = section.name + "mesh";
-            subchunkMesh.SetVertices(section.Mesh.Verticies);
-
-            if (subchunkMesh.vertices.Count() != section.Mesh.Verticies.Count())
-            {
-                Debug.LogAssertion($"{subchunkMesh.vertices.Count()} should be {section.Mesh.Verticies.Count()}");
-                subchunkMesh.Clear();
-                subchunkMesh.name = section.name + "mesh";
-                subchunkMesh.SetVertices(section.Mesh.Verticies);
-            }
-
             subchunkMesh.subMeshCount = section.Mesh.Materials.Count;
-            subchunkMesh.SetUVs(0, section.Mesh.UVs);
-
-            foreach (int key in section.Mesh.Triangles.Keys)
+            subchunkMesh.SetVertices(section.Mesh.Verticies);
+            if (subchunkMesh.vertices.Count() != section.Mesh.UVs.Count)
             {
-                subchunkMesh.SetTriangles(section.Mesh.Triangles[key], key);
+                Debug.LogError("Failed to set verticies!");
+                return false;
             }
+
+
+            foreach (int key in section.Mesh.Quads.Keys)
+            {
+                subchunkMesh.SetIndices(section.Mesh.Quads[key].ToArray(), MeshTopology.Quads, key);
+            }
+            
+
+            subchunkMesh.SetUVs(0, section.Mesh.UVs);
 
             var meshFilter = subChunkGameObject.AddComponent<MeshFilter>();
 
@@ -379,6 +399,7 @@ namespace Assets.Scripts.World
                 new BinaryFormatter().Serialize(triangles, section.Mesh.Triangles);
             }
             **/
+            return true;
         }
 
         /**

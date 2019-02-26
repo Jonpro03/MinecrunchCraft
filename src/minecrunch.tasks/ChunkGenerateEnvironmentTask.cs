@@ -47,7 +47,7 @@ namespace minecrunch.tasks
                             z = (byte) (treeZ + 3)
                         };
                     }
-                    block.Id = BlockIds.ACACIA_WOOD;
+                    block.Id = BlockIds.OAK_WOOD;
                     chunk.SetBlock(block);
                 }
 

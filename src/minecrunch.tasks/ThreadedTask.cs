@@ -8,10 +8,12 @@ namespace minecrunch.tasks
     public class ThreadedTask
     {
         private bool isDone = false;
+        private bool isRunning = false;
 
-        private object handle = new object();
+        private object doneHandle = new object();
+        private object runningHandle = new object();
 
-        private Task thread = null;
+        private Thread thread = null;
 
         protected virtual void ThreadFunction() { }
 
@@ -28,7 +30,7 @@ namespace minecrunch.tasks
             get
             {
                 bool tmp;
-                lock (handle)
+                lock (doneHandle)
                 {
                     tmp = isDone;
                 }
@@ -36,9 +38,29 @@ namespace minecrunch.tasks
             }
             private set
             {
-                lock (handle)
+                lock (doneHandle)
                 {
                     isDone = value;
+                }
+            }
+        }
+
+        public bool IsRunning
+        {
+            get
+            {
+                bool tmp;
+                lock (runningHandle)
+                {
+                    tmp = isRunning;
+                }
+                return tmp;
+            }
+            private set
+            {
+                lock (runningHandle)
+                {
+                    isRunning = value;
                 }
             }
         }
@@ -48,8 +70,8 @@ namespace minecrunch.tasks
         /// </summary>
         public virtual void Start()
         {
-            thread = new Task(Run);
-            thread.ContinueWith(ExceptionHandler, TaskContinuationOptions.OnlyOnFaulted);
+            thread = new Thread(Run);
+            IsRunning = true;
             thread.Start();
         }
 
@@ -58,7 +80,7 @@ namespace minecrunch.tasks
         /// </summary>
         public virtual void Abort()
         {
-            
+            thread.Abort();
         }
 
         /// <summary>
@@ -91,13 +113,16 @@ namespace minecrunch.tasks
         /// </summary>
         private void Run()
         {
-            ThreadFunction();
+            try
+            {
+                ThreadFunction();
+            }
+            catch (Exception e)
+            {
+                this.e = e;
+            }
+            IsRunning = false;
             IsDone = true;
-        }
-
-        void ExceptionHandler(Task task)
-        {
-            e = task.Exception;
         }
     }
 }

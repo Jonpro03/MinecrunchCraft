@@ -35,7 +35,7 @@ namespace minecrunch.models
 
             terrainPerlin = new Perlin
             {
-                Seed = 10, //Todo: get from settings
+                Seed = 983248, //Todo: get from settings
                 //Frequency = 1,
                 Lacunarity = 3,
                 Quality = SharpNoise.NoiseQuality.Best,
@@ -70,7 +70,7 @@ namespace minecrunch.models
             int TerrainHeight = 50;
             //Generate a value from the given position, position is divided to make the noise more frequent.
             double perlin1 = terrainPerlin.GetValue(x * MAGIC_SEED_FACTOR1, 0, z * MAGIC_SEED_FACTOR1) * 10;
-            double perlin2 = terrainPerlin.GetValue(x / 400, 0, z / 400) * 5;
+            double perlin2 = terrainPerlin.GetValue(x / 400, 0, z / 400) * 3;
 
             int result = (int) (perlin1 * perlin2) + TerrainHeight;
             return result < 0 ? 0 : result > 255 ? 255 : result;

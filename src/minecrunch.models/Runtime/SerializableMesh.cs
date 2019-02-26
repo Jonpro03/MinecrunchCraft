@@ -9,7 +9,7 @@ namespace minecrunch.models.Runtime
     {
         public Dictionary<int, string> Materials = new Dictionary<int, string>();
 
-        public Dictionary<int, List<int>> Triangles = new Dictionary<int, List<int>>();
+        public Dictionary<int, List<int>> Quads = new Dictionary<int, List<int>>();
 
         public List<Vector3> Verticies = new List<Vector3>();
 

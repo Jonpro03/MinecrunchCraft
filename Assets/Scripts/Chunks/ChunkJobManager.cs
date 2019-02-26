@@ -81,13 +81,14 @@ namespace Assets.Scripts.Chunks
 
             foreach (var job in ChunkCalculateFacesTasks)
             {
-                if (job.IsDone)
+                if (job.IsDone && !job.IsRunning)
                 {
                     var nextJob = new ChunkCalcVerticiesTask(job.chunk);
                     ChunkCalcVerticiesTasks.Add(nextJob);
+                    //ChunkCalculateFacesTasks.First(t => t.IsDone == false)?.Start();
                 }
             }
-            ChunkCalculateFacesTasks.RemoveAll(task => task.IsDone);
+            ChunkCalculateFacesTasks.RemoveAll(task => task.IsDone && !task.IsRunning);
 
             foreach (var job in ChunkCalcVerticiesTasks)
             {
@@ -99,19 +100,21 @@ namespace Assets.Scripts.Chunks
                     }
 
                     string meshPath = World.World.WorldSaveFolder + $"/chunks/{job.chunk.name}.dat";
-                    new ChunkMeshSaveTask(job.chunk, meshPath).Start();
+                    //new ChunkMeshSaveTask(job.chunk, meshPath).Start();
                     CompletedChunks.Add(job.chunk);
                 }
             }
             ChunkCalcVerticiesTasks.RemoveAll(task => task.IsDone);
 
-            int parallel = 1;
-            if (ChunkCalculateFacesTasks.Count < parallel)
-                ChunkGenerateTerrainTasks.Take(parallel).ToList().ForEach(t => t.Start());
+            int parallel = 2;
+            //if (ChunkCalcVerticiesTasks.Count < parallel)
+            ChunkGenerateTerrainTasks.Take(parallel).ToList().ForEach(t => t.Start());
             ChunkGenerateCavesTasks.Take(parallel).ToList().ForEach(t => t.Start());
             ChunkGenerateOresTasks.Take(parallel).ToList().ForEach(t => t.Start());
             ChunkGenerateEnvironmentTasks.Take(parallel).ToList().ForEach(t => t.Start());
-            ChunkCalculateFacesTasks.Take(parallel).ToList().ForEach(t => t.Start());
+            var runningFaceTasks = ChunkCalculateFacesTasks.Where(t => t.IsRunning is true).Count();
+            if (ChunkCalculateFacesTasks.Count > 0 && runningFaceTasks.Equals(0))
+                ChunkCalculateFacesTasks[0].Start();
             ChunkCalcVerticiesTasks.Take(parallel).ToList().ForEach(t => t.Start());
 
         }
