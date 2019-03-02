@@ -25,7 +25,34 @@ namespace minecrunch.models
             formatter.SurrogateSelector = ss;
         }
 
-        public static bool SerializeToFile(object obj, string filePath, bool compress=false)
+        public static bool SerializeToStream(object obj, out Stream stream, bool compress=false)
+        {
+            stream = new MemoryStream();
+            try
+            {
+                if (compress)
+                {
+                    using (var compressionStream = new GZipStream(stream, CompressionMode.Compress))
+                    {
+                        formatter.Serialize(compressionStream, obj);
+                        compressionStream.Flush();
+                    }
+                }
+                else
+                {
+                    formatter.Serialize(stream, obj);
+                }
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool SerializeToFile(object obj, string filePath, bool compress = false)
         {
             try
             {
@@ -43,7 +70,7 @@ namespace minecrunch.models
                     else
                     {
                         formatter.Serialize(fileStream, obj);
-                    }         
+                    }
                 }
             }
             catch (Exception e)
@@ -55,7 +82,32 @@ namespace minecrunch.models
             return true;
         }
 
-        public static T DeserializeFromFile<T>(string filePath, bool isCompressed=false)
+        public static T DeserializeFromStream<T>(Stream stream, bool isCompressed = false)
+        {
+            object obj = null;
+            try
+            {
+                if (isCompressed)
+                {
+                    using (var compressionStream = new GZipStream(stream, CompressionMode.Decompress))
+                    {
+                        obj = formatter.Deserialize(compressionStream);
+                    }
+                }
+                else
+                {
+                    obj = formatter.Deserialize(stream);
+                }
+            } 
+            catch (Exception)
+            {
+                return default(T);
+            }
+            return (T)obj;
+
+        }
+
+        public static T DeserializeFromFile<T>(string filePath, bool isCompressed = false)
         {
             object obj = null;
             try

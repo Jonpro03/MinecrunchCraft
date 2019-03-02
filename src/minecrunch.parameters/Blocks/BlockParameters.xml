@@ -11,29 +11,74 @@
       <material></material>
       <transparent>true</transparent>
     </block>
+    <block id="water">
+      <name>Water</name>
+      <material>Materials/WaterBlock</material>
+      <transparent>true</transparent>
+    </block>
+    <block id="flowing_water">
+      <name>Flowing Water</name>
+      <material>Materials/FlowingWaterBlock</material>
+      <transparent>true</transparent>
+    </block>
     <block id="stone">
       <name>Stone</name>
       <material>Materials/StoneBlock</material>
       <transparent>false</transparent>
     </block>
-    <block id="bedrock">
-      <name>Bedrock</name>
-      <material>Materials/BedrockBlock</material>
+    <block id="granite">
+      <name>Granite</name>
+      <material>Materials/GraniteBlock</material>
       <transparent>false</transparent>
     </block>
-    <block id="dirt">
-      <name>Dirt</name>
-      <material>Materials/DirtBlock</material>
+    <block id="polished_granite">
+      <name>Polished Granite</name>
+      <material>Materials/PolishedGraniteBlock</material>
       <transparent>false</transparent>
     </block>
-    <block id="grass">
-      <name>Grass</name>
+    <block id="diorite">
+      <name>Diorite</name>
+      <material>Materials/DioriteBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="polished_diorite">
+      <name>Polished Diorite</name>
+      <material>Materials/PolishedDioriteBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="andesite">
+      <name>Andesite</name>
+      <material>Materials/AndesiteBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="polished_andesite">
+      <name>Polished Andesite</name>
+      <material>Materials/PolishedAndesiteBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="grass_block">
+      <name>Grass Block</name>
       <material>Materials/GrassBlock</material>
       <transparent>false</transparent>
     </block>
-    <block id="sand">
-      <name>Sand</name>
-      <material>Materials/SandBlock</material>
+    <block id="dirt">
+      <name>Dirt Block</name>
+      <material>Materials/DirtBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="coarse_dirt">
+      <name>Coarse Dirt</name>
+      <material>Materials/CoarseDirtBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="podzol">
+      <name>Podzol</name>
+      <material>Materials/PodzolBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="cobblestone">
+      <name>CobbleStone</name>
+      <material>Materials/CobblestoneBlock</material>
       <transparent>false</transparent>
     </block>
     <block id="oak_wood">
@@ -46,5 +91,28 @@
       <material>Materials/OakLeavesBlock</material>
       <transparent>true</transparent>
     </block>
+    <block id="bedrock">
+      <name>Bedrock</name>
+      <material>Materials/BedrockBlock</material>
+      <transparent>false</transparent>
+    </block>
+    
+    
+    <block id="sand">
+      <name>Sand</name>
+      <material>Materials/SandBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="sandstone">
+      <name>Sandstone</name>
+      <material>Materials/SandstoneBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="cactus">
+      <name>Cactus</name>
+      <material>Materials/CactusBlock</material>
+      <transparent>false</transparent>
+    </block>
+    
   </blocks>
 </blockParameters>
