@@ -40,6 +40,8 @@
   <ItemGroup>
     <Compile Include="Biomes\Biome.cs" />
     <Compile Include="Blocks\BlockId.cs" />
+    <Compile Include="Generator\WorldGenerationSettings.cs" />
+    <Compile Include="Generator\WorldGenerator.cs" />
     <Compile Include="PerlinNoise.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -23,6 +23,7 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
+            return;
             blocks = chunk.GetAllBlocks().Where(b => b?.Id is BlockIds.STONE);
             AddCoal();
             AddAndesite();

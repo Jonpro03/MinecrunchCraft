@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using minecrunch.models.Generator;
+using SharpNoise.Models;
 using SharpNoise.Modules;
 
 namespace minecrunch.models
 {
     public class PerlinNoise
     {
-        private Perlin terrainPerlin;
+        private Perlin terrainPerlin, terrain2Perlin;
         private Perlin cavePerlin;
         private Voronoi biomePerlin;
+        private Plane worldPlane;
         private int biome_size;
         private float cave_fill;
         private float cave_height;
         private float cave_stretch;
-        const float MAGIC_SEED_FACTOR1 = 0.0145f;
+        const float MAGIC_SEED_FACTOR1 = 0.000001285f;
+
+        WorldGenerationSettings WorldSettings;
+        Module WorldGen;
+        Sphere WorldBiomes;
 
         private static readonly Lazy<PerlinNoise> lazy = new Lazy<PerlinNoise>(() => new PerlinNoise());
 
@@ -28,18 +35,31 @@ namespace minecrunch.models
 
         private PerlinNoise()
         {
-            biome_size = 3 * 100;
-            cave_fill = (60 / 100.0f * 0.70f) + 0.30f;
+            biome_size = 2 * 100;
+            cave_fill = (20 / 100.0f * 0.70f) + 0.30f;
             cave_height = 50 / 100.0f * 0.25f;
             cave_stretch = 80 / 1000.0f * 0.8f;
+
+            WorldSettings = new WorldGenerationSettings();
+            WorldGen = new WorldGenerator(WorldSettings).CreateModule();
 
             terrainPerlin = new Perlin
             {
                 Seed = 983248, //Todo: get from settings
-                //Frequency = 1,
+                Frequency = 1,
+                Lacunarity = 2,
+                Quality = SharpNoise.NoiseQuality.Best,
+                OctaveCount = 2,
+                //Persistence = 1
+            };
+
+            terrain2Perlin = new Perlin
+            {
+                Seed = 983248, //Todo: get from settings
+                Frequency = 2,
                 Lacunarity = 3,
                 Quality = SharpNoise.NoiseQuality.Best,
-                OctaveCount = 3,
+                OctaveCount = 5,
                 //Persistence = 1
             };
 
@@ -51,7 +71,7 @@ namespace minecrunch.models
 
             cavePerlin = new Perlin
             {
-                Seed = 3265087,
+                Seed = 326507,
                 Lacunarity = 0,
                 Quality = SharpNoise.NoiseQuality.Fast,
                 OctaveCount = 1
@@ -65,15 +85,18 @@ namespace minecrunch.models
         }
 
         //Function that inputs the position and spits out a float value based on the perlin noise
-        public int Terrain(float x, float z, int biome = 5)
+        public double Terrain(float x, float z)
         {
-            int TerrainHeight = 50;
+            int TerrainHeight = 12;
             //Generate a value from the given position, position is divided to make the noise more frequent.
-            double perlin1 = terrainPerlin.GetValue(x * MAGIC_SEED_FACTOR1, 0, z * MAGIC_SEED_FACTOR1) * 10;
-            double perlin2 = terrainPerlin.GetValue(x / 400, 0, z / 400) * 3;
+            //double perlin1 = terrainPerlin.GetValue(x * MAGIC_SEED_FACTOR1, 0, z * MAGIC_SEED_FACTOR1) * 10;
+            //double perlin2 = terrain2Perlin.GetValue(x / 1000, 0, z / 1000) * 3;
 
-            int result = (int) (perlin1 * perlin2) + TerrainHeight;
-            return result < 0 ? 0 : result > 255 ? 255 : result;
+            //perlin2 = perlin2 > 0.75 ? perlin2 * 2 : perlin2 * 0.5;
+
+            //int result = (int) (perlin1 * perlin2) + TerrainHeight;
+            //return result < 0 ? 0 : result > 255 ? 255 : result;
+            return TerrainHeight + WorldGen.GetValue(x * MAGIC_SEED_FACTOR1, 680, z * MAGIC_SEED_FACTOR1) * 0.021625f;
         }
 
         public bool Cave(float x, float y, float z)

@@ -24,8 +24,9 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
-            
-            Parallel.ForEach(sections, ProcessSection);
+
+            //Parallel.ForEach(sections, ProcessSection);
+            sections.ForEach(ProcessSection);
             
         }
 

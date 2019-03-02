@@ -31,7 +31,7 @@ namespace minecrunch.tasks
             {
                 int treeX = rand.Next(0, 9);
                 int treeZ = rand.Next(0, 9);
-                int treeY = chunk.SurfaceMap[treeX+3,treeZ+3];
+                int treeY = (int) chunk.SurfaceMap[treeX+3,treeZ+3];
                 int treeHeight = rand.Next(6, 9);
 
                 if (chunk.GetBlockByChunkCoord(treeX, treeY, treeZ)?.Id != BlockIds.GRASS) { return; }

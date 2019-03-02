@@ -40,6 +40,7 @@ namespace Assets.Scripts.World
             Vector2 playerChunkLoc = Coordinates.ChunkPlayerIsIn(transform.position);
 
             // Create the chunks
+
             for (int cx = (-1 * RenderSize) + (int)playerChunkLoc.x; cx < RenderSize; cx++)
             {
                 for (int cz = (-1 * RenderSize) + (int)playerChunkLoc.y; cz < RenderSize; cz++)
@@ -48,10 +49,13 @@ namespace Assets.Scripts.World
                     bool chunkOnDisk = LoadChunk(new Vector2(cx, cz));
                     if (!chunkOnDisk)
                     {
-                        GenerateChunk(chunkCoord);
+                        //GenerateChunk(chunkCoord);
                     }
                 }
             }
+
+
+            GenerateNewChunksAroundPlayers();
 
             chunkJobs.ChunkGenerateTerrainTasks.Sort((chunk1, chunk2) =>
             {
@@ -62,8 +66,8 @@ namespace Assets.Scripts.World
             });
 
             
-            InvokeRepeating("ChunkMaintanence", 0, 0.3f);
-            InvokeRepeating("GenerateNewChunksAroundPlayers", 3, 5);
+            InvokeRepeating("ChunkMaintanence", 0, 0.33f);
+            InvokeRepeating("GenerateNewChunksAroundPlayers", 0, 30);
             //while (!chunkJobs.ChunkGenerateTerrainTasks.Count.Equals(0)) { ChunkMaintanence(); }
         }
 
@@ -85,14 +89,11 @@ namespace Assets.Scripts.World
             if (chunkJobs.CompletedChunks.Count > 0)
             {
                 var chunk = chunkJobs.CompletedChunks.First();
-                if (DrawChunk(chunk))
-                {
-                    chunkJobs.CompletedChunks.Remove(chunk);
-                } 
-                else
+                if (!DrawChunk(chunk))
                 {
                     Chunks.Remove(chunk);
                 }
+                chunkJobs.CompletedChunks.Remove(chunk);
             }
         }
 
@@ -129,10 +130,10 @@ namespace Assets.Scripts.World
                 //List<Chunk> toRemove = Chunks.Where(c => c.sections[0].blocks[0,0,0] is null).ToList();
                 List<Chunk> toRemove = Chunks.Where(c => !neededChunks.Any(v2 => v2.x == c.x && v2.y == c.y)).ToList();
 
-                toRemove.ForEach(c => {
-                    Destroy(GameObject.Find(c.name));
-                    Chunks.Remove(c);
-                    });
+                //toRemove.ForEach(c => {
+                //    Destroy(GameObject.Find(c.name));
+                //    Chunks.Remove(c);
+                //    });
 
                 //Chunks.RemoveAll(c => c.Verticies.Count == 0);
 
@@ -140,7 +141,7 @@ namespace Assets.Scripts.World
                 {
                     if (!ChunkExists($"chunk{chunkCoord.ToString()}"))
                     {
-                        bool chunkOnDisk = LoadChunk(chunkCoord);
+                        bool chunkOnDisk = false;// LoadChunk(chunkCoord);
                         if (!chunkOnDisk)
                         {
                             GenerateChunk(chunkCoord);
@@ -162,7 +163,7 @@ namespace Assets.Scripts.World
                     Math.Abs(playerChunkLoc.y - chunk1.chunk.y) <
                     Math.Abs(playerChunkLoc.x - chunk2.chunk.x) +
                     Math.Abs(playerChunkLoc.y - chunk2.chunk.y) ? -1 : 1;
-                });
+                }); 
             }
         }
 

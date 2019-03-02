@@ -107,14 +107,13 @@ namespace Assets.Scripts.Chunks
             ChunkCalcVerticiesTasks.RemoveAll(task => task.IsDone);
 
             int parallel = 2;
-            //if (ChunkCalcVerticiesTasks.Count < parallel)
             ChunkGenerateTerrainTasks.Take(parallel).ToList().ForEach(t => t.Start());
             ChunkGenerateCavesTasks.Take(parallel).ToList().ForEach(t => t.Start());
             ChunkGenerateOresTasks.Take(parallel).ToList().ForEach(t => t.Start());
             ChunkGenerateEnvironmentTasks.Take(parallel).ToList().ForEach(t => t.Start());
-            var runningFaceTasks = ChunkCalculateFacesTasks.Where(t => t.IsRunning is true).Count();
-            if (ChunkCalculateFacesTasks.Count > 0 && runningFaceTasks.Equals(0))
-                ChunkCalculateFacesTasks[0].Start();
+            int faceParallellism = ChunkGenerateTerrainTasks.Count == 0 ? 4 : 2;
+            if (ChunkCalculateFacesTasks.Where(t => t.IsRunning is true).Count() < 2)
+                ChunkCalculateFacesTasks.Take(faceParallellism).ToList().ForEach(t => t.Start());
             ChunkCalcVerticiesTasks.Take(parallel).ToList().ForEach(t => t.Start());
 
         }

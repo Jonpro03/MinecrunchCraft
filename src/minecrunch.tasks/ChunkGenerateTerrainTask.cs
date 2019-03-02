@@ -35,13 +35,11 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
-            chunk.biome = (Biome)pNoise.Biome(chunk.x, 0, chunk.y);
-
             for (int bx = 0; bx < 16; bx++)
             {
                 for (int bz = 0; bz < 16; bz++)
                 {
-                    chunk.SurfaceMap[bx, bz] = pNoise.Terrain(bx + (chunk.x * 16), bz + (chunk.y * 16), (int)chunk.biome);
+                    chunk.SurfaceMap[bx, bz] = pNoise.Terrain(bx + (chunk.x * 16), bz + (chunk.y * 16));
                 }
             }
 
@@ -56,7 +54,7 @@ namespace minecrunch.tasks
             {
                 for (int bz = 0; bz < 16; bz++)
                 {
-                    int terrainY = chunk.SurfaceMap[bx,bz];
+                    double terrainY = chunk.SurfaceMap[bx,bz];
 
                     for (int by = sectionYOffset; by < sectionYOffset + 16; by++)
                     {
@@ -75,48 +73,42 @@ namespace minecrunch.tasks
                             continue;
                         }
 
-                        var biome = (Biome)pNoise.Biome(bx + (chunk.x * 16), by, bz + (chunk.y * 16));
-
-                        switch (biome)
+                        // Ocean / River
+                        if (terrainY <= 48)
                         {
-                            case Biome.Desert:
-                                {
-                                    if (by > terrainY - 5 && by <= terrainY) // 5 layers of sand
-                                    {
-                                        block.Id = BlockIds.SAND;
-                                    }
-                                    break;
-                                }
-
-                            case Biome.Mountain:
-                                {
-                                    if (by == terrainY)
-                                    {
-                                        block.Id = BlockIds.STONE;
-                                    }
-                                    else if (by > terrainY - 5)
-                                    {
-                                        block.Id = BlockIds.STONE;
-                                    }
-                                    break;
-                                }
-
-                            case Biome.Plains:
-                            case Biome.Forest:
-                            case Biome.Grassland:
-                            default:
-                                {
-                                    if (by == terrainY)
-                                    {
-                                        block.Id = BlockIds.GRASS;
-                                    }
-                                    else if (by > terrainY - 3)
-                                    {
-                                        block.Id = BlockIds.DIRT;
-                                    }
-                                    break;
-                                }
+                            block.Id = BlockIds.STONE;
                         }
+                        // Beach
+                        else if (terrainY < 52.5)
+                        {
+                            if (by > terrainY - 3)
+                                block.Id = BlockIds.SAND;
+                            else
+                                block.Id = BlockIds.STONE;
+                        }
+                        // Grass
+                        else if (terrainY < 60)
+                        {
+                            if (by == (int) terrainY)
+                                block.Id = BlockIds.GRASS;
+                            else if (by > terrainY - 2)
+                                block.Id = BlockIds.DIRT;
+                            else
+                                block.Id = BlockIds.STONE;
+                        }
+                        // Mountain
+                        else if (terrainY < 86)
+                        {
+                            if (by == (int)terrainY)
+                                block.Id = BlockIds.GRASS;
+                            else
+                                block.Id = BlockIds.STONE;
+                        }
+                        else
+                        {
+                            block.Id = BlockIds.STONE;
+                        }
+
 
                         if (by < 3)
                         {

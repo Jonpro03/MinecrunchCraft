@@ -24,6 +24,7 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
+            return;
             Parallel.ForEach(chunk.sections, ProcessSection);
         }
 
@@ -35,7 +36,7 @@ namespace minecrunch.tasks
             {
                 for (int bz = 0; bz < 16; bz++)
                 {
-                    int terrainY = chunk.SurfaceMap[bx,bz];
+                    int terrainY = (int) chunk.SurfaceMap[bx,bz];
 
                     for (int by = sectionYOffset; by < sectionYOffset + 16; by++)
                     {
