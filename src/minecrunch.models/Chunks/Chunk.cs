@@ -8,7 +8,7 @@ namespace minecrunch.models.Chunks
     [Serializable]
     public class Chunk
     {
-        public string lastUpdated;
+        public long lastUpdated;
         public string name;
         public int x;
         public int y;

@@ -1,43 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using minecrunch.models;
+using minecrunch.models.Biomes;
 using minecrunch.models.Chunks;
+using minecrunch.tasks;
 using MinecrunchServer.Logic;
 
 namespace MinecrunchServer.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/chunk")]
     [ApiController]
     public class ChunkController : ControllerBase
     {
+        public TaskRunner trInstance = TaskRunner.Instance;
+        
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public void Get()
         {
-            return new string[] { "value1", "value2" };
+            Chunk chunk = new Chunk()
+            {
+                name = $"chunk0,0",
+                x = 0,
+                y = 0,
+                biome = Biome.Desert,
+                lastUpdated = DateTime.UtcNow.ToBinary()
+            };
+            trInstance.TerrainTasks.Add(new ChunkGenerateTerrainTask(chunk));
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        // GET api/chunk/world1/0/0 
+        [HttpGet("{world}/{x}/{y}")]
+        public async Task<IActionResult> Get(string world, int x, int y)
         {
-            return "value";
+            string chunkName = $"chunk{x},{y}";
+            string filePath = $"{world}/chunks/{chunkName}";
+            (new FileInfo(filePath)).Directory.Create();
+
+            Chunk chunk = Program.ChunkCache.FirstOrDefault(c => c.name == chunkName);
+            if (chunk is null)
+            {
+                if (System.IO.File.Exists(filePath))
+                {
+                    var fStream = System.IO.File.OpenRead(filePath);
+                    return File(fStream, "application/octet-stream");
+                }
+            }
+            else
+            {
+                Serializer.SerializeToStream(chunk, out Stream s);
+                return File(s, "application/octet-stream");
+            }
+            
+            // New chunk. Generate it.
+            chunk = new Chunk()
+            {
+                name = chunkName,
+                x = 0,
+                y = 0,
+                biome = Biome.Desert
+            };
+            trInstance.TerrainTasks.Add(new ChunkGenerateTerrainTask(chunk));
+            return NotFound();
         }
 
         // POST api/values
         [HttpPost]
         public void Post(string dimId, int x, int y)
         {
-            ChunkTaskManager ctm = new ChunkTaskManager();
-            Chunk chunk = new Chunk
-            {
-                name = $"chunk{x},{y}",
-                x = x,
-                y = y
-            };
-            ctm.AddGenerateJob(chunk);
+            
         }
 
         // PUT api/values/5

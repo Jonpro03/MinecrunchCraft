@@ -48,7 +48,7 @@ namespace minecrunch.models
             {
                 return false;
             }
-
+            stream.Position = 0;
             return true;
         }
 

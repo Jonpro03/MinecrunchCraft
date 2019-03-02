@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net471</TargetFramework>
+    <UserSecretsId>c53ed2f5-9b7a-48a8-8e6c-db01568f89d9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,12 @@
   <ItemGroup>
     <ProjectReference Include="..\minecrunch.models\minecrunch.models.csproj" />
     <ProjectReference Include="..\minecrunch.tasks\minecrunch.tasks.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\BlockParameters.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

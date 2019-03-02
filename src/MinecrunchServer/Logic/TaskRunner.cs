@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using minecrunch.models.Chunks;
 using minecrunch.tasks;
 
@@ -10,6 +11,8 @@ namespace MinecrunchServer.Logic
     {
         private const int SIMULTANEOUS = 2;
         private static readonly Lazy<TaskRunner> lazy = new Lazy<TaskRunner>(() => new TaskRunner());
+        private static bool queueLock = false;
+        private static bool taskLock = false;
 
         public static TaskRunner Instance
         {
@@ -19,7 +22,6 @@ namespace MinecrunchServer.Logic
             }
         }
 
-
         public List<ChunkGenerateTerrainTask> TerrainTasks { get; set; }
         public List<ChunkGenerateOceansTask> OceansTasks { get; set; }
         public List<ChunkGenerateCavesTask> CavesTasks { get; set; }
@@ -27,9 +29,6 @@ namespace MinecrunchServer.Logic
         public List<ChunkGenerateEnvironmentTask> EnvironmentTasks { get; set; }
         public List<ChunkCalculateFacesTask> BlockFacesTasks { get; set; }
         public List<SaveChunkTask> SaveChunkTasks { get; set; }
-
-        public List<Chunk> ChunkCache;
-
 
         private TaskRunner()
         {
@@ -41,11 +40,13 @@ namespace MinecrunchServer.Logic
             BlockFacesTasks = new List<ChunkCalculateFacesTask>();
             SaveChunkTasks = new List<SaveChunkTask>();
 
-            ChunkCache = new List<Chunk>();
         }
 
-        public void ProcessNewChunks()
+        public void UpdateQueues(object source, ElapsedEventArgs e)
         {
+            if (queueLock || taskLock) { return; }
+            queueLock = true;
+
             // Terrain -> Oceans
             foreach (var job in TerrainTasks.Where(t => t.IsDone))
             {
@@ -91,16 +92,27 @@ namespace MinecrunchServer.Logic
             EnvironmentTasks.RemoveAll(task => task.IsDone);
 
             // Faces -> Cache
-            ChunkCache.AddRange(BlockFacesTasks.Where(t => t.IsDone).Select(t => t.chunk));
+            Program.ChunkCache.AddRange(BlockFacesTasks.Where(t => t.IsDone).Select(t => t.chunk));
+            foreach (var b in BlockFacesTasks.Where(t => t.IsDone))
+            {
+                new SaveChunkTask(b.chunk, "world1").Start();
+            }
             BlockFacesTasks.RemoveAll(task => task.IsDone);
 
-            // Manage Tasks
-            foreach (var task in TerrainTasks.Take(SIMULTANEOUS)) { task.Start(); }
+            queueLock = false;
+        }
 
+        public void RunTasks(object source, ElapsedEventArgs e)
+        {
+            if (taskLock || queueLock) { return; }
+            taskLock = true;
+            foreach (var task in TerrainTasks.Take(SIMULTANEOUS)) { task.Start(); }
             // Only run full speed on face calculations if the terrain gen queue is empty
             int faceThreads = TerrainTasks.Count.Equals(0) ? 1 : SIMULTANEOUS;
             int neededFaceThreads = faceThreads - BlockFacesTasks.Count(t => t.IsRunning);
-            foreach(var task in BlockFacesTasks.Take(neededFaceThreads)) { task.Start(); }
+            foreach (var task in BlockFacesTasks.Take(neededFaceThreads)) { task.Start(); }
+
+            taskLock = false;
         }
     }
 }
