@@ -19,19 +19,11 @@ namespace MinecrunchServer.Controllers
     {
         public TaskRunner trInstance = TaskRunner.Instance;
         
-        // GET api/values
+        // GET api/chunk
         [HttpGet]
-        public void Get()
+        public string Get()
         {
-            Chunk chunk = new Chunk()
-            {
-                name = $"chunk0,0",
-                x = 0,
-                y = 0,
-                biome = Biome.Desert,
-                lastUpdated = DateTime.UtcNow.ToBinary()
-            };
-            trInstance.TerrainTasks.Add(new ChunkGenerateTerrainTask(chunk));
+            return $"{trInstance.TerrainTasks.Count}";
         }
 
         // GET api/chunk/world1/0/0 
@@ -42,7 +34,7 @@ namespace MinecrunchServer.Controllers
             string filePath = $"{world}/chunks/{chunkName}";
             (new FileInfo(filePath)).Directory.Create();
 
-            Chunk chunk = Program.ChunkCache.FirstOrDefault(c => c.name == chunkName);
+            Chunk chunk = null;// Program.ChunkCache.FirstOrDefault(c => c.name == chunkName);
             if (chunk is null)
             {
                 if (System.IO.File.Exists(filePath))
@@ -53,7 +45,8 @@ namespace MinecrunchServer.Controllers
             }
             else
             {
-                Serializer.SerializeToStream(chunk, out Stream s);
+                Serializer.SerializeToStream(chunk, out Stream s, true);
+                s.Position = 0;
                 return File(s, "application/octet-stream");
             }
             
@@ -61,11 +54,11 @@ namespace MinecrunchServer.Controllers
             chunk = new Chunk()
             {
                 name = chunkName,
-                x = 0,
-                y = 0,
+                x = x,
+                y = y,
                 biome = Biome.Desert
             };
-            trInstance.TerrainTasks.Add(new ChunkGenerateTerrainTask(chunk));
+            trInstance.TerrainTasks.Enqueue(new ChunkGenerateTerrainTask(chunk));
             return NotFound();
         }
 

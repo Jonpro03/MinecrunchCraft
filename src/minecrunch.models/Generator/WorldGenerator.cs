@@ -212,7 +212,7 @@ namespace minecrunch.models.Generator
                     ControlPoints = new List<double>
                     {
                         -1,
-                        Settings.ShelfLevel + Settings.SeaLevel / 2.0,
+                        Settings.SeaLevel / 2.0,
                         1,
                     },
                     // [Warped-continent module]: This turbulence module slightly warps the
@@ -1207,7 +1207,7 @@ namespace minecrunch.models.Generator
                             {
                                 -1.0,
                                 -0.75,
-                                Settings.ShelfLevel,
+                                -0.375,
                                 1.0,
                             },
                             Source0 = continentDefinition,
@@ -1256,8 +1256,8 @@ namespace minecrunch.models.Generator
                 // module.
                 Source0 = new Select
                 {
-                    LowerBound = Settings.ShelfLevel - 1000,
-                    UpperBound = Settings.ShelfLevel,
+                    LowerBound = 0 - 1000,
+                    UpperBound = 0,
                     EdgeFalloff = 0.03125,
                     // [Base-scaled-continent-elevations module]: This scale/bias module
                     // scales the output value from the continent-definition group so that it

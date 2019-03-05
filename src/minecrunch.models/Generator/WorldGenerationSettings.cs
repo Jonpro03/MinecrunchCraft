@@ -219,11 +219,11 @@ namespace minecrunch.models.Generator
 
         public WorldGenerationSettings()
         {
-            Seed = 54321;
+            Seed = 8;
             MinElev = -4096;
             MaxElev = 8192;
-            ContinentFrequency = 2.8;
-            ContinentHeightScale = 0.30;
+            ContinentFrequency = 3.8;
+            ContinentHeightScale = 0.10;
             ContinentLacunarity = 1.208984375;
             MountainLacunarity = 1.875;
             HillsLacunarity = 2.162109375;
@@ -233,7 +233,7 @@ namespace minecrunch.models.Generator
             HillsTwist = 0.9;
             BadlandsTwist = 1;
             SeaLevel = 0;
-            ShelfLevel = -0.375;
+            ShelfLevel = 0;
             MountainsAmount = 0.60;
             HillsAmount = (1.0 + MountainsAmount) / 2.0;
             BadlandsAmount = 0.3083125;

@@ -8,7 +8,6 @@ namespace minecrunch.tasks
     public class ThreadedTask
     {
         private bool isDone = false;
-        private bool isRunning = false;
 
         private object doneHandle = new object();
         private object runningHandle = new object();
@@ -17,7 +16,9 @@ namespace minecrunch.tasks
 
         protected virtual void ThreadFunction() { }
 
-        protected virtual void OnFinished() { }
+        public delegate void ThreadCompleteEventHandler(object thing);
+
+        public virtual event ThreadCompleteEventHandler ThreadComplete;
 
         public Exception e = null;
 
@@ -45,33 +46,12 @@ namespace minecrunch.tasks
             }
         }
 
-        public bool IsRunning
-        {
-            get
-            {
-                bool tmp;
-                lock (runningHandle)
-                {
-                    tmp = isRunning;
-                }
-                return tmp;
-            }
-            private set
-            {
-                lock (runningHandle)
-                {
-                    isRunning = value;
-                }
-            }
-        }
-
         /// <summary>
         /// Start this instance.
         /// </summary>
         public virtual void Start()
         {
             thread = new Thread(Run);
-            IsRunning = true;
             thread.Start();
         }
 
@@ -91,7 +71,6 @@ namespace minecrunch.tasks
         {
             if (IsDone)
             {
-                OnFinished();
                 return true;
             }
             return false;
@@ -121,7 +100,7 @@ namespace minecrunch.tasks
             {
                 this.e = e;
             }
-            IsRunning = false;
+
             IsDone = true;
         }
     }

@@ -17,7 +17,7 @@ namespace minecrunch.models
         private float cave_fill;
         private float cave_height;
         private float cave_stretch;
-        const float MAGIC_SEED_FACTOR1 = 0.000001285f;
+        const float MAGIC_SEED_FACTOR1 = 0.000000565f;
 
         WorldGenerationSettings WorldSettings;
         Module WorldGen;
@@ -45,7 +45,7 @@ namespace minecrunch.models
 
             terrainPerlin = new Perlin
             {
-                Seed = 983248, //Todo: get from settings
+                Seed = 4, //Todo: get from settings
                 Frequency = 1,
                 Lacunarity = 2,
                 Quality = SharpNoise.NoiseQuality.Best,
@@ -55,7 +55,7 @@ namespace minecrunch.models
 
             terrain2Perlin = new Perlin
             {
-                Seed = 983248, //Todo: get from settings
+                Seed = 3, //Todo: get from settings
                 Frequency = 2,
                 Lacunarity = 3,
                 Quality = SharpNoise.NoiseQuality.Best,

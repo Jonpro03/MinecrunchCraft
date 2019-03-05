@@ -12,6 +12,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using minecrunch.tasks;
 using System;
 using minecrunch.models.Runtime;
+using System.Net;
+using minecrunch.models;
+using System.Threading.Tasks;
 
 namespace Assets.Scripts.World
 {
@@ -24,6 +27,14 @@ namespace Assets.Scripts.World
 
         public static List<Chunk> Chunks { get; set; }
 
+        public static List<string> InProgressChunks { get; set; }
+
+        //private string url = "https://minecrunchserver20190302073446.azurewebsites.net/api/chunk/world1";
+        //private string url = "http://localhost:55163/api/chunk/world1";
+        //private string url = "http://localhost:5000/api/chunk/world1";
+
+        private string host = "https://minecrunchserver20190302073446.azurewebsites.net";
+
         //Generates the terrain
         private void Start()
         {
@@ -35,52 +46,22 @@ namespace Assets.Scripts.World
             }
 
             Chunks = new List<Chunk>();
+            InProgressChunks = new List<string>();
             chunkJobs = new ChunkJobManager();
 
-            Vector2 playerChunkLoc = Coordinates.ChunkPlayerIsIn(transform.position);
+            //GenerateChunksAroundPlayer();
 
-            // Create the chunks
-
-            for (int cx = (-1 * RenderSize) + (int)playerChunkLoc.x; cx < RenderSize; cx++)
-            {
-                for (int cz = (-1 * RenderSize) + (int)playerChunkLoc.y; cz < RenderSize; cz++)
-                {
-                    Vector2 chunkCoord = new Vector2(cx, cz);
-                    bool chunkOnDisk = LoadChunk(new Vector2(cx, cz));
-                    if (!chunkOnDisk)
-                    {
-                        //GenerateChunk(chunkCoord);
-                    }
-                }
-            }
-
-
-            GenerateNewChunksAroundPlayers();
-
-            chunkJobs.ChunkGenerateTerrainTasks.Sort((chunk1, chunk2) =>
-            {
-                return Math.Abs(playerChunkLoc.x - chunk1.chunk.x) + 
-                Math.Abs(playerChunkLoc.y - chunk1.chunk.y) <
-                Math.Abs(playerChunkLoc.x - chunk2.chunk.x) + 
-                Math.Abs(playerChunkLoc.y - chunk2.chunk.y) ? -1 : 1;
-            });
-
-            
-            InvokeRepeating("ChunkMaintanence", 0, 0.33f);
-            InvokeRepeating("GenerateNewChunksAroundPlayers", 0, 30);
+            InvokeRepeating("ChunkMaintanence", 0, 0.5f);
+            InvokeRepeating("GenerateChunksAroundPlayer", 0, 3);
             //while (!chunkJobs.ChunkGenerateTerrainTasks.Count.Equals(0)) { ChunkMaintanence(); }
         }
 
         private void OnGUI()
         {
             GUI.Label(new Rect(10, 10, 1000, 20), string.Format(
-                "T:{0} C:{1} F:{2} V:{3} D:{4} dups:{5}",
-                chunkJobs.ChunkGenerateTerrainTasks.Count,
-                chunkJobs.ChunkGenerateCavesTasks.Count,
-                chunkJobs.ChunkCalculateFacesTasks.Count,
+                "V:{0} C:{1}",
                 chunkJobs.ChunkCalcVerticiesTasks.Count,
-                chunkJobs.CompletedChunks.Count,
-                chunkJobs.ChunkGenerateTerrainTasks.GroupBy(c => c.chunk.name).Where(c => c.Count() > 1).Count()
+                chunkJobs.CompletedChunks.Count
                 ));
         }
 
@@ -91,14 +72,27 @@ namespace Assets.Scripts.World
                 var chunk = chunkJobs.CompletedChunks.First();
                 if (!DrawChunk(chunk))
                 {
-                    Chunks.Remove(chunk);
+                    chunkJobs.CompletedChunks.Remove(chunk);
+                    return;
                 }
+                InProgressChunks.Remove($"chunk{chunk.x},{chunk.y}");
                 chunkJobs.CompletedChunks.Remove(chunk);
+                Chunks.Add(chunk);
             }
         }
 
         private void ChunkMaintanence()
         {
+            var player = World.Players.First();
+            var playerChunkLoc = Coordinates.ChunkPlayerIsIn(player.transform.position);
+            chunkJobs.ChunkDownloads.Sort((chunk1, chunk2) =>
+            {
+                return Math.Abs(playerChunkLoc.x - chunk1.cx) +
+                Math.Abs(playerChunkLoc.y - chunk1.cy) <
+                Math.Abs(playerChunkLoc.x - chunk2.cx) +
+                Math.Abs(playerChunkLoc.y - chunk2.cy) ? -1 : 1;
+            });
+            
             chunkJobs.Update();
         }
 
@@ -107,63 +101,44 @@ namespace Assets.Scripts.World
             chunkJobs.StopAllJobs();
         }
 
-        public void GenerateNewChunksAroundPlayers()
+        public void GenerateChunksAroundPlayer()
         {
-
             int UpdateDistance = RenderSize;
             foreach (Player.WorldPlayer player in World.Players)
             {
                 var playerChunkLoc = Coordinates.ChunkPlayerIsIn(player.transform.position);
-                List<Vector2> neededChunks = new List<Vector2>();
+                List<Vector2Int> neededChunks = new List<Vector2Int>();
 
                 for (var a = 0; a <= UpdateDistance; a++)
                 {
                     for (var b = 0; b <= UpdateDistance; b++)
                     {
-                        neededChunks.Add(playerChunkLoc + (Vector2.up * a) + (Vector2.right * b));
-                        neededChunks.Add(playerChunkLoc + (Vector2.up * a) + (Vector2.left * b));
-                        neededChunks.Add(playerChunkLoc + (Vector2.down * a) + (Vector2.right * b));
-                        neededChunks.Add(playerChunkLoc + (Vector2.down * a) + (Vector2.left * b));
+                        neededChunks.Add(playerChunkLoc + (Vector2Int.up * a) + (Vector2Int.right * b));
+                        neededChunks.Add(playerChunkLoc + (Vector2Int.up * a) + (Vector2Int.left * b));
+                        neededChunks.Add(playerChunkLoc + (Vector2Int.down * a) + (Vector2Int.right * b));
+                        neededChunks.Add(playerChunkLoc + (Vector2Int.down * a) + (Vector2Int.left * b));
                     }
                 }
 
                 //List<Chunk> toRemove = Chunks.Where(c => c.sections[0].blocks[0,0,0] is null).ToList();
                 List<Chunk> toRemove = Chunks.Where(c => !neededChunks.Any(v2 => v2.x == c.x && v2.y == c.y)).ToList();
 
-                //toRemove.ForEach(c => {
-                //    Destroy(GameObject.Find(c.name));
-                //    Chunks.Remove(c);
-                //    });
+                toRemove.ForEach(c => {
+                    Destroy(GameObject.Find(c.name));
+                    Chunks.Remove(c);
+                    });
 
                 //Chunks.RemoveAll(c => c.Verticies.Count == 0);
 
                 foreach (var chunkCoord in neededChunks)
                 {
-                    if (!ChunkExists($"chunk{chunkCoord.ToString()}"))
-                    {
-                        bool chunkOnDisk = false;// LoadChunk(chunkCoord);
-                        if (!chunkOnDisk)
-                        {
-                            GenerateChunk(chunkCoord);
-                        }
-                    }
+                    string chunkName = $"chunk{chunkCoord.x},{chunkCoord.y}";
+
+                    if (ChunkExists(chunkName) || InProgressChunks.Contains(chunkName)) { continue; }
+
+                    InProgressChunks.Add(chunkName);
+                    chunkJobs.ChunkDownloads.Add(new ChunkDownloadTask(host, "world1", chunkCoord.x, chunkCoord.y));
                 }
-
-                chunkJobs.ChunkGenerateTerrainTasks.Sort((chunk1, chunk2) =>
-                {
-                    return Math.Abs(playerChunkLoc.x - chunk1.chunk.x) +
-                    Math.Abs(playerChunkLoc.y - chunk1.chunk.y) <
-                    Math.Abs(playerChunkLoc.x - chunk2.chunk.x) +
-                    Math.Abs(playerChunkLoc.y - chunk2.chunk.y) ? -1 : 1;
-                });
-
-                chunkJobs.ChunkCalculateFacesTasks.Sort((chunk1, chunk2) =>
-                {
-                    return Math.Abs(playerChunkLoc.x - chunk1.chunk.x) +
-                    Math.Abs(playerChunkLoc.y - chunk1.chunk.y) <
-                    Math.Abs(playerChunkLoc.x - chunk2.chunk.x) +
-                    Math.Abs(playerChunkLoc.y - chunk2.chunk.y) ? -1 : 1;
-                }); 
             }
         }
 
@@ -210,10 +185,10 @@ namespace Assets.Scripts.World
             }
         }
 **/
-
+/**
         private bool LoadChunk(Vector2 chunkCoord)
         {
-            string chunkName = $"chunk{chunkCoord.ToString()}";
+            string chunkName = $"chunk{chunkCoord.x},{chunkCoord.y}";
             
             if (File.Exists(World.WorldSaveFolder + $"/meshes/{chunkName}-subchunk0.mesh"))
             {
@@ -285,28 +260,7 @@ namespace Assets.Scripts.World
             //chunkJobs.AddChunkLoadJob(chunkCoord);
             return true;
         }
-
-        private void GenerateChunk(Vector2 chunkPos)
-        {
-            string chunkName = string.Format("chunk{0}", chunkPos.ToString());
-            if (ChunkExists(chunkName))
-            {
-                return;
-            }
-
-            GameObject chunkGameObject = new GameObject(chunkName);
-            Chunk chunk = new Chunk()
-            {
-                name = chunkName,
-                x = (int) chunkPos.x,
-                y = (int) chunkPos.y,
-                biome = (Biome) minecrunch.utilities.PerlinNoise.Instance.Biome((int)chunkPos.x, 0, (int)chunkPos.y)
-            };
-
-            Chunks.Add(chunk);
-            chunkJobs.AddGenerateJob(chunk);
-        }
-
+**/
         private bool DrawChunk(Chunk chunk)
         {
             GameObject chunkGameObject = GameObject.Find(chunk.name);
@@ -383,23 +337,6 @@ namespace Assets.Scripts.World
             subchunkMesh.RecalculateNormals();
             subChunkGameObject.AddComponent<MeshCollider>();
 
-            //Save to disk
-            /**
-            string meshPath = World.WorldSaveFolder + $"/meshes/{subChunkGameObject.name}.mesh";
-            var serializedMesh = MeshSerializer.WriteMesh(subchunkMesh, false);
-            File.WriteAllBytes(meshPath, serializedMesh);
-
-            string matPath = World.WorldSaveFolder + $"/meshes/{subChunkGameObject.name}.mat";
-            using (FileStream materials = File.Create(matPath))
-            {
-                new BinaryFormatter().Serialize(materials, section.Mesh.Materials);
-            }
-            string triPath = World.WorldSaveFolder + $"/meshes/{subChunkGameObject.name}.tri";
-            using (FileStream triangles = File.Create(triPath))
-            {
-                new BinaryFormatter().Serialize(triangles, section.Mesh.Triangles);
-            }
-            **/
             return true;
         }
 
@@ -411,7 +348,8 @@ namespace Assets.Scripts.World
     **/
         private bool ChunkExists(string name)
         {
-            return GameObject.Find(name) != null;
+            return Chunks.Count(c => c.name == name) > 0;
+            //return GameObject.Find(name) != null;
         }
     }
 }

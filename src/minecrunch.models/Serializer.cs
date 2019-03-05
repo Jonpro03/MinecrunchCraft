@@ -32,15 +32,21 @@ namespace minecrunch.models
             {
                 if (compress)
                 {
-                    using (var compressionStream = new GZipStream(stream, CompressionMode.Compress))
+                    using (var tempstream = new MemoryStream()) // Double buffer needed
                     {
-                        formatter.Serialize(compressionStream, obj);
-                        compressionStream.Flush();
+                        using (var compressionStream = new GZipStream(tempstream, CompressionMode.Compress))
+                        {
+                            formatter.Serialize(compressionStream, obj);
+                            tempstream.Position = 0;
+                            tempstream.CopyTo(stream);
+                        }
                     }
+                    
                 }
                 else
                 {
                     formatter.Serialize(stream, obj);
+                    stream.Position = 0;
                 }
 
             }
@@ -48,7 +54,7 @@ namespace minecrunch.models
             {
                 return false;
             }
-            stream.Position = 0;
+            
             return true;
         }
 

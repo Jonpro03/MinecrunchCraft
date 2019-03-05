@@ -1,4 +1,5 @@
-﻿using minecrunch.models.Chunks;
+﻿using Assets.Scripts.World;
+using minecrunch.models.Chunks;
 using minecrunch.tasks;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,134 +11,63 @@ namespace Assets.Scripts.Chunks
 {
     public class ChunkJobManager
     {
-        public List<ChunkGenerateTerrainTask> ChunkGenerateTerrainTasks { get; set; }
-
-        public List<ChunkGenerateCavesTask> ChunkGenerateCavesTasks { get; set; }
-
-        public List<ChunkGenerateOresTask> ChunkGenerateOresTasks { get; set; }
-
-        public List<ChunkGenerateEnvironmentTask> ChunkGenerateEnvironmentTasks { get; set; }
-
-        public List<ChunkCalculateFacesTask> ChunkCalculateFacesTasks { get; set; }
-
+        public List<ChunkDownloadTask> ChunkDownloads { get; set; }
         public List<ChunkCalcVerticiesTask> ChunkCalcVerticiesTasks { get; set; }
 
         public List<Chunk> CompletedChunks { get; set; }
 
         public ChunkJobManager()
         {
-            ChunkGenerateTerrainTasks = new List<ChunkGenerateTerrainTask>();
-            ChunkGenerateCavesTasks = new List<ChunkGenerateCavesTask>();
-            ChunkGenerateOresTasks = new List<ChunkGenerateOresTask>();
-            ChunkGenerateEnvironmentTasks = new List<ChunkGenerateEnvironmentTask>();
-            ChunkCalculateFacesTasks = new List<ChunkCalculateFacesTask>();
+            ChunkDownloads = new List<ChunkDownloadTask>();
             ChunkCalcVerticiesTasks = new List<ChunkCalcVerticiesTask>();
             CompletedChunks = new List<Chunk>();
         }
 
         public void Update()
         {
-            foreach (var job in ChunkGenerateTerrainTasks)
+            
+            foreach (var task in ChunkDownloads.Where(t => t.IsDone))
             {
-                if (job.IsDone)
+                if (task.e != null)
                 {
-                    var nextJob = new ChunkGenerateCavesTask(job.chunk);
-                    ChunkGenerateCavesTasks.Add(nextJob);                 
+                    Debug.LogException(task.e);
+                    WorldTerrain.InProgressChunks.Remove($"chunk{task.cx},{task.cy}");
+                    continue;
                 }
+                if (task.chunk is null)
+                {
+                    WorldTerrain.InProgressChunks.Remove($"chunk{task.cx},{task.cy}");
+                    Debug.LogWarning($"Failed to deserialize {task.cx}, {task.cy}");
+                    continue;
+                }
+                ChunkCalcVerticiesTasks.Add(new ChunkCalcVerticiesTask(task.chunk));
             }
-            ChunkGenerateTerrainTasks.RemoveAll(task => task.IsDone);
+            ChunkDownloads.RemoveAll(task => task.IsDone);
 
-            foreach (var job in ChunkGenerateCavesTasks)
+            foreach (var task in ChunkCalcVerticiesTasks.Where(t => t.IsDone))
             {
-                if (job.IsDone)
+                if (task.e != null)
                 {
-                    var nextJob = new ChunkGenerateOresTask(job.chunk);
-                    ChunkGenerateOresTasks.Add(nextJob);
+                    WorldTerrain.InProgressChunks.Remove($"chunk{task.chunk.x},{task.chunk.y}");
+                    Debug.LogException(task.e);
+                    continue;
                 }
-            }
-            ChunkGenerateCavesTasks.RemoveAll(task => task.IsDone);
 
-
-            foreach (var job in ChunkGenerateOresTasks)
-            {
-                if (job.IsDone)
-                {
-                    var nextJob = new ChunkGenerateEnvironmentTask(job.chunk);
-                    ChunkGenerateEnvironmentTasks.Add(nextJob);
-                }
-            }
-            ChunkGenerateOresTasks.RemoveAll(task => task.IsDone);
-
-
-            foreach (var job in ChunkGenerateEnvironmentTasks)
-            {
-                if (job.IsDone)
-                {
-                    var nextJob = new ChunkCalculateFacesTask(job.chunk);
-                    ChunkCalculateFacesTasks.Add(nextJob);
-                }
-            }
-            ChunkGenerateEnvironmentTasks.RemoveAll(task => task.IsDone);
-
-            foreach (var job in ChunkCalculateFacesTasks)
-            {
-                if (job.IsDone && !job.IsRunning)
-                {
-                    var nextJob = new ChunkCalcVerticiesTask(job.chunk);
-                    ChunkCalcVerticiesTasks.Add(nextJob);
-                    //ChunkCalculateFacesTasks.First(t => t.IsDone == false)?.Start();
-                }
-            }
-            ChunkCalculateFacesTasks.RemoveAll(task => task.IsDone && !task.IsRunning);
-
-            foreach (var job in ChunkCalcVerticiesTasks)
-            {
-                if (job.IsDone)
-                {
-                    if (job.e != null)
-                    {
-                        Debug.LogException(job.e);
-                    }
-
-                    string meshPath = World.World.WorldSaveFolder + $"/chunks/{job.chunk.name}.dat";
-                    //new ChunkMeshSaveTask(job.chunk, meshPath).Start();
-                    CompletedChunks.Add(job.chunk);
-                }
+                CompletedChunks.Add(task.chunk);
             }
             ChunkCalcVerticiesTasks.RemoveAll(task => task.IsDone);
 
-            int parallel = 2;
-            ChunkGenerateTerrainTasks.Take(parallel).ToList().ForEach(t => t.Start());
-            ChunkGenerateCavesTasks.Take(parallel).ToList().ForEach(t => t.Start());
-            ChunkGenerateOresTasks.Take(parallel).ToList().ForEach(t => t.Start());
-            ChunkGenerateEnvironmentTasks.Take(parallel).ToList().ForEach(t => t.Start());
-            int faceParallellism = ChunkGenerateTerrainTasks.Count == 0 ? 4 : 2;
-            if (ChunkCalculateFacesTasks.Where(t => t.IsRunning is true).Count() < 2)
-                ChunkCalculateFacesTasks.Take(faceParallellism).ToList().ForEach(t => t.Start());
+            int parallel = 3;
+            ChunkDownloads.Take(parallel).ToList().ForEach(t => t.Start());
+
             ChunkCalcVerticiesTasks.Take(parallel).ToList().ForEach(t => t.Start());
 
         }
 
         public void StopAllJobs()
         {
-            ChunkGenerateTerrainTasks.ForEach(task => task.Abort());
-            ChunkGenerateCavesTasks.ForEach(task => task.Abort());
-            ChunkCalculateFacesTasks.ForEach(task => task.Abort());
             ChunkCalcVerticiesTasks.ForEach(task => task.Abort());
 
-        }
-
-
-        public bool AddGenerateJob(Chunk chunk)
-        {
-
-            if (chunk.GetBlockByChunkCoord(0,0,0) != null) // Hacky way to see if the chunk is generated.
-            {
-                return false;
-            }
-            var job = new ChunkGenerateTerrainTask(chunk);
-            ChunkGenerateTerrainTasks.Add(job);
-            return true;
         }
 
         /**

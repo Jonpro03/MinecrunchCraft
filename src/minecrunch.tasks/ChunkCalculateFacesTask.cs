@@ -12,7 +12,7 @@ namespace minecrunch.tasks
     {
         public readonly Chunk chunk;
         public readonly BlockInfo bInfo;
-
+        public override event ThreadCompleteEventHandler ThreadComplete;
         private readonly List<ChunkSection> sections;
 
         public ChunkCalculateFacesTask(Chunk c)
@@ -27,7 +27,7 @@ namespace minecrunch.tasks
 
             //Parallel.ForEach(sections, ProcessSection);
             sections.ForEach(ProcessSection);
-            
+            ThreadComplete(chunk);
         }
 
         private void ProcessSection(ChunkSection section)

@@ -49,24 +49,6 @@ namespace minecrunch.tests
             Console.WriteLine($"Stone: {numStone}");
             Console.WriteLine($"Bedrock: {numBR}");
 
-            ChunkGenerateCavesTask cgct = new ChunkGenerateCavesTask(c);
-            cgct.Start();
-            while (!cgct.IsDone)
-            {
-                Thread.Sleep(10);
-            }
-
-            ChunkGenerateOresTask ores = new ChunkGenerateOresTask(c);
-            ores.Start();
-            while (!ores.IsDone)
-            {
-                Thread.Sleep(10);
-            }
-
-            ChunkGenerateEnvironmentTask env = new ChunkGenerateEnvironmentTask(c);
-            env.Start();
-            while (!env.IsDone) { Thread.Sleep(100); }
-
             int startTime = 0;
             ChunkCalculateFacesTask faces = new ChunkCalculateFacesTask(c);
             faces.Start();

@@ -17,7 +17,7 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
-            Serializer.SerializeToFile(chunk, fileName);
+            Serializer.SerializeToFile(chunk, fileName, true);
         }
     }
 }
