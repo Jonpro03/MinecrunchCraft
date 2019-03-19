@@ -15,8 +15,8 @@ namespace minecrunch.models
         private float cave_fill;
         private float cave_height;
         private float cave_stretch;
-        const float WORLD_HORZ_STRETCH_FACTOR = 0.000008925f;
-        const float WORLD_VERT_STRETCH_FACTOR = 0.018625f;
+        const float WORLD_HORZ_STRETCH_FACTOR = 1 / 128.0f; //0.000008925f;
+        const float WORLD_VERT_STRETCH_FACTOR = 1;//0.018625f;
 
         WorldGenerationSettings WorldSettings;
         Module WorldGen;
@@ -73,7 +73,7 @@ namespace minecrunch.models
         //Function that inputs the position and spits out a float value based on the perlin noise
         public double Terrain(float x, float z)
         {
-            int terrainOffset = 18;
+            int terrainOffset = 3;
             return terrainOffset 
                 + WorldGen.GetValue(x * WORLD_HORZ_STRETCH_FACTOR, 0, z * WORLD_HORZ_STRETCH_FACTOR)
                 * WORLD_VERT_STRETCH_FACTOR;

@@ -54,7 +54,7 @@ namespace minecrunch.tasks
                 }
             }
 
-            Parallel.ForEach(sections, ProcessSection);
+            Parallel.ForEach(sections, ProcessTerrain);
             Parallel.ForEach(sections, ProcessCaves);
 
             stoneBlocks = chunk.GetAllBlocks().Where(b => b?.Id is BlockIds.STONE);
@@ -69,7 +69,7 @@ namespace minecrunch.tasks
             ThreadComplete(this);
         }
 
-        private void ProcessSection(ChunkSection section)
+        private void ProcessTerrain(ChunkSection section)
         {
             int sectionYOffset = 16 * section.number;
 
@@ -97,12 +97,12 @@ namespace minecrunch.tasks
                         }
 
                         // Ocean / River
-                        if (terrainY <= 48)
+                        if (terrainY <= 60)
                         {
                             block.Id = BlockIds.STONE;
                         }
                         // Beach
-                        else if (terrainY < 52.5)
+                        else if (terrainY < 63.85)
                         {
                             if (by > terrainY - 3)
                                 block.Id = BlockIds.SAND;
@@ -110,7 +110,7 @@ namespace minecrunch.tasks
                                 block.Id = BlockIds.STONE;
                         }
                         // Grass
-                        else if (terrainY < 60)
+                        else if (terrainY < 74)
                         {
                             if (by == (int) terrainY)
                                 block.Id = BlockIds.GRASS;

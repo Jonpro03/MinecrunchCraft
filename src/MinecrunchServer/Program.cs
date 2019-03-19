@@ -15,7 +15,7 @@ namespace MinecrunchServer
                 while (true)
                 {
                     trInstance.UpdateQueues();
-                    Thread.Sleep(500); // Reduce to run the server harder
+                    Thread.Sleep(300); // Reduce to run the server harder
                 }
             });
             CreateWebHostBuilder(args).Build().Run();
