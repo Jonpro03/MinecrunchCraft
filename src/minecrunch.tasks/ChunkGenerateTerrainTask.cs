@@ -14,12 +14,15 @@ namespace minecrunch.tasks
     {
         public readonly Chunk chunk;
         public readonly string worldName;
+
         private readonly List<ChunkSection> sections;
-        private PerlinNoise pNoise;
         private readonly BlockInfo bInfo;
+
         public override event ThreadCompleteEventHandler ThreadComplete;
+
         private const int CAVE_BREAKTHROUGH_LIMIT = 45;
         private Random rand;
+        private PerlinNoise pNoise;
         private IEnumerable<Block> stoneBlocks;
 
         public ChunkGenerateTerrainTask(Chunk newChunk, string worldName)

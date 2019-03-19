@@ -216,28 +216,28 @@ namespace minecrunch.models.Generator
 
         public WorldGenerationSettings()
         {
-            Seed = 8;
+            Seed = 68468405;
             MinElev = -4096;
             MaxElev = 8192;
-            ContinentFrequency = 4.8;
-            ContinentHeightScale = 0.12;
+            ContinentFrequency = 2.8;
+            ContinentHeightScale = 0.0010;
             ContinentLacunarity = 1.208984375;
-            MountainLacunarity = 1.875;
+            MountainLacunarity = 2.01;
             HillsLacunarity = 2.162109375;
             PlainsLacunarity = 2.314453125;
-            BadlandsLacunarity = 2.212890625;
+            BadlandsLacunarity = 2.000890625;
             MountainsTwist = 1.9;
             HillsTwist = 0.9;
             BadlandsTwist = 1;
-            SeaLevel = 0;
-            ShelfLevel = 0;
+            SeaLevel = -0.0000225;
+            ShelfLevel = -0.0000226;
             MountainsAmount = 0.05;
             HillsAmount = (1.0 + MountainsAmount) / 2.0;
-            BadlandsAmount = 0.3083125;
-            TerrainOffset = 1;
-            MountainGlaciation = 1.375;
+            BadlandsAmount = 0.01083125;
+            TerrainOffset = 1.5;
+            MountainGlaciation = 1.075;
             //ContinentHeightScale = (1.0 - SeaLevel) / 4.0;
-            RiverDepth = 0.1834375;
+            RiverDepth = -0.0001134375;
 
         }
     }
