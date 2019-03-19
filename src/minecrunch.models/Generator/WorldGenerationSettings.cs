@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Thank you https://github.com/rthome/SharpNoise/tree/master/Examples/ComplexPlanetExample
+
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace minecrunch.models.Generator
 {
@@ -222,8 +219,8 @@ namespace minecrunch.models.Generator
             Seed = 8;
             MinElev = -4096;
             MaxElev = 8192;
-            ContinentFrequency = 3.8;
-            ContinentHeightScale = 0.10;
+            ContinentFrequency = 4.8;
+            ContinentHeightScale = 0.12;
             ContinentLacunarity = 1.208984375;
             MountainLacunarity = 1.875;
             HillsLacunarity = 2.162109375;
@@ -234,13 +231,13 @@ namespace minecrunch.models.Generator
             BadlandsTwist = 1;
             SeaLevel = 0;
             ShelfLevel = 0;
-            MountainsAmount = 0.60;
+            MountainsAmount = 0.05;
             HillsAmount = (1.0 + MountainsAmount) / 2.0;
             BadlandsAmount = 0.3083125;
             TerrainOffset = 1;
             MountainGlaciation = 1.375;
             //ContinentHeightScale = (1.0 - SeaLevel) / 4.0;
-            RiverDepth = 0.1634375;
+            RiverDepth = 0.1834375;
 
         }
     }

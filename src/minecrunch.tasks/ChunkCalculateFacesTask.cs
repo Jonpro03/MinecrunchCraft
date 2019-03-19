@@ -1,22 +1,22 @@
-﻿using minecrunch.models.Blocks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using minecrunch.models.Blocks;
 using minecrunch.models.Chunks;
 using minecrunch.parameters.Blocks;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace minecrunch.tasks
 {
     public class ChunkCalculateFacesTask : ThreadedTask
     {
         public readonly Chunk chunk;
+        public readonly string worldName;
         public readonly BlockInfo bInfo;
         public override event ThreadCompleteEventHandler ThreadComplete;
         private readonly List<ChunkSection> sections;
 
-        public ChunkCalculateFacesTask(Chunk c)
+        public ChunkCalculateFacesTask(Chunk c, string worldName)
         {
+            this.worldName = worldName;
             chunk = c;
             bInfo = BlockInfo.Instance;
             sections = new List<ChunkSection>(chunk.sections);
@@ -24,23 +24,24 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
-
-            //Parallel.ForEach(sections, ProcessSection);
+            //Parallel.ForEach(sections, ProcessSection); // Bad things happen when this is parallelized.
             sections.ForEach(ProcessSection);
-            ThreadComplete(chunk);
+            ThreadComplete(this);
         }
 
         private void ProcessSection(ChunkSection section)
         {
+            // Sanity check
+            if (section is null) { return; }
+
             int sectionYOffset = 16 * section.number;
 
             // Check to see if there's only air in this section. If so, we're done.
-            //IEnumerable<Block> nonAir = from Block block in section.blocks where block.Id != BlockIds.AIR select block;
-            IEnumerable<Block> nonAir = from Block block in section.blocks where block != null select block;
-            if (nonAir.Count() is 0)
-            {
-                return;
-            }
+            IEnumerable<Block> nonAir = from Block block
+                                        in section.blocks
+                                        where block != null
+                                        select block;
+            if (nonAir.Count() is 0) { return; }
 
             foreach (Block block in nonAir)
             {

@@ -59,6 +59,7 @@
     <Compile Include="Serializer.cs" />
     <Compile Include="Surrogates\Vector2SerializationSurrogate.cs" />
     <Compile Include="Surrogates\Vector3SerializationSurrogate.cs" />
+    <Compile Include="World\World.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

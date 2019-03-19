@@ -45,6 +45,10 @@ namespace minecrunch.parameters.Blocks
         public BlockParameters.Block GetBlock(string id)
         {
             BlockParameters.Block block = bxml.BlockList.FirstOrDefault(b => b.Id == id);
+            if (block is null)
+            {
+                return bxml.BlockList.First();
+            }
             return block ?? bxml.BlockList.Find(b => b.Id == "debug");
         }
 
@@ -57,6 +61,9 @@ namespace minecrunch.parameters.Blocks
             return GetBlock(id).Material;
         }
 
+        /// <summary>
+        /// Lookup whether a block is transparent.
+        /// </summary>
         public bool IsTransparent(string id)
         {
             return GetBlock(id).Transparent;

@@ -1,19 +1,19 @@
-﻿using Assets.Scripts.World;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using Assets.Scripts.World;
 using minecrunch.models.Chunks;
 using minecrunch.tasks;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace Assets.Scripts.Chunks
 {
+    // Todo: switch to a singleton
     public class ChunkJobManager
     {
+        // Todo: Switch to ConcurrentQueues instead of lists to match the server
+        // Queues
         public List<ChunkDownloadTask> ChunkDownloads { get; set; }
         public List<ChunkCalcVerticiesTask> ChunkCalcVerticiesTasks { get; set; }
-
         public List<Chunk> CompletedChunks { get; set; }
 
         public ChunkJobManager()
@@ -23,9 +23,12 @@ namespace Assets.Scripts.Chunks
             CompletedChunks = new List<Chunk>();
         }
 
+        /// <summary>
+        /// Manage the task queues.
+        /// </summary>
         public void Update()
         {
-            
+            // Check for completed chunk downloads.
             foreach (var task in ChunkDownloads.Where(t => t.IsDone))
             {
                 if (task.e != null)
@@ -44,6 +47,7 @@ namespace Assets.Scripts.Chunks
             }
             ChunkDownloads.RemoveAll(task => task.IsDone);
 
+            // Check for completed chunk verticies calculations.
             foreach (var task in ChunkCalcVerticiesTasks.Where(t => t.IsDone))
             {
                 if (task.e != null)
@@ -57,63 +61,16 @@ namespace Assets.Scripts.Chunks
             }
             ChunkCalcVerticiesTasks.RemoveAll(task => task.IsDone);
 
+            //Todo: Better task management. Check that total running tasks won't exceed desired parallelization.
             int parallel = 3;
-            ChunkDownloads.Take(parallel).ToList().ForEach(t => t.Start());
-
-            ChunkCalcVerticiesTasks.Take(parallel).ToList().ForEach(t => t.Start());
-
+            foreach (var task in ChunkDownloads.Take(parallel)) { task.Start(); }
+            foreach (var task in ChunkCalcVerticiesTasks.Take(parallel)) { task.Start(); }
         }
 
         public void StopAllJobs()
         {
+            ChunkDownloads.ForEach(task => task.Abort());
             ChunkCalcVerticiesTasks.ForEach(task => task.Abort());
-
         }
-
-        /**
-        public bool AddUpdateJob(Chunk chunk)
-        {
-            if (!chunk.HasUpdate)
-            {
-                return false;
-            }
-            ChunkUpdateJob job = new ChunkUpdateJob(chunk);
-            ChunkUpdateJobs.Add(job);
-            job.Start();
-            return true;
-        }
-
-
-        public async Task AddChunkSaveJob(Chunk chunk)
-        {
-            string chunkFilePath = string.Format(
-                    "{0}/chunks/{1},{2}.dat",
-                    World.World.WorldSaveFolder,
-                    chunk.x,
-                    chunk.y);
-
-            await Task.Run(() =>Serializer.Serialize(chunk, chunkFilePath));
-        }
-
-        public async Task AddChunkLoadJob(Vector2 chunkCoord)
-        {
-            string name = $"chunk{chunkCoord.ToString()}";
-            bool jobExists = CompletedChunks.Any(c => c.name == name);
-            if (jobExists)
-            {
-                return;
-            }
-
-            string chunkFilePath = string.Format(
-                    "{0}/chunks/{1},{2}.dat",
-                    World.World.WorldSaveFolder,
-                    chunkCoord.x,
-                    chunkCoord.y);
-
-            Chunk chunk = await Task.Run(() => Serializer.Deserialize(chunkFilePath));
-            CompletedChunks.Add(chunk);
-
-        }
-        **/
     }
 }

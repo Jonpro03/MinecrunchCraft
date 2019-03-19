@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using minecrunch.models.Chunks;
 using MinecrunchServer.Logic;
 
 namespace MinecrunchServer
@@ -23,7 +15,7 @@ namespace MinecrunchServer
                 while (true)
                 {
                     trInstance.UpdateQueues();
-                    Thread.Sleep(500);
+                    Thread.Sleep(500); // Reduce to run the server harder
                 }
             });
             CreateWebHostBuilder(args).Build().Run();

@@ -3,7 +3,7 @@
   <blocks>
     <block id="debug">
       <name>Debug Block</name>
-      <material>Materials/blockKey</material>
+      <material>Materials/BlockKey</material>
       <transparent>false</transparent>
     </block>
     <block id="air">
@@ -96,7 +96,21 @@
       <material>Materials/BedrockBlock</material>
       <transparent>false</transparent>
     </block>
-    
+    <block id="iron_ore">
+      <name>Iron Ore</name>
+      <material>Materials/IronOreBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="diamond_ore">
+      <name>Diamond Ore</name>
+      <material>Materials/DiamondOreBlock</material>
+      <transparent>false</transparent>
+    </block>
+    <block id="coal_ore">
+      <name>Coal Ore</name>
+      <material>Materials/CoalOreBlock</material>
+      <transparent>false</transparent>
+    </block>
     
     <block id="sand">
       <name>Sand</name>

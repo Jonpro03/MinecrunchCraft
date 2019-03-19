@@ -34,6 +34,8 @@ namespace minecrunch.models.Chunks
         {
             int sectionBlockIsIn = (int)(block.y / 16.0);
             int ySection = block.y % 16;
+
+            // Empty (air) sections will be null.
             if (sections[sectionBlockIsIn] is null)
             {
                 sections[sectionBlockIsIn] = new ChunkSection();

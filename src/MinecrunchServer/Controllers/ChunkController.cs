@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http.Headers;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using minecrunch.models;
@@ -23,7 +19,7 @@ namespace MinecrunchServer.Controllers
         [HttpGet]
         public string Get()
         {
-            return $"{trInstance.TerrainTasks.Count}";
+            return $"{trInstance.TerrainTasks.Count} + {trInstance.BlockFacesTasks.Count}";
         }
 
         // GET api/chunk/world1/0/0 
@@ -34,7 +30,12 @@ namespace MinecrunchServer.Controllers
             string filePath = $"{world}/chunks/{chunkName}";
             (new FileInfo(filePath)).Directory.Create();
 
-            Chunk chunk = null;// Program.ChunkCache.FirstOrDefault(c => c.name == chunkName);
+            // Chunk chunk = Program.ChunkCache.FirstOrDefault(c => c.name == chunkName);
+            
+            // Reading chunks out of the cache when compression is enabled is super broken for some reason.
+            // Force reading off disk.
+
+            Chunk chunk = null;
             if (chunk is null)
             {
                 if (System.IO.File.Exists(filePath))
@@ -56,29 +57,10 @@ namespace MinecrunchServer.Controllers
                 name = chunkName,
                 x = x,
                 y = y,
-                biome = Biome.Desert
+                biome = Biome.Desert // Todo: this, obviously
             };
-            trInstance.TerrainTasks.Enqueue(new ChunkGenerateTerrainTask(chunk));
+            trInstance.TerrainTasks.Enqueue(new ChunkGenerateTerrainTask(chunk, world));
             return NotFound();
-        }
-
-        // POST api/values
-        [HttpPost]
-        public void Post(string dimId, int x, int y)
-        {
-            
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

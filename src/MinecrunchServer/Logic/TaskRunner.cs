@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Timers;
-using minecrunch.models.Chunks;
 using minecrunch.tasks;
 
 namespace MinecrunchServer.Logic
 {
     public sealed class TaskRunner
     {
-        private const int SIMULTANEOUS = 4;
+        private const int SIMULTANEOUS = 4; // Todo: use this
         private static readonly Lazy<TaskRunner> lazy = new Lazy<TaskRunner>(() => new TaskRunner());
 
         public static TaskRunner Instance
@@ -32,16 +28,18 @@ namespace MinecrunchServer.Logic
             SaveChunkTasks = new ConcurrentQueue<SaveChunkTask>();
         }
 
+        // Terrain Gen -> Calc Faces
         void HandleTerrainGenComplete(object obj)
         {
-            Chunk chunk = obj as Chunk;
-            BlockFacesTasks.Enqueue(new ChunkCalculateFacesTask(chunk));
+            var task = obj as ChunkGenerateTerrainTask;
+            BlockFacesTasks.Enqueue(new ChunkCalculateFacesTask(task.chunk, task.worldName));
         }
 
+        // Calc Faces -> Save to Disk
         void HandleFaceCalcComplete(object obj)
         {
-            Chunk chunk = obj as Chunk;
-            SaveChunkTasks.Enqueue(new SaveChunkTask(chunk, "world1"));
+            var task = obj as ChunkCalculateFacesTask;
+            SaveChunkTasks.Enqueue(new SaveChunkTask(task.chunk, task.worldName));
         }
 
         public void UpdateQueues()
@@ -62,13 +60,6 @@ namespace MinecrunchServer.Logic
             {
                 task.Start();
             }
-
-
-        }
-
-        private void Task_Finished(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -4,7 +4,6 @@ using minecrunch.parameters.Blocks;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace minecrunch.tasks
@@ -29,17 +28,14 @@ namespace minecrunch.tasks
                 ProcessSection(sec);
             }
 
-            //chunk.sections.ToList().ForEach(s => ProcessSection(s));
-            //Parallel.ForEach(chunk.sections, ProcessSection);
             watch.Stop();
             chunk.processTimeMs = watch.ElapsedMilliseconds;
-
         }
 
         private void ProcessSection(ChunkSection section)
         {
             int sectionYOffset = 16 * section.number;
-            int trianglesCount = 0;
+            int quadCount = 0;
             for (int bx = 0; bx < 16; bx++)
             {
                 for (int bz = 0; bz < 16; bz++)
@@ -47,10 +43,8 @@ namespace minecrunch.tasks
                     for (int by = 0; by < 16; by++)
                     {
                         Block block = section.blocks[bx, by, bz];
-                        //if (block.Id is BlockIds.AIR) { continue; }
                         if (block is null) { continue; }
-
-                        if (block.faceByte == 0b00000000) { continue; }
+                        if (block.faceByte == 0b00000000) { continue; } // invisible
 
                         int textureKey = 0;
                         string texture = bInfo.GetBlockTexture(block.Id);
@@ -68,7 +62,7 @@ namespace minecrunch.tasks
                         Vector3 chunkPos = new Vector3(bx, by + sectionYOffset, bz);
                         int verticieCount = 0;
 
-                        //Left
+                        // Left
                         if (block.GetFaceVisible(Sides.Left))
                         {
                             verticieCount += 4;
@@ -78,15 +72,6 @@ namespace minecrunch.tasks
                                 new Vector3(0, 1, 1) + chunkPos,
                                 new Vector3(0, 1, 0) + chunkPos,
                                 new Vector3(0, 0, 0) + chunkPos,
-
-                                /**
-                                new Vector3(0, 1, 1) + chunkPos, //Todo: can this be optimized?
-                                new Vector3(0, 1, 0) + chunkPos,
-                                new Vector3(0, 0, 0) + chunkPos,
-                                new Vector3(0, 0, 0) + chunkPos,
-                                new Vector3(0, 0, 1) + chunkPos,
-                                new Vector3(0, 1, 1) + chunkPos
-    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
@@ -95,17 +80,10 @@ namespace minecrunch.tasks
                                 new Vector2(0, 0.5f),
                                 new Vector2(0.25f, 0.5f),
                                 new Vector2(0.25f, 0),
-                                /**
-                                new Vector2(0, 0.5f),
-                                new Vector2(0.25f, 0.5f),
-                                new Vector2(0.25f, 0),
-                                new Vector2(0.25f, 0),
-                                new Vector2(0, 0),
-                                new Vector2(0, 0.5f)
-                                **/
                             });
                         }
 
+                        // Right
                         if (block.GetFaceVisible(Sides.Right))
                         {
                             verticieCount += 4;
@@ -115,15 +93,6 @@ namespace minecrunch.tasks
                                 new Vector3(1, 1, 0) + chunkPos,
                                 new Vector3(1, 1, 1) + chunkPos,
                                 new Vector3(1, 0, 1) + chunkPos,
-
-                                /**
-                                new Vector3(1, 1, 0) + chunkPos,
-                                new Vector3(1, 1, 1) + chunkPos,
-                                new Vector3(1, 0, 1) + chunkPos,
-                                new Vector3(1, 0, 1) + chunkPos,
-                                new Vector3(1, 0, 0) + chunkPos,
-                                new Vector3(1, 1, 0) + chunkPos
-    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
@@ -132,17 +101,10 @@ namespace minecrunch.tasks
                                 new Vector2(0.5f, 0.5f),
                                 new Vector2(0.75f, 0.5f),
                                 new Vector2(0.75f, 0),
-                                /**
-                                new Vector2(0.5f, 0.5f),
-                                new Vector2(0.75f, 0.5f),
-                                new Vector2(0.75f, 0),
-                                new Vector2(0.75f, 0),
-                                new Vector2(0.5f, 0),
-                                new Vector2(0.5f, 0.5f)
-    **/
                             });
                         }
 
+                        // Top
                         if (block.GetFaceVisible(Sides.Top))
                         {
                             verticieCount += 4;
@@ -152,15 +114,6 @@ namespace minecrunch.tasks
                                 new Vector3(0, 1, 1) + chunkPos,
                                 new Vector3(1, 1, 1) + chunkPos,
                                 new Vector3(1, 1, 0) + chunkPos,
-
-                                /**
-                                new Vector3(0, 1, 1) + chunkPos,
-                                new Vector3(1, 1, 1) + chunkPos,
-                                new Vector3(1, 1, 0) + chunkPos,
-                                new Vector3(1, 1, 0) + chunkPos,
-                                new Vector3(0, 1, 0) + chunkPos,
-                                new Vector3(0, 1, 1) + chunkPos
-    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
@@ -169,18 +122,10 @@ namespace minecrunch.tasks
                                 new Vector2(0.25f, 1),
                                 new Vector2(0.5f, 1),
                                 new Vector2(0.5f, 0.5f),
-
-                                /**
-                                new Vector2(0.5f, 1),
-                                new Vector2(0.25f, 1),
-                                new Vector2(0.25f, 0.5f),
-                                new Vector2(0.25f, 0.5f),
-                                new Vector2(0.5f, 0.5f),
-                                new Vector2(0.5f, 1),
-    **/
                             });
                         }
 
+                        // Bottom
                         if (block.GetFaceVisible(Sides.Bottom))
                         {
                             verticieCount += 4;
@@ -190,16 +135,6 @@ namespace minecrunch.tasks
                                 new Vector3(0, 0, 0) + chunkPos,
                                 new Vector3(1, 0, 0) + chunkPos,
                                 new Vector3(1, 0, 1) + chunkPos,
-
-
-                                /**
-                                new Vector3(0, 0, 0) + chunkPos,
-                                new Vector3(1, 0, 0) + chunkPos,
-                                new Vector3(1, 0, 1) + chunkPos,
-                                new Vector3(1, 0, 1) + chunkPos,
-                                new Vector3(0, 0, 1) + chunkPos,
-                                new Vector3(0, 0, 0) + chunkPos
-    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
@@ -208,18 +143,10 @@ namespace minecrunch.tasks
                                 new Vector2(0, 1),
                                 new Vector2(0.25f, 1),
                                 new Vector2(0.25f, 0.5f),
-
-                                /**
-                                new Vector2(0.25f, 1),
-                                new Vector2(0, 1),
-                                new Vector2(0, 0.5f),
-                                new Vector2(0, 0.5f),
-                                new Vector2(0.25f, 0.5f),
-                                new Vector2(0.25f, 1)
-    **/
                             });
                         }
 
+                        // Front
                         if (block.GetFaceVisible(Sides.Front))
                         {
                             verticieCount += 4;
@@ -229,15 +156,6 @@ namespace minecrunch.tasks
                                 new Vector3(0, 1, 0) + chunkPos,
                                 new Vector3(1, 1, 0) + chunkPos,
                                 new Vector3(1, 0, 0) + chunkPos
-
-                                /**
-                                new Vector3(1, 1, 0) + chunkPos,
-                                new Vector3(1, 0, 0) + chunkPos,
-                                new Vector3(0, 0, 0) + chunkPos,
-                                new Vector3(0, 0, 0) + chunkPos,
-                                new Vector3(0, 1, 0) + chunkPos,
-                                new Vector3(1, 1, 0) + chunkPos
-    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
@@ -246,20 +164,11 @@ namespace minecrunch.tasks
                                 new Vector2(0.25f, 0.5f),
                                 new Vector2(0.5f, 0.5f),
                                 new Vector2(0.5f, 0),
-
-                                /**
-                                new Vector2(0.5f, 0.5f),
-                                new Vector2(0.5f, 0),
-                                new Vector2(0.25f, 0),
-                                new Vector2(0.25f, 0),
-                                new Vector2(0.25f, 0.5f),
-                                new Vector2(0.5f, 0.5f)
-    **/
                             });
                         }
 
+                        // Back
                         if (block.GetFaceVisible(Sides.Back))
-
                         {
                             verticieCount += 4;
                             section.Mesh.Verticies.AddRange(new List<Vector3>
@@ -268,15 +177,6 @@ namespace minecrunch.tasks
                                 new Vector3(1, 1, 1) + chunkPos,
                                 new Vector3(0, 1, 1) + chunkPos,
                                 new Vector3(0, 0, 1) + chunkPos,
-
-                                /**
-                                new Vector3(0, 0, 1) + chunkPos,
-                                new Vector3(1, 0, 1) + chunkPos,
-                                new Vector3(1, 1, 1) + chunkPos,
-                                new Vector3(1, 1, 1) + chunkPos,
-                                new Vector3(0, 1, 1) + chunkPos,
-                                new Vector3(0, 0, 1) + chunkPos
-    **/
                             });
 
                             section.Mesh.UVs.AddRange(new List<Vector2>
@@ -285,28 +185,18 @@ namespace minecrunch.tasks
                                 new Vector2(0.5f, 1),
                                 new Vector2(0.75f, 1),
                                 new Vector2(0.75f, 0.5f),
-
-
-                                /**
-                                new Vector2(0.5f, 1),
-                                new Vector2(0.75f, 1),
-                                new Vector2(0.75f, 0.5f),
-                                new Vector2(0.75f, 0.5f),
-                                new Vector2(0.5f, 0.5f),
-                                new Vector2(0.5f, 1)
-    **/
                             });
                         }
 
                         for (var a = 0; a < verticieCount; a++)
                         {
-                            section.Mesh.Quads[textureKey].Add(trianglesCount + a);
+                            section.Mesh.Quads[textureKey].Add(quadCount + a);
                         }
-                        trianglesCount += verticieCount;
+                        quadCount += verticieCount;
                     }
                 }
             }
-            
+
         }
     }
 }

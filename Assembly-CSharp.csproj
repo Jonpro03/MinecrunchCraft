@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{5A011A0A-0878-68A1-C443-F4B25F2A9B77}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -70,23 +71,13 @@
     <Compile Include="Assets\SampleScenes\Scripts\SlowMoButton.cs" />
     <Compile Include="Assets\Scripts\Chunks\ChunkDownloadTask.cs" />
     <Compile Include="Assets\Scripts\Chunks\ChunkJobManager.cs" />
-    <Compile Include="Assets\Scripts\Chunks\ChunkMeshLoadTask.cs" />
-    <Compile Include="Assets\Scripts\Chunks\ChunkMeshSaveTask.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\IAudible.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\IDamageable.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\IDrawable.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\IMineable.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\IPlank.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\IStackable.cs" />
     <Compile Include="Assets\Scripts\PauseGame.cs" />
     <Compile Include="Assets\Scripts\Player\MousePosition.cs" />
-    <Compile Include="Assets\Scripts\Player\PlaceBlock.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Player\Raycast.cs" />
     <Compile Include="Assets\Scripts\Player\WorldPlayer.cs" />
     <Compile Include="Assets\Scripts\StopGame.cs" />
     <Compile Include="Assets\Scripts\Utility\Coordinates.cs" />
-    <Compile Include="Assets\Scripts\Utility\PerlinNoise.cs" />
     <Compile Include="Assets\Scripts\World\World.cs" />
     <Compile Include="Assets\Scripts\World\WorldTerrain.cs" />
     <None Include="Assets\BlockParameters.xml" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using Assets.Scripts.Player;
 
 namespace Assets.Scripts.World
 {
@@ -15,7 +16,7 @@ namespace Assets.Scripts.World
 
         public static WorldTerrain WorldTerrain { get; private set; }
 
-        public static List<Player.WorldPlayer> Players;
+        public static List<WorldPlayer> Players;
 
         public static string WorldName = "world1";
 
@@ -26,7 +27,7 @@ namespace Assets.Scripts.World
             Seed = Seed ?? DateTime.Now.ToString("h:ss");
             SeedHash = Seed.GetHashCode();
             WorldTerrain = transform.GetComponent<WorldTerrain>();
-            Players = FindObjectsOfType<Player.WorldPlayer>().ToList();
+            Players = FindObjectsOfType<WorldPlayer>().ToList();
             WorldSaveFolder = Application.persistentDataPath + "/" + WorldName;
 
             if (!Directory.Exists(WorldSaveFolder))

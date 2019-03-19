@@ -1,15 +1,18 @@
-﻿using minecrunch.tasks;
+﻿using System;
+using System.IO;
+using System.Net;
+using minecrunch.tasks;
 using minecrunch.models;
 using minecrunch.models.Chunks;
-using System.Net;
-using System;
-using System.IO;
 
 namespace Assets.Scripts.Chunks
 {
     public sealed class ChunkDownloadTask : ThreadedTask
     {
+        // Store the result of the downloaded chunk.
         public Chunk chunk;
+
+        // Quick ref the chunk coords.
         public readonly int cx, cy;
         private readonly string url;
 

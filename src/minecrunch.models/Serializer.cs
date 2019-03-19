@@ -25,6 +25,13 @@ namespace minecrunch.models
             formatter.SurrogateSelector = ss;
         }
 
+        /// <summary>
+        /// Serialize an object to a stream.
+        /// </summary>
+        /// <param name="obj">Anonymous type object.</param>
+        /// <param name="stream">Stream to which the object will be serialized.</param>
+        /// <param name="compress">Whether to compress the stream.</param>
+        /// <returns>Whether successful.</returns>
         public static bool SerializeToStream(object obj, out Stream stream, bool compress=false)
         {
             stream = new MemoryStream();
@@ -58,6 +65,13 @@ namespace minecrunch.models
             return true;
         }
 
+        /// <summary>
+        /// Serialize an object to a file.
+        /// </summary>
+        /// <param name="obj">Anonymouse boject type to serialize.</param>
+        /// <param name="filePath">File to which the object will be serialized.</param>
+        /// <param name="compress">Whether to compress the stream.</param>
+        /// <returns>Whether successful.</returns>
         public static bool SerializeToFile(object obj, string filePath, bool compress = false)
         {
             try
@@ -88,6 +102,13 @@ namespace minecrunch.models
             return true;
         }
 
+        /// <summary>
+        /// Deserialize an object from a stream to a specific type.
+        /// </summary>
+        /// <typeparam name="T">Type of object.</typeparam>
+        /// <param name="stream">Stream from which the object should be read from.</param>
+        /// <param name="isCompressed">Whether the stream is compressed.</param>
+        /// <returns>The object or null.</returns>
         public static T DeserializeFromStream<T>(Stream stream, bool isCompressed = false)
         {
             object obj = null;
@@ -113,6 +134,13 @@ namespace minecrunch.models
 
         }
 
+        /// <summary>
+        /// Deserialize an object from a file to a specific type.
+        /// </summary>
+        /// <typeparam name="T">Type of object.</typeparam>
+        /// <param name="filePath">Path of the file.</param>
+        /// <param name="isCompressed">Whether the file stream is compressed.</param>
+        /// <returns>The object or null.</returns>
         public static T DeserializeFromFile<T>(string filePath, bool isCompressed = false)
         {
             object obj = null;

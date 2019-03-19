@@ -12,7 +12,6 @@ namespace minecrunch.models.Chunks
         public string name;
         public int number;
         public Block[,,] blocks = new Block[16, 16, 16];
-
         public SerializableMesh Mesh { get; set; }
 
         public ChunkSection()

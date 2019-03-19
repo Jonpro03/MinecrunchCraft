@@ -13,17 +13,19 @@ namespace minecrunch.tasks
     public sealed class ChunkGenerateTerrainTask : ThreadedTask
     {
         public readonly Chunk chunk;
+        public readonly string worldName;
         private readonly List<ChunkSection> sections;
         private PerlinNoise pNoise;
-        private BlockInfo bInfo;
+        private readonly BlockInfo bInfo;
         public override event ThreadCompleteEventHandler ThreadComplete;
         private const int CAVE_BREAKTHROUGH_LIMIT = 45;
         private Random rand;
-        private IEnumerable<Block> blocks;
+        private IEnumerable<Block> stoneBlocks;
 
-        public ChunkGenerateTerrainTask(Chunk newChunk)
+        public ChunkGenerateTerrainTask(Chunk newChunk, string worldName)
         {
             chunk = newChunk;
+            this.worldName = worldName;
             for (int x = 0; x < chunk.sections.Length; x++)
             {
                 chunk.sections[x] = new ChunkSection
@@ -50,11 +52,9 @@ namespace minecrunch.tasks
             }
 
             Parallel.ForEach(sections, ProcessSection);
-
-            // Generate Oceans here
             Parallel.ForEach(sections, ProcessCaves);
 
-            blocks = chunk.GetAllBlocks().Where(b => b?.Id is BlockIds.STONE);
+            stoneBlocks = chunk.GetAllBlocks().Where(b => b?.Id is BlockIds.STONE);
 
             AddCoal();
             AddAndesite();
@@ -63,7 +63,7 @@ namespace minecrunch.tasks
 
             AddTrees();
 
-            ThreadComplete(chunk);
+            ThreadComplete(this);
         }
 
         private void ProcessSection(ChunkSection section)
@@ -165,7 +165,7 @@ namespace minecrunch.tasks
                     for (int by = sectionYOffset; by < sectionYOffset + 16; by++)
                     {
                         // If above the terrain, just move on.
-                        int caveYLimit = terrainY < CAVE_BREAKTHROUGH_LIMIT ? CAVE_BREAKTHROUGH_LIMIT : terrainY - 5;
+                        int caveYLimit = terrainY < CAVE_BREAKTHROUGH_LIMIT ? CAVE_BREAKTHROUGH_LIMIT : terrainY - 20;
                         if (by > caveYLimit || by < 4) { continue; }
 
                         if (pNoise.Cave(bx + (chunk.x * 16), by, bz + (chunk.y * 16)))
@@ -184,8 +184,8 @@ namespace minecrunch.tasks
 
             for (int v = 0; v < numOreVeins; v++)
             {
-                int randIndex = rand.Next(0, blocks.Count());
-                var b = blocks.Skip(randIndex).First();
+                int randIndex = rand.Next(0, stoneBlocks.Count());
+                var b = stoneBlocks.Skip(randIndex).First();
                 int oreX = b.x > 12 ? 12 : b.x;
                 int oreY = b.y > 255 ? 255 : b.y;
                 int oreZ = b.z > 12 ? 12 : b.z;
@@ -215,8 +215,8 @@ namespace minecrunch.tasks
 
             for (int v = 0; v < numOreVeins; v++)
             {
-                int randIndex = rand.Next(0, blocks.Count());
-                var b = blocks.Skip(randIndex).First();
+                int randIndex = rand.Next(0, stoneBlocks.Count());
+                var b = stoneBlocks.Skip(randIndex).First();
                 int oreX = b.x > 12 ? 12 : b.x;
                 int oreY = b.y > 255 ? 255 : b.y;
                 int oreZ = b.z > 12 ? 12 : b.z;
@@ -245,8 +245,8 @@ namespace minecrunch.tasks
             int numOreVeins = rand.Next(2, 4);
             for (var ore = 0; ore < numOreVeins; ore++)
             {
-                int randIndex = rand.Next(0, blocks.Count());
-                var b = blocks.Skip(randIndex).First();
+                int randIndex = rand.Next(0, stoneBlocks.Count());
+                var b = stoneBlocks.Skip(randIndex).First();
                 int oreX = b.x > 12 ? 12 : b.x;
                 int oreY = b.y > 255 ? 255 : b.y;
                 int oreZ = b.z > 12 ? 12 : b.z;
@@ -278,8 +278,8 @@ namespace minecrunch.tasks
             int numOreVeins = rand.Next(2, 8);
             for (var ore = 0; ore < numOreVeins; ore++)
             {
-                int randIndex = rand.Next(0, blocks.Count());
-                var b = blocks.Skip(randIndex).First();
+                int randIndex = rand.Next(0, stoneBlocks.Count());
+                var b = stoneBlocks.Skip(randIndex).First();
                 int oreX = b.x > 12 ? 12 : b.x;
                 int oreY = b.y > 255 ? 255 : b.y;
                 int oreZ = b.z > 12 ? 12 : b.z;
