@@ -51,8 +51,16 @@ namespace minecrunch.tasks
         /// </summary>
         public virtual void Start()
         {
-            thread = new Thread(Run);
-            thread.Start();
+            if (thread is null)
+            {
+                thread = new Thread(Run);
+                thread.Start();
+            }
+        }
+
+        public virtual bool IsStarted()
+        {
+            return thread != null;
         }
 
         /// <summary>

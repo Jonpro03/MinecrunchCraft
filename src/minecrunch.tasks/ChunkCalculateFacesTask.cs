@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using minecrunch.models.Blocks;
 using minecrunch.models.Chunks;
@@ -13,18 +14,17 @@ namespace minecrunch.tasks
         public readonly string worldName;
         public readonly BlockInfo bInfo;
         public override event ThreadCompleteEventHandler ThreadComplete;
-        private readonly List<ChunkSection> sections;
 
         public ChunkCalculateFacesTask(Chunk c, string worldName)
         {
             this.worldName = worldName;
             chunk = c;
             bInfo = BlockInfo.Instance;
-            sections = new List<ChunkSection>(chunk.sections);
         }
 
         protected override void ThreadFunction()
         {
+            var watch = Stopwatch.StartNew();
             //Parallel.ForEach(sections, ProcessSection); // Bad things happen when this is parallelized.
             try
             {
@@ -38,6 +38,10 @@ namespace minecrunch.tasks
             {
                 ThreadComplete(this);
             }
+
+            watch.Stop();
+            chunk.blockFaceTimeMs = watch.ElapsedMilliseconds;
+            ThreadComplete(this);
         }
 
         private void ProcessSection(ChunkSection section)

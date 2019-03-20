@@ -15,7 +15,9 @@ namespace minecrunch.models.Chunks
         public Biome biome;
         public ChunkSection[] sections = new ChunkSection[16];
         public double[,] SurfaceMap = new double[16, 16];
-        public long processTimeMs = 0;
+        public long verticieTimeMs = 0;
+        public long blockFaceTimeMs = 0;
+        public long terrainTimeMs = 0;
 
         public Block GetBlockByChunkCoord(int x, int y, int z)
         {

@@ -35,9 +35,8 @@ namespace minecrunch.tasks
             {
                 this.e = e;
             }
-
             watch.Stop();
-            chunk.processTimeMs = watch.ElapsedMilliseconds;
+            chunk.verticieTimeMs = watch.ElapsedMilliseconds;
         }
 
         private void ProcessSection(ChunkSection section)

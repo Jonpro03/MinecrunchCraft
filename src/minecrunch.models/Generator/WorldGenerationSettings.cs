@@ -219,17 +219,17 @@ namespace minecrunch.models.Generator
             Seed = 68468405;
             MinElev = 0;
             MaxElev = 128;
-            ContinentFrequency = 1.2;
+            ContinentFrequency = 0.8;
 
-            ContinentHeightScale =  -1/512.0;
-            TerrainOffset = 0.55;
+            ContinentHeightScale = 8/512.0;
+            TerrainOffset = 0.25;
 
-            RiverDepth = 0;
-            SeaLevel = -3/256.0;
+            RiverDepth = -1 / 256.0;
+            SeaLevel = -2/256.0;
             ShelfLevel = -3/256.0;
 
             MountainsAmount = 0.12;
-            HillsAmount = 0.25;
+            HillsAmount = 0.45;
             BadlandsAmount = 0.05;
 
             MountainGlaciation = 1.075;
@@ -239,8 +239,8 @@ namespace minecrunch.models.Generator
 
             ContinentLacunarity = 1.208984375;
             MountainLacunarity = 2.01;
-            HillsLacunarity = 2.162109375;
-            PlainsLacunarity = 2.314453125;
+            HillsLacunarity = 0.162109375;
+            PlainsLacunarity = 2.814453125;
             BadlandsLacunarity = 2.000890625;
         }
     }

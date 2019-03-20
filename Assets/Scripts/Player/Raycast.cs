@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Utility;
+using Assets.Scripts.World;
+using System.Linq;
+using UnityEngine;
 
 public class Raycast : MonoBehaviour {
 
@@ -16,7 +19,7 @@ public class Raycast : MonoBehaviour {
             if (Physics.Raycast(inputRay, out objectHit))
             {
                 Debug.Log("ObjectHit: " + objectHit.collider.gameObject.name);
-
+                Coordinates.WorldPosToChunkPos(transform.position, out var chunkPos, out var chunk);
             }
         }
 

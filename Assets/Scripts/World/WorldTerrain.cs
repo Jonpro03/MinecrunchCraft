@@ -6,8 +6,7 @@ using UnityEngine;
 using Assets.Scripts.Chunks;
 using Assets.Scripts.Utility;
 using minecrunch.models.Chunks;
-
-
+using System.Diagnostics;
 
 namespace Assets.Scripts.World
 {
@@ -20,7 +19,7 @@ namespace Assets.Scripts.World
 
         public static List<Chunk> Chunks { get; set; }
 
-        public static List<string> InProgressChunks { get; set; }
+        public static HashSet<Vector2Int> InProgressChunks { get; set; }
 
         //private string host = "https://minecrunchserver20190302073446.azurewebsites.net";
         private string host = "http://localhost:5000";
@@ -37,21 +36,21 @@ namespace Assets.Scripts.World
             }
 
             Chunks = new List<Chunk>();
-            InProgressChunks = new List<string>();
+            InProgressChunks = new HashSet<Vector2Int>();
             chunkJobs = new ChunkJobManager();
 
             InvokeRepeating("ChunkMaintanence", 0, 0.5f);
-            InvokeRepeating("GenerateChunksAroundPlayer", 0, 3);
+            InvokeRepeating("GenerateChunksAroundPlayer", 0, 5);
         }
 
         private void OnGUI()
         {
             // Show chunk pipeline status
             GUI.Label(new Rect(10, 10, 1000, 20), string.Format(
-                "Q: {0} V:{1} C:{2}",
+                "Q:{0} D:{1} C:{1}",
                 InProgressChunks.Count,
-                chunkJobs.ChunkCalcVerticiesTasks.Count,
-                chunkJobs.CompletedChunks.Count
+                chunkJobs.ChunkDownloads.Count,
+                chunkJobs.ChunkCalcVerticiesTasks.Count
                 ));
         }
 
@@ -66,7 +65,7 @@ namespace Assets.Scripts.World
                     chunkJobs.CompletedChunks.Remove(chunk);
                     return;
                 }
-                InProgressChunks.Remove($"chunk{chunk.x},{chunk.y}");
+                InProgressChunks.Remove(new Vector2Int(chunk.x,chunk.y));
                 chunkJobs.CompletedChunks.Remove(chunk);
                 Chunks.Add(chunk);
             }
@@ -98,17 +97,31 @@ namespace Assets.Scripts.World
             foreach (Player.WorldPlayer player in World.Players)
             {
                 var playerChunkLoc = Coordinates.ChunkPlayerIsIn(player.transform.position);
-                List<Vector2Int> neededChunks = new List<Vector2Int>();
+                HashSet<Vector2Int> neededChunks = new HashSet<Vector2Int>();
 
                 for (var a = 0; a <= RenderSize; a++)
                 {
                     for (var b = 0; b <= RenderSize; b++)
                     {
+                        var loc = playerChunkLoc + (Vector2Int.up * a) + (Vector2Int.right * b);
+
                         neededChunks.Add(playerChunkLoc + (Vector2Int.up * a) + (Vector2Int.right * b));
                         neededChunks.Add(playerChunkLoc + (Vector2Int.up * a) + (Vector2Int.left * b));
                         neededChunks.Add(playerChunkLoc + (Vector2Int.down * a) + (Vector2Int.right * b));
                         neededChunks.Add(playerChunkLoc + (Vector2Int.down * a) + (Vector2Int.left * b));
                     }
+                }
+
+                foreach (var chunkCoord in neededChunks)
+                {
+                    string chunkName = $"chunk{chunkCoord.x},{chunkCoord.y}";
+
+                    // Check if we already have this chunk or if we're already working on it.
+                    if (ChunkLoaded(chunkName) || InProgressChunks.Contains(chunkCoord)) { continue; }
+
+                    // Cleared for departure.
+                    InProgressChunks.Add(chunkCoord);
+                    chunkJobs.ChunkDownloads.Add(new ChunkDownloadTask(host, "world1", chunkCoord.x, chunkCoord.y));
                 }
 
                 // Comment this section to disable removing chunks no longer near the player.
@@ -117,25 +130,15 @@ namespace Assets.Scripts.World
                 toRemove.ForEach(c => {
                     Destroy(GameObject.Find(c.name));
                     Chunks.Remove(c);
+                    chunkJobs.ChunkDownloads.RemoveAll(t => t.cx == c.x && t.cy == c.y);
                     // Todo: remove chunks from the chunk queues that are no longer needed.
-                    });
-
-                foreach (var chunkCoord in neededChunks)
-                {
-                    string chunkName = $"chunk{chunkCoord.x},{chunkCoord.y}";
-
-                    // Check if we already have this chunk or if we're already working on it.
-                    if (ChunkExists(chunkName) || InProgressChunks.Contains(chunkName)) { continue; }
-
-                    // Cleared for departure.
-                    InProgressChunks.Add(chunkName);
-                    chunkJobs.ChunkDownloads.Add(new ChunkDownloadTask(host, "world1", chunkCoord.x, chunkCoord.y));
-                }
+                });
             }
         }
 
         private bool DrawChunk(Chunk chunk)
         {
+            var watch = Stopwatch.StartNew();
             GameObject chunkGameObject = GameObject.Find(chunk.name);
             if (chunkGameObject is null)
             {
@@ -155,8 +158,9 @@ namespace Assets.Scripts.World
                     return false;
                 }
             }
+            watch.Stop();
+            UnityEngine.Debug.Log($"Chunk times {chunk.terrainTimeMs} : {chunk.blockFaceTimeMs} : {chunk.verticieTimeMs} : {watch.ElapsedMilliseconds}");
             return true;
-            //Debug.Log($"Chunk time {chunk.processTimeMs / 1000.0f} seconds");
         }
 
         private bool DrawSubChunk(ChunkSection section, GameObject subChunkGameObject)
@@ -192,14 +196,23 @@ namespace Assets.Scripts.World
 
             if (subchunkMesh.vertices.Count() != section.Mesh.UVs.Count)
             {
-                Debug.LogError("Failed to set verticies!");
+                UnityEngine.Debug.LogError("Failed to set verticies!");
                 // Todo: Throttle the render rate in the chunk manager.
                 return false;
             }
 
             foreach (int key in section.Mesh.Quads.Keys)
             {
-                subchunkMesh.SetIndices(section.Mesh.Quads[key].ToArray(), MeshTopology.Quads, key);
+                try
+                {
+                    subchunkMesh.SetIndices(section.Mesh.Quads[key].ToArray(), MeshTopology.Quads, key);
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogError("Failed to set indicies!");
+                    return false;
+                }
+
             }
             subchunkMesh.SetUVs(0, section.Mesh.UVs);
 
@@ -212,9 +225,9 @@ namespace Assets.Scripts.World
             return true;
         }
 
-        private bool ChunkExists(string name)
+        private bool ChunkLoaded(string name)
         {
-            return Chunks.Count(c => c.name == name) > 0;
+            return Chunks.FirstOrDefault(c => c.name == name) != null;
         }
     }
 }
