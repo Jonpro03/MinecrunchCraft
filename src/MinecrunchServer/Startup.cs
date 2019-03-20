@@ -1,5 +1,4 @@
-﻿using System.Timers;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -9,7 +8,6 @@ namespace MinecrunchServer
 {
     public class Startup
     {
-        private static Timer queueTimer;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;

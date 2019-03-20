@@ -15,7 +15,7 @@ namespace MinecrunchServer.Controllers
     [ApiController]
     public class WorldController : ControllerBase
     {
-        public TaskRunner trInstance = TaskRunner.Instance;
+        private TaskQueues queues = TaskQueues.Instance;
 
         // POST: api/World
         [HttpPost]
@@ -54,7 +54,7 @@ namespace MinecrunchServer.Controllers
                         y = y,
                         biome = Biome.Desert
                     };
-                    trInstance.TerrainTasks.Enqueue(new ChunkGenerateTerrainTask(chunk, name));
+                    queues.TerrainTasks.Enqueue(new ChunkGenerateTerrainTask(chunk, name));
                 }
             }
 

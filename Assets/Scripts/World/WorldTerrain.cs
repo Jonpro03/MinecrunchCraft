@@ -48,7 +48,8 @@ namespace Assets.Scripts.World
         {
             // Show chunk pipeline status
             GUI.Label(new Rect(10, 10, 1000, 20), string.Format(
-                "V:{0} C:{1}",
+                "Q: {0} V:{1} C:{2}",
+                InProgressChunks.Count,
                 chunkJobs.ChunkCalcVerticiesTasks.Count,
                 chunkJobs.CompletedChunks.Count
                 ));

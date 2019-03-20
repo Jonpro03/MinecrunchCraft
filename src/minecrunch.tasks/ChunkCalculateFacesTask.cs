@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using minecrunch.models.Blocks;
 using minecrunch.models.Chunks;
@@ -25,8 +26,18 @@ namespace minecrunch.tasks
         protected override void ThreadFunction()
         {
             //Parallel.ForEach(sections, ProcessSection); // Bad things happen when this is parallelized.
-            sections.ForEach(ProcessSection);
-            ThreadComplete(this);
+            try
+            {
+                sections.ForEach(ProcessSection);
+            }
+            catch (Exception e)
+            {
+                this.e = e;
+            }
+            finally
+            {
+                ThreadComplete(this);
+            }
         }
 
         private void ProcessSection(ChunkSection section)

@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using minecrunch.models;
 using minecrunch.models.Biomes;
@@ -13,25 +12,25 @@ namespace MinecrunchServer.Controllers
     [ApiController]
     public class ChunkController : ControllerBase
     {
-        public TaskRunner trInstance = TaskRunner.Instance;
-        
+        private TaskQueues queues = TaskQueues.Instance;
+
         // GET api/chunk
         [HttpGet]
         public string Get()
         {
-            return $"{trInstance.TerrainTasks.Count} + {trInstance.BlockFacesTasks.Count}";
+            return $"{queues.TerrainTasks.Count} - {queues.BlockFacesTasks.Count} - {queues.SaveChunkTasks.Count}";
         }
 
         // GET api/chunk/world1/0/0 
         [HttpGet("{world}/{x}/{y}")]
-        public async Task<IActionResult> Get(string world, int x, int y)
+        public IActionResult Get(string world, int x, int y)
         {
             string chunkName = $"chunk{x},{y}";
             string filePath = $"{world}/chunks/{chunkName}";
             (new FileInfo(filePath)).Directory.Create();
 
             // Chunk chunk = Program.ChunkCache.FirstOrDefault(c => c.name == chunkName);
-            
+
             // Reading chunks out of the cache when compression is enabled is super broken for some reason.
             // Force reading off disk.
 
@@ -50,7 +49,7 @@ namespace MinecrunchServer.Controllers
                 s.Position = 0;
                 return File(s, "application/octet-stream");
             }
-            
+
             // New chunk. Generate it.
             chunk = new Chunk()
             {
@@ -59,7 +58,7 @@ namespace MinecrunchServer.Controllers
                 y = y,
                 biome = Biome.Desert // Todo: this, obviously
             };
-            trInstance.TerrainTasks.Enqueue(new ChunkGenerateTerrainTask(chunk, world));
+            queues.TerrainTasks.Enqueue(new ChunkGenerateTerrainTask(chunk, world));
             return NotFound();
         }
     }

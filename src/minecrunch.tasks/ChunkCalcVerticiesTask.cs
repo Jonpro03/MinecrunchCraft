@@ -1,6 +1,7 @@
 ﻿using minecrunch.models.Blocks;
 using minecrunch.models.Chunks;
 using minecrunch.parameters.Blocks;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,9 +24,16 @@ namespace minecrunch.tasks
         {
             var watch = Stopwatch.StartNew();
 
-            foreach (ChunkSection sec in chunk.sections)
+            try
             {
-                ProcessSection(sec);
+                foreach (ChunkSection sec in chunk.sections)
+                {
+                    ProcessSection(sec);
+                }
+            }
+            catch (Exception e)
+            {
+                this.e = e;
             }
 
             watch.Stop();

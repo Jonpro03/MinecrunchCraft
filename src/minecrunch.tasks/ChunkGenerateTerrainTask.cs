@@ -46,27 +46,35 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
-            for (int bx = 0; bx < 16; bx++)
+            try
             {
-                for (int bz = 0; bz < 16; bz++)
+                for (int bx = 0; bx < 16; bx++)
                 {
-                    chunk.SurfaceMap[bx, bz] = pNoise.Terrain(bx + (chunk.x * 16), bz + (chunk.y * 16));
+                    for (int bz = 0; bz < 16; bz++)
+                    {
+                        chunk.SurfaceMap[bx, bz] = pNoise.Terrain(bx + (chunk.x * 16), bz + (chunk.y * 16));
+                    }
                 }
+
+                Parallel.ForEach(sections, ProcessTerrain);
+                Parallel.ForEach(sections, ProcessCaves);
+
+                stoneBlocks = chunk.GetAllBlocks().Where(b => b?.Id is BlockIds.STONE);
+
+                AddCoal();
+                AddAndesite();
+                AddIron();
+                AddDiamond();
+                AddTrees();
             }
-
-            Parallel.ForEach(sections, ProcessTerrain);
-            Parallel.ForEach(sections, ProcessCaves);
-
-            stoneBlocks = chunk.GetAllBlocks().Where(b => b?.Id is BlockIds.STONE);
-
-            AddCoal();
-            AddAndesite();
-            AddIron();
-            AddDiamond();
-
-            AddTrees();
-
-            ThreadComplete(this);
+            catch (Exception e)
+            {
+                this.e = e;
+            }
+            finally
+            {
+                ThreadComplete(this);
+            }
         }
 
         private void ProcessTerrain(ChunkSection section)
@@ -359,9 +367,7 @@ namespace minecrunch.tasks
                         }
                     }
                 }
-
             }
         }
-
     }
 }
