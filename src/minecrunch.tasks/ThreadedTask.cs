@@ -58,6 +58,11 @@ namespace minecrunch.tasks
             }
         }
 
+        public virtual bool IsStarted()
+        {
+            return thread != null;
+        }
+
         /// <summary>
         /// Abort this instance.
         /// </summary>
