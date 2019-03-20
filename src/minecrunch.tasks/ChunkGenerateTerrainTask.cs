@@ -5,6 +5,7 @@ using minecrunch.models.Chunks;
 using minecrunch.parameters.Blocks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,7 +47,7 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
-            chunk.processTimeMs = (long) pNoise.Biome(chunk.x * 16, chunk.y * 16);
+            var watch = Stopwatch.StartNew();
             for (int bx = 0; bx < 16; bx++)
             {
                 for (int bz = 0; bz < 16; bz++)
@@ -68,7 +69,8 @@ namespace minecrunch.tasks
             AddDiamond();
 
             AddTrees();
-
+            watch.Stop();
+            chunk.terrainTimeMs = watch.ElapsedMilliseconds;
             ThreadComplete(this);
         }
 

@@ -6,8 +6,7 @@ using UnityEngine;
 using Assets.Scripts.Chunks;
 using Assets.Scripts.Utility;
 using minecrunch.models.Chunks;
-
-
+using System.Diagnostics;
 
 namespace Assets.Scripts.World
 {
@@ -139,6 +138,7 @@ namespace Assets.Scripts.World
 
         private bool DrawChunk(Chunk chunk)
         {
+            var watch = Stopwatch.StartNew();
             GameObject chunkGameObject = GameObject.Find(chunk.name);
             if (chunkGameObject is null)
             {
@@ -158,8 +158,9 @@ namespace Assets.Scripts.World
                     return false;
                 }
             }
+            watch.Stop();
+            UnityEngine.Debug.Log($"Chunk times {chunk.terrainTimeMs} : {chunk.blockFaceTimeMs} : {chunk.verticieTimeMs} : {watch.ElapsedMilliseconds}");
             return true;
-            //Debug.Log($"Chunk time {chunk.processTimeMs / 1000.0f} seconds");
         }
 
         private bool DrawSubChunk(ChunkSection section, GameObject subChunkGameObject)
@@ -195,7 +196,7 @@ namespace Assets.Scripts.World
 
             if (subchunkMesh.vertices.Count() != section.Mesh.UVs.Count)
             {
-                Debug.LogError("Failed to set verticies!");
+                UnityEngine.Debug.LogError("Failed to set verticies!");
                 // Todo: Throttle the render rate in the chunk manager.
                 return false;
             }
@@ -208,7 +209,7 @@ namespace Assets.Scripts.World
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError("Failed to set indicies!");
+                    UnityEngine.Debug.LogError("Failed to set indicies!");
                     return false;
                 }
 

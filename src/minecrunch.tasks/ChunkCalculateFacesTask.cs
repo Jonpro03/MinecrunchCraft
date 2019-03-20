@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using minecrunch.models.Blocks;
 using minecrunch.models.Chunks;
@@ -23,7 +24,10 @@ namespace minecrunch.tasks
         protected override void ThreadFunction()
         {
             //Parallel.ForEach(sections, ProcessSection); // Bad things happen when this is parallelized.
+            var watch = Stopwatch.StartNew();
             foreach (var sec in chunk.sections) { ProcessSection(sec); }
+            watch.Stop();
+            chunk.blockFaceTimeMs = watch.ElapsedMilliseconds;
             ThreadComplete(this);
         }
 

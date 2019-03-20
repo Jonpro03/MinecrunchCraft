@@ -20,7 +20,6 @@ public class Raycast : MonoBehaviour {
             {
                 Debug.Log("ObjectHit: " + objectHit.collider.gameObject.name);
                 Coordinates.WorldPosToChunkPos(transform.position, out var chunkPos, out var chunk);
-                Debug.Log(WorldTerrain.Chunks.FirstOrDefault(c => c.x == chunk.x && c.y == chunk.y)?.processTimeMs.ToString());
             }
         }
 

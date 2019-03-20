@@ -21,17 +21,18 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
+            var watch = Stopwatch.StartNew();
             foreach (ChunkSection sec in chunk.sections)
             {
                 ProcessSection(sec);
-                // subchunkMesh.vertices.Count() != section.Mesh.UVs.Count
                 if (sec.Mesh.Verticies.Count() != sec.Mesh.UVs.Count)
                 {
                     sec.Mesh = new models.Runtime.SerializableMesh();
                     ProcessSection(sec);
                 }
             }
-            return;
+            watch.Stop();
+            chunk.verticieTimeMs = watch.ElapsedMilliseconds;
         }
 
         private void ProcessSection(ChunkSection section)
