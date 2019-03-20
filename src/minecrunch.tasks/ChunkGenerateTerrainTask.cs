@@ -46,11 +46,14 @@ namespace minecrunch.tasks
 
         protected override void ThreadFunction()
         {
+            chunk.processTimeMs = (long) pNoise.Biome(chunk.x * 16, chunk.y * 16);
             for (int bx = 0; bx < 16; bx++)
             {
                 for (int bz = 0; bz < 16; bz++)
                 {
-                    chunk.SurfaceMap[bx, bz] = pNoise.Terrain(bx + (chunk.x * 16), bz + (chunk.y * 16));
+                    int blockWorldX = bx + (chunk.x * 16);
+                    int blockWorldZ = bz + (chunk.y * 16);
+                    chunk.SurfaceMap[bx, bz] = pNoise.Terrain(blockWorldX, blockWorldZ);
                 }
             }
 

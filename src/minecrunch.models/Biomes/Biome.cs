@@ -7,6 +7,7 @@ namespace minecrunch.models.Biomes
         Mountain = 1,
         Forest = 3,
         Grassland = 4, 
-        Desert = 2
+        Desert = 2,
+        River = 6
     }
 }

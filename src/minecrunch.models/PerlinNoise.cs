@@ -15,11 +15,12 @@ namespace minecrunch.models
         private float cave_fill;
         private float cave_height;
         private float cave_stretch;
-        const float WORLD_HORZ_STRETCH_FACTOR = 1 / 128.0f; //0.000008925f;
-        const float WORLD_VERT_STRETCH_FACTOR = 1;//0.018625f;
+        const float WORLD_HORZ_STRETCH_FACTOR = 1 / 652.0f; //0.000008925f;
+        const float WORLD_VERT_STRETCH_FACTOR = 1.0f;//0.018625f;
 
         WorldGenerationSettings WorldSettings;
-        Module WorldGen;
+        WorldGenerator WorldGen;
+        Module WorldGenModule;
 
         private static readonly Lazy<PerlinNoise> lazy = new Lazy<PerlinNoise>(() => new PerlinNoise());
 
@@ -40,7 +41,8 @@ namespace minecrunch.models
             cave_stretch = 80 / 1000.0f * 0.8f;
 
             WorldSettings = new WorldGenerationSettings();
-            WorldGen = new WorldGenerator(WorldSettings).CreateModule();
+            WorldGen = new WorldGenerator(WorldSettings);
+            WorldGenModule = WorldGen.CreateModule();
 
             biomePerlin = new Voronoi
             {
@@ -59,23 +61,22 @@ namespace minecrunch.models
 
         public void SetWorldGeneratorSettings(WorldGenerationSettings settings)
         {
-            WorldGen = new WorldGenerator(settings).CreateModule();
+            WorldGenModule = new WorldGenerator(settings).CreateModule();
             biomePerlin.Seed = settings.Seed;
             cavePerlin.Seed = settings.Seed;
         }
 
-        public int Biome(int bx, int by, int bz)
+        public double Biome(int bx, int bz)
         {
-            double val = biomePerlin.GetValue(bx / biome_size, by / biome_size, bz / biome_size) * 2;
-            return (int) val > 1 ? 1 : (int) val;
+            return WorldGen.RiverPositions.GetValue(bx, 0, bz);
         }
 
         //Function that inputs the position and spits out a float value based on the perlin noise
         public double Terrain(float x, float z)
         {
-            int terrainOffset = 3;
+            int terrainOffset = 0;
             return terrainOffset 
-                + WorldGen.GetValue(x * WORLD_HORZ_STRETCH_FACTOR, 0, z * WORLD_HORZ_STRETCH_FACTOR)
+                + WorldGenModule.GetValue(x * WORLD_HORZ_STRETCH_FACTOR, 0, z * WORLD_HORZ_STRETCH_FACTOR)
                 * WORLD_VERT_STRETCH_FACTOR;
         }
 

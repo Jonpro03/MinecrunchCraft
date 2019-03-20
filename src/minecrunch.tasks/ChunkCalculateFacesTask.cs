@@ -12,20 +12,18 @@ namespace minecrunch.tasks
         public readonly string worldName;
         public readonly BlockInfo bInfo;
         public override event ThreadCompleteEventHandler ThreadComplete;
-        private readonly List<ChunkSection> sections;
 
         public ChunkCalculateFacesTask(Chunk c, string worldName)
         {
             this.worldName = worldName;
             chunk = c;
             bInfo = BlockInfo.Instance;
-            sections = new List<ChunkSection>(chunk.sections);
         }
 
         protected override void ThreadFunction()
         {
             //Parallel.ForEach(sections, ProcessSection); // Bad things happen when this is parallelized.
-            sections.ForEach(ProcessSection);
+            foreach (var sec in chunk.sections) { ProcessSection(sec); }
             ThreadComplete(this);
         }
 

@@ -34,12 +34,12 @@ namespace Assets.Scripts.Chunks
                 if (task.e != null)
                 {
                     Debug.LogException(task.e);
-                    WorldTerrain.InProgressChunks.Remove($"chunk{task.cx},{task.cy}");
+                    WorldTerrain.InProgressChunks.Remove(new Vector2Int(task.cx,task.cy));
                     continue;
                 }
                 if (task.chunk is null)
                 {
-                    WorldTerrain.InProgressChunks.Remove($"chunk{task.cx},{task.cy}");
+                    WorldTerrain.InProgressChunks.Remove(new Vector2Int(task.cx, task.cy));
                     Debug.LogWarning($"Failed to deserialize {task.cx}, {task.cy}");
                     continue;
                 }
@@ -52,7 +52,7 @@ namespace Assets.Scripts.Chunks
             {
                 if (task.e != null)
                 {
-                    WorldTerrain.InProgressChunks.Remove($"chunk{task.chunk.x},{task.chunk.y}");
+                    WorldTerrain.InProgressChunks.Remove(new Vector2Int(task.chunk.x, task.chunk.y));
                     Debug.LogException(task.e);
                     continue;
                 }
@@ -63,7 +63,7 @@ namespace Assets.Scripts.Chunks
 
             //Todo: Better task management. Check that total running tasks won't exceed desired parallelization.
             int parallel = 3;
-            foreach (var task in ChunkDownloads.Take(parallel)) { task.Start(); }
+            foreach (var task in ChunkDownloads.Take(10)) { task.Start(); }
             foreach (var task in ChunkCalcVerticiesTasks.Take(parallel)) { task.Start(); }
         }
 
