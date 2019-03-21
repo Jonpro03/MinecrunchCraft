@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using minecrunch.models;
 using minecrunch.models.Biomes;
@@ -39,8 +40,18 @@ namespace MinecrunchServer.Controllers
             {
                 if (System.IO.File.Exists(filePath))
                 {
-                    var fStream = System.IO.File.OpenRead(filePath);
+                    FileStream fStream;
+                    try
+                    {
+                        fStream = System.IO.File.OpenRead(filePath);
+                    }
+                    catch (Exception)
+                    {
+                        return NotFound();
+                    }
+
                     return File(fStream, "application/octet-stream");
+
                 }
             }
             else

@@ -28,7 +28,7 @@ namespace minecrunch.tasks
             //Parallel.ForEach(sections, ProcessSection); // Bad things happen when this is parallelized.
             try
             {
-                sections.ForEach(ProcessSection);
+                foreach (var sec in chunk.sections) { ProcessSection(sec); }
             }
             catch (Exception e)
             {

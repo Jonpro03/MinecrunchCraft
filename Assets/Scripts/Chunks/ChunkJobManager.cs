@@ -62,9 +62,11 @@ namespace Assets.Scripts.Chunks
             ChunkCalcVerticiesTasks.RemoveAll(task => task.IsDone);
 
             //Todo: Better task management. Check that total running tasks won't exceed desired parallelization.
-            int parallel = 6;
-            foreach (var task in ChunkDownloads.Where(t => !t.IsStarted()).Take(parallel)) { task.Start(); }
-            foreach (var task in ChunkCalcVerticiesTasks.Where(t => !t.IsStarted()).Take(parallel)) { task.Start(); }
+            int parallel = 10;
+            var activeDownloads = ChunkDownloads.Count(t => t.IsStarted() && !t.IsDone);
+            var activeVerts = ChunkCalcVerticiesTasks.Count(t => t.IsStarted() && !t.IsDone);
+            foreach (var task in ChunkDownloads.Where(t => !t.IsStarted()).Take(parallel-activeDownloads)) { task.Start(); }
+            foreach (var task in ChunkCalcVerticiesTasks.Where(t => !t.IsStarted()).Take(parallel-activeDownloads)) { task.Start(); }
         }
 
         public void StopAllJobs()

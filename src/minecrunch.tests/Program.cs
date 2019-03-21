@@ -21,7 +21,7 @@ namespace minecrunch.tests
                 x = 0,
                 y = 0
             };
-            ChunkGenerateTerrainTask cgt = new ChunkGenerateTerrainTask(c);
+            ChunkGenerateTerrainTask cgt = new ChunkGenerateTerrainTask(c, "world");
             cgt.Start();
             while (!cgt.IsDone) {
                 //Console.WriteLine("Processing Terrain");
@@ -50,7 +50,7 @@ namespace minecrunch.tests
             Console.WriteLine($"Bedrock: {numBR}");
 
             int startTime = 0;
-            ChunkCalculateFacesTask faces = new ChunkCalculateFacesTask(c);
+            ChunkCalculateFacesTask faces = new ChunkCalculateFacesTask(c, "world");
             faces.Start();
             while (!faces.IsDone)
             {

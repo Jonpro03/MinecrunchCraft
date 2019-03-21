@@ -40,3 +40,6 @@ Assets/Plugins/minecrunch.models.dll
 .vs/
 *.meta
 Logs/
+
+*.dll
+**/MinecrunchServer/**/world*

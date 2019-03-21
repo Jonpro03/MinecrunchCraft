@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -12,14 +11,12 @@ namespace MinecrunchServer
         public static void Main(string[] args)
         {
             TerrainWorker terrainWorker = new TerrainWorker(5);
-            FaceCalcWorker faceCalcWorker = new FaceCalcWorker(3);
+            FaceCalcWorker faceCalcWorker = new FaceCalcWorker(2);
             ChunkSaveWorker chunkSaveWorker = new ChunkSaveWorker();
 
             Task.Run(() => {
                 while (true)
                 {
-                    Console.SetCursorPosition(0, 0);
-                    Console.Write($"{TaskQueues.Instance.TerrainTasks.Count}");
                     terrainWorker.Run();
                     faceCalcWorker.Run();
                     chunkSaveWorker.Run();
